@@ -13,36 +13,50 @@ public class FixValues {
 
     public static String reversedate(String date, char splitter) {
         String dateparts[];
-        dateparts = date.split(" ")[0].split("" + splitter );
+        dateparts = date.split(" ")[0].split("" + splitter);
+        String array[]; // c
+        array = date.split(" "); // c
+        System.out.println(array.length); // c
+
         String fixeddate = "";
-        for (int i = dateparts.length - 1; i >= 0; i--) { 
+
+        for (int i = dateparts.length - 1; i >= 0; i--) {
             fixeddate += dateparts[i];
-            if (i !=0) {
+            if (i != 0) {
                 fixeddate += '-';
                 // comment//
             }
-             if (i==0) {
+            if (i == 0) {
                 fixeddate += ' ';
                 // comment//
             }
         }
-        String dateparts1 [];
-        dateparts1 = date.split(" ")[1].split("" + splitter );
-        
-        String fixeddate1 = "";
-         for (int j = dateparts1.length - 1; j >= 0;j--) { 
-            fixeddate1 += dateparts1[j];
-            if (j !=0) {
-                fixeddate1 += ':';
-                // comment//
-            }
-            if (j ==0) {
-                fixeddate1 += ":00";
-                // comment//
+        String dateparts1[];
+        dateparts1 = date.split(" ")[1].split("" + splitter);
+        String fixeddate1 = " ";
+        if (array.length == 1) {
+             fixeddate1 += "00:00:00" ;
+        } else {
+
+            
+
+            for (int j = dateparts1.length - 1; j >= 0; j--) {
+                fixeddate1 += dateparts1[j];
+
+                if (j != 0) {
+                    fixeddate1 += ':';
+                    // comment//
+                }
+                if (j == 0) {
+                    fixeddate1 += ":00";
+                    // comment//
+                }
+
             }
         }
-        fixeddate=fixeddate.concat(fixeddate1);
+
+        fixeddate = fixeddate.concat(fixeddate1);
         return (fixeddate);
-        
+
     }
 }
