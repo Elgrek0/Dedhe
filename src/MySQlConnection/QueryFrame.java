@@ -26,7 +26,7 @@ public class QueryFrame extends javax.swing.JFrame {
      */
     Connection conn;
 
-    public QueryFrame(Connection conn) throws CouldntConnectException {
+    public QueryFrame(Connection conn) {
         this.conn = conn;
         initComponents();
 

@@ -5,6 +5,7 @@
  */
 package MySQlConnection;
 
+import Gui.PowerLineData;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelHandler;
 import dedheproject.Fileopener;
@@ -57,6 +58,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         jPasswordField1.setText("jPasswordField1");
 
@@ -98,7 +100,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel6.setText("Error Window");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 86, -1, -1));
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Excel to DB");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -114,6 +116,14 @@ public class MainWindow extends javax.swing.JFrame {
         });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 250, -1, -1));
 
+        jButton3.setText("PowerLine Data");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 140, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -122,12 +132,8 @@ public class MainWindow extends javax.swing.JFrame {
 
             @Override
             public void run() {
-                try {
-                    QueryFrame a = new QueryFrame(conn);
-                    a.setVisible(true);
-                } catch (CouldntConnectException ex) {
-                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                QueryFrame a = new QueryFrame(conn);
+                a.setVisible(true);
 
             }
 
@@ -139,7 +145,7 @@ public class MainWindow extends javax.swing.JFrame {
             File f = Fileopener.openfile();
             try {
                 String[][] data = ExcelHandler.returnsheet(1, 1, 0, 200, 3, f);
-                int errors=0;
+                int errors = 0;
                 try {
                     MyConnection.disablekeys("powerlinedata", conn);
                     for (int i = 0; i < 200 - 1; i++) {
@@ -153,8 +159,6 @@ public class MainWindow extends javax.swing.JFrame {
                             pstmt = (PreparedStatement) conn.prepareStatement(query);
                             pstmt.addBatch();
                             pstmt.execute();
-                            
-                            
 
                         } catch (SQLException ex) {
                             errors++;
@@ -164,7 +168,7 @@ public class MainWindow extends javax.swing.JFrame {
 
                     }
                     MyConnection.enablekeys("powerlinedata", conn);
-                    System.out.println("query finished errors: "+errors);
+                    System.out.println("query finished errors: " + errors);
                 } catch (SQLException ex) {
                     try {
                         MyConnection.enablekeys("powerlinedata", conn);
@@ -201,6 +205,20 @@ public class MainWindow extends javax.swing.JFrame {
             System.err.println("failure");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        new Thread() {
+
+            @Override
+            public void run() {
+
+                PowerLineData a = new PowerLineData(conn);
+                a.setVisible(true);
+
+            }
+
+        }.start();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -250,6 +268,7 @@ public class MainWindow extends javax.swing.JFrame {
     public static javax.swing.JTextField UsernameBox;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
