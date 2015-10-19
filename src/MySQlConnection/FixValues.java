@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package MySQlConnection;
 
 /**
@@ -12,34 +7,17 @@ package MySQlConnection;
 public class FixValues {
 
     public static String reversedate(String date, char splitter) {
-        String dateparts[];
-        dateparts = date.split(" ")[0].split("" + splitter);
         String array[]; // c
         array = date.split(" "); // c
         System.out.println(array.length); // c
+        String fixeddate1 = "";
 
         String fixeddate = "";
-
-        for (int i = dateparts.length - 1; i >= 0; i--) {
-            fixeddate += dateparts[i];
-            if (i != 0) {
-                fixeddate += '-';
-                // comment//
-            }
-            if (i == 0) {
-                fixeddate += ' ';
-                // comment//
-            }
-        }
-        String dateparts1[];
-        dateparts1 = date.split(" ")[1].split("" + splitter);
-        String fixeddate1 = " ";
         if (array.length == 1) {
-             fixeddate1 += "00:00:00" ;
+            fixeddate1 = "00:00:00";
         } else {
-
-            
-
+            String dateparts1[];
+            dateparts1 = date.split(" ")[1].split("" + splitter);
             for (int j = dateparts1.length - 1; j >= 0; j--) {
                 fixeddate1 += dateparts1[j];
 
@@ -52,6 +30,21 @@ public class FixValues {
                     // comment//
                 }
 
+            }
+        }
+
+        String dateparts[];
+        dateparts = date.split(" ")[0].split("" + splitter);
+
+        for (int i = dateparts.length - 1; i >= 0; i--) {
+            fixeddate += dateparts[i];
+            if (i != 0) {
+                fixeddate += '-';
+                // comment//
+            }
+            if (i == 0) {
+                fixeddate += ' ';
+                // comment//
             }
         }
 
