@@ -9,7 +9,7 @@ public class FixValues {
     public static String reversedate(String date, char splitter) {
         String array[]; // c
         array = date.split(" "); // c
-        System.out.println(array.length); // c
+        //System.out.println(array.length); // c
         String fixeddate1 = "";
 
         String fixeddate = "";
@@ -36,17 +36,11 @@ public class FixValues {
         String dateparts[];
         dateparts = date.split(" ")[0].split("" + splitter);
 
-        for (int i = dateparts.length - 1; i >= 0; i--) {
-            fixeddate += dateparts[i];
-            if (i != 0) {
-                fixeddate += '-';
-                // comment//
-            }
-            if (i == 0) {
-                fixeddate += ' ';
-                // comment//
-            }
-        }
+        
+        fixeddate += dateparts[2]+"-";
+        fixeddate += dateparts[0]+"-";
+        fixeddate += dateparts[1]+" ";
+
 
         fixeddate = fixeddate.concat(fixeddate1);
         return (fixeddate);

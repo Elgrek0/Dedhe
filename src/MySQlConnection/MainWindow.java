@@ -28,7 +28,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindows
      */
     Connection conn = null;
-    public static boolean debug = true;
+    public static boolean debug = false;
 
     public MainWindow() {
         initComponents();
@@ -139,6 +139,7 @@ public class MainWindow extends javax.swing.JFrame {
             File f = Fileopener.openfile();
             try {
                 String[][] data = ExcelHandler.returnsheet(1, 1, 0, 200, 3, f);
+                int errors=0;
                 try {
                     MyConnection.disablekeys("powerlinedata", conn);
                     for (int i = 0; i < 200 - 1; i++) {
@@ -152,14 +153,18 @@ public class MainWindow extends javax.swing.JFrame {
                             pstmt = (PreparedStatement) conn.prepareStatement(query);
                             pstmt.addBatch();
                             pstmt.execute();
+                            
+                            
 
                         } catch (SQLException ex) {
+                            errors++;
                             System.out.println("bad query");
                             System.out.println(ex.getMessage());
                         }
 
                     }
                     MyConnection.enablekeys("powerlinedata", conn);
+                    System.out.println("query finished errors: "+errors);
                 } catch (SQLException ex) {
                     try {
                         MyConnection.enablekeys("powerlinedata", conn);

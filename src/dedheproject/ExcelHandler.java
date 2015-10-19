@@ -5,6 +5,7 @@
  */
 package dedheproject;
 
+import com.aspose.cells.Cells;
 import dedheproject.exceptions.NoSuchSheetException;
 import com.aspose.cells.Workbook;
 import java.io.File;
@@ -32,10 +33,15 @@ public class ExcelHandler {
             if (workbook.getWorksheets().get(sheet_number) == null) {
                 throw new NoSuchSheetException();
             }
+            Cells cells=workbook.getWorksheets().get(sheet_number).getCells();
             for (int x = start_x; x < end_x; x++) {
                 for (int y = start_y; y < end_y; y++) {
                     toreturn[x - start_x][y - start_y]
-                            = workbook.getWorksheets().get(sheet_number).getCells().checkCell(x, y).getDisplayStringValue();
+                            = cells.checkCell(x, y).getStringValue();
+                    //System.out.println(cells.checkCell(x, y).getStringValueWithoutFormat()); - 42016.354166666664
+                    //System.out.println(cells.checkCell(x, y).getStringValue()); - 1/12/2015 8:30
+                    //System.out.println(cells.checkCell(x, y).toString()); -  Aspose.Cells.Cell [ B2; ValueType : IsDateTime; Value : 1/12/2015 8:30 ]
+                   // System.out.println(cells.checkCell(x, y).getStringValue(0)); - 42016.354166666664
                 }
             }
         } catch (Exception ex) {
