@@ -20,8 +20,8 @@ import java.util.logging.Logger;
  */
 public class ExcelHandler {
 
-    public static String[][] returnsheet(int sheet_number, int start_x, int start_y, int end_x, int end_y, File excelfile) throws FileNotFoundException, NoSuchSheetException {
-        String toreturn[][] = new String[end_x - start_x][end_y - start_y];
+    public static String[][] returnsheet(int sheet_number, int start_x, int start_y, int columns_to_read, int rows_to_read, File excelfile) throws FileNotFoundException, NoSuchSheetException {
+        String toreturn[][] = new String[rows_to_read][columns_to_read];//y , x
 
         FileInputStream fstream = null;
         if (true) {
@@ -33,19 +33,19 @@ public class ExcelHandler {
             if (workbook.getWorksheets().get(sheet_number) == null) {
                 throw new NoSuchSheetException();
             }
-            Cells cells=workbook.getWorksheets().get(sheet_number).getCells();
-            for (int x = start_x; x < end_x; x++) {
-                for (int y = start_y; y < end_y; y++) {
-                    toreturn[x - start_x][y - start_y]
-                            = cells.checkCell(x, y).getStringValue();
+            //System.out.println(workbook.getWorksheets().get(sheet_number).getCells().getLastCell());
+            Cells cells = workbook.getWorksheets().get(sheet_number).getCells();
+            for (int y = 0; y <rows_to_read ; y++) {
+                for (int x = 0; x < columns_to_read; x++) {
+                    toreturn[y][x] = cells.checkCell( y+start_y , x+start_x).getStringValue();
                     //System.out.println(cells.checkCell(x, y).getStringValueWithoutFormat()); - 42016.354166666664
                     //System.out.println(cells.checkCell(x, y).getStringValue()); - 1/12/2015 8:30
                     //System.out.println(cells.checkCell(x, y).toString()); -  Aspose.Cells.Cell [ B2; ValueType : IsDateTime; Value : 1/12/2015 8:30 ]
-                   // System.out.println(cells.checkCell(x, y).getStringValue(0)); - 42016.354166666664
+                    // System.out.println(cells.checkCell(x, y).getStringValue(0)); - 42016.354166666664
                 }
             }
         } catch (Exception ex) {
-           
+
         }
         return (toreturn);
 

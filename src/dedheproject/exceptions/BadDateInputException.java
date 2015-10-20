@@ -9,11 +9,10 @@ package dedheproject.exceptions;
  *
  * @author Paris
  */
-public class CouldntConnectException extends Exception {
-
-    public CouldntConnectException(String s) {
+public class BadDateInputException extends Exception {
+    
+    
+    public BadDateInputException(String s) {
         super(s);
     }
-
-
 }

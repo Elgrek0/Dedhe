@@ -1,12 +1,15 @@
 package MySQlConnection;
 
+import dedheproject.exceptions.BadDateInputException;
+
 /**
  *
  * @author Paris
  */
 public class FixValues {
 
-    public static String reversedate(String date, char splitter) {
+    public static String reversedate(String date, char splitter) throws BadDateInputException{
+        try{
         String array[]; // c
         array = date.split(" "); // c
         //System.out.println(array.length); // c
@@ -44,6 +47,9 @@ public class FixValues {
 
         fixeddate = fixeddate.concat(fixeddate1);
         return (fixeddate);
-
+        }
+        catch(Exception e){//an ginei otideipote lathos
+            throw new BadDateInputException("date format error");
+        }
     }
 }
