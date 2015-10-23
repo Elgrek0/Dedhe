@@ -146,10 +146,10 @@ public class MainWindow extends javax.swing.JFrame {
             File f = Fileopener.openfile();
             try {
                 int rows_to_read = 2024;
-                int colums_to_read=2;
-                int start_y=1;
-                int start_x=1;
-                String[][] data = ExcelHandler.returnsheet(1, start_x, start_y,  colums_to_read,rows_to_read, f);
+                int colums_to_read = 2;
+                int start_y = 1;
+                int start_x = 1;
+                String[][] data = ExcelHandler.returnsheet(1, start_x, start_y, colums_to_read, rows_to_read, f);
                 int errors = 0;
                 try {
                     MyConnection.disablekeys("powerlinedata", conn);
@@ -163,14 +163,14 @@ public class MainWindow extends javax.swing.JFrame {
                             }
 
                             pstmt = (PreparedStatement) conn.prepareStatement(query);
-                            pstmt.addBatch();
+                            pstmt.execute();
 
                         } catch (BadDateInputException ex) {
                             System.out.println("Bad date format in Excel at row : " + i);
                         }
 
                     }
-                    pstmt.execute();
+
                     MyConnection.enablekeys("powerlinedata", conn);
                     System.out.println("query finished errors: " + errors);
                 } catch (SQLException ex) {
@@ -217,6 +217,7 @@ public class MainWindow extends javax.swing.JFrame {
             public void run() {
 
                 PowerLineData a = new PowerLineData(conn);
+                a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
                 a.setVisible(true);
 
             }
