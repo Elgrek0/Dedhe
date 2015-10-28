@@ -5,6 +5,7 @@
  */
 package MySQlConnection;
 
+import Gui.AnalyticsGui;
 import Gui.PowerLineData;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelHandler;
@@ -60,6 +61,7 @@ public class MainWindow extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         jPasswordField1.setText("jPasswordField1");
 
@@ -124,6 +126,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 140, -1));
+
+        jButton4.setText("analytics");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 130, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -225,6 +235,21 @@ public class MainWindow extends javax.swing.JFrame {
         }.start();
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        new Thread() {
+
+            @Override
+            public void run() {
+
+                AnalyticsGui a = new AnalyticsGui(conn);
+                a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                a.setVisible(true);
+
+            }
+
+        }.start();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -274,6 +299,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
