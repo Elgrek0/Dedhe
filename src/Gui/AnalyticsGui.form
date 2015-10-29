@@ -30,7 +30,7 @@
           <Group type="102" attributes="0">
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel3" max="32767" attributes="0"/>
+              <Component id="graph_panel" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -41,7 +41,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jPanel2" max="32767" attributes="0"/>
-                  <Component id="jPanel3" max="32767" attributes="0"/>
+                  <Component id="graph_panel" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -130,7 +130,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="start_day_textfield">
           <Properties>
-            <Property name="text" type="java.lang.String" value="DD"/>
+            <Property name="text" type="java.lang.String" value="14"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="start_day_textfieldActionPerformed"/>
@@ -143,7 +143,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="start_month_textfield">
           <Properties>
-            <Property name="text" type="java.lang.String" value="MM"/>
+            <Property name="text" type="java.lang.String" value="01"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
@@ -153,7 +153,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="start_year_textfield">
           <Properties>
-            <Property name="text" type="java.lang.String" value="YYYY"/>
+            <Property name="text" type="java.lang.String" value="2015"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="load_data_button">
@@ -210,26 +210,20 @@
         </Container>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel3">
+    <Container class="javax.swing.JPanel" name="graph_panel">
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="GraphPanel" alignment="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="GraphPanel" alignment="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="290" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
-      <SubComponents>
-        <Container class="javax.swing.JScrollPane" name="GraphPanel">
-
-          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-        </Container>
-      </SubComponents>
     </Container>
   </SubComponents>
 </Form>

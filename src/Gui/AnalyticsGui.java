@@ -5,17 +5,14 @@
  */
 package Gui;
 
-import MySQlConnection.MyConnection;
+import Analytics.GraphPanel;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.exceptions.BadDateInputException;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.awt.BorderLayout;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
  *
@@ -55,8 +52,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
-        jPanel3 = new javax.swing.JPanel();
-        GraphPanel = new javax.swing.JScrollPane();
+        graph_panel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 400));
@@ -65,7 +61,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        start_day_textfield.setText("DD");
+        start_day_textfield.setText("14");
         start_day_textfield.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 start_day_textfieldActionPerformed(evt);
@@ -74,11 +70,11 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         jLabel1.setText("/");
 
-        start_month_textfield.setText("MM");
+        start_month_textfield.setText("01");
 
         jLabel2.setText("/");
 
-        start_year_textfield.setText("YYYY");
+        start_year_textfield.setText("2015");
 
         load_data_button.setText("load data");
         load_data_button.addActionListener(new java.awt.event.ActionListener() {
@@ -156,15 +152,15 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 .addContainerGap(133, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(GraphPanel)
+        javax.swing.GroupLayout graph_panelLayout = new javax.swing.GroupLayout(graph_panel);
+        graph_panel.setLayout(graph_panelLayout);
+        graph_panelLayout.setHorizontalGroup(
+            graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(GraphPanel)
+        graph_panelLayout.setVerticalGroup(
+            graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -175,7 +171,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(graph_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,7 +180,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(graph_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -195,8 +191,8 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }//GEN-LAST:event_start_day_textfieldActionPerformed
 
     private void load_data_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_data_buttonActionPerformed
-        String startdate = "'"+start_year_textfield.getText() + "-"
-                + start_month_textfield.getText() + "-" + start_day_textfield.getText()+"'";
+        String startdate = "'" + start_year_textfield.getText() + "-"
+                + start_month_textfield.getText() + "-" + start_day_textfield.getText() + "'";
         try {
             check_if_valid(startdate);
         } catch (BadDateInputException ex) {
@@ -207,14 +203,19 @@ public class AnalyticsGui extends javax.swing.JFrame {
             try {
 //
 //;
-                String query = "SELECT power FROM powerlinedata as p"+
-                       " where p.date  BETWEEN  "+startdate+" and "+"'2015-01-16'";
+                String query = "SELECT date,power FROM powerlinedata as p"
+                        + " where p.date  BETWEEN  " + startdate + " and " + "'2015-01-16'";
                 PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
                 pstmt.addBatch();
                 pstmt.execute();
 
                 ResultSet rs = pstmt.getResultSet();
-                creategraph(rs);
+                GraphPanel gp = new GraphPanel(rs);
+                graph_panel.setLayout(new BorderLayout());
+                graph_panel.add(gp.panel, BorderLayout.CENTER);
+                graph_panel.setVisible(true);
+                revalidate();
+
             } catch (SQLException ex) {
 
                 System.out.println("bad query");
@@ -260,7 +261,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane GraphPanel;
+    private javax.swing.JPanel graph_panel;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
@@ -268,7 +269,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton load_data_button;
     private javax.swing.JTextField start_day_textfield;
@@ -278,17 +278,9 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
     private void check_if_valid(String startdate) throws BadDateInputException {
         System.out.println("check not yet fixed");
-       if(false) throw new BadDateInputException();
+        if (false) {
+            throw new BadDateInputException();
+        }
     }
 
-    private void creategraph(ResultSet rs) {
-        BufferedImage graph=new BufferedImage(300, 300,1);
-        
-        
-        for(int i=0;i<100;i++){
-            graph.setRGB(20, i,Color.black.getRGB() );
-        }
-        GraphPanel.paint(graph.createGraphics());
-        
-         }
 }
