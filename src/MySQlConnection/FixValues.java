@@ -21,7 +21,9 @@ public class FixValues {
      * @throws BadDateInputException date or time is wrong
      */
     public static String reversedate(String datetime, char date_splitter, char time_splitter) throws BadDateInputException, BadTimeInputException {
-
+        if (datetime == null) {
+            throw new BadDateInputException("date is null");
+        }
         String datetime_parts[] = datetime.split(" ");
         LocalTime lt;
         LocalDate ld;

@@ -386,7 +386,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                 rs.next();
             }
             int breakerid = rs.getInt(2);
-            for (int i = 0; i < itemcount; i++) {
+            for (int i = 0; i < itemcount-1; i++) {
                 try {
 
                     String query = " INSERT IGNORE INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet.data[i][0], '/', ':')
