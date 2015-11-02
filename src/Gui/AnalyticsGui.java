@@ -308,50 +308,52 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
     private void queryfornewdata() {
-        String startdate = "'" + start_year_spinner.getValue() + "-"
-                + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
-        String enddate;
-        enddate = "'" + end_year_spinner.getValue() + "-"
-                + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
+        if (rs != null) {
+            String startdate = "'" + start_year_spinner.getValue() + "-"
+                    + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
+            String enddate;
+            enddate = "'" + end_year_spinner.getValue() + "-"
+                    + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
 
-        if (conn != null) {
-            try {
+            if (conn != null) {
+                try {
 
-                int selection = db_names_combobox.getSelectedIndex();
-                rs.first();
-                if (selection > 0) {
-                    for (int k = 0; k < selection; k++) {
-                        rs.next();
+                    int selection = db_names_combobox.getSelectedIndex();
+                    rs.first();
+                    if (selection > 0) {
+                        for (int k = 0; k < selection; k++) {
+                            rs.next();
+                        }
                     }
+                    int id = rs.getInt(2);
+                    String query = "";
+
+                    if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
+                        query = "SELECT datetime,current FROM breaker_data "
+                                + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
+                    }
+                    if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
+                        query = "SELECT datetime,current FROM transformer_data "
+                                + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
+                    }
+                    System.out.println(query);
+                    PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
+                    pstmt.addBatch();
+                    pstmt.execute();
+
+                    GraphPanel gp = new GraphPanel(pstmt.getResultSet());
+                    graph_panel.setLayout(new BorderLayout());
+                    graph_panel.removeAll();
+                    graph_panel.add(gp.panel, BorderLayout.CENTER);
+                    graph_panel.setVisible(true);
+                    revalidate();
+
+                } catch (SQLException ex) {
+
+                    System.out.println("bad query");
+                    System.out.println(ex.getMessage());
+
                 }
-                int id = rs.getInt(2);
-                String query = "";
-
-                if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
-                    query = "SELECT datetime,current FROM breaker_data "
-                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
-                }
-                if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
-                    query = "SELECT datetime,current FROM transformer_data "
-                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
-                }
-                System.out.println(query);
-                PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
-                pstmt.addBatch();
-                pstmt.execute();
-
-                GraphPanel gp = new GraphPanel(pstmt.getResultSet());
-                graph_panel.setLayout(new BorderLayout());
-                graph_panel.removeAll();
-                graph_panel.add(gp.panel, BorderLayout.CENTER);
-                graph_panel.setVisible(true);
-                revalidate();
-
-            } catch (SQLException ex) {
-
-                System.out.println("bad query");
-                System.out.println(ex.getMessage());
-
             }
         }
     }
