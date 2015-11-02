@@ -165,7 +165,7 @@ public class MainWindow extends javax.swing.JFrame {
                     PreparedStatement pstmt = null;
                     for (int i = 0; i < rows_to_read; i++) {
                         try {
-                            String query = " INSERT IGNORE INTO powerlinedata VALUES (" + "'" + FixValues.reversedate(data[i][0], '/') + "'" + "," + 1 + "," + 1 + "," + 1 + "," + data[i][1].replace(',', '.') + ");\n";
+                            String query = " INSERT IGNORE INTO powerlinedata VALUES (" + "'" + FixValues.reversedate(data[i][0], '/',':') + "'" + "," + 1 + "," + 1 + "," + 1 + "," + data[i][1].replace(',', '.') + ");\n";
 
                             if (debug) {
                                 System.out.println(query);
