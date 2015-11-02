@@ -3,6 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+
 package Gui;
 
 import Analytics.GraphPanel;
@@ -28,6 +30,12 @@ public class AnalyticsGui extends javax.swing.JFrame {
     public AnalyticsGui(Connection conn) {
         this.conn = conn;
         initComponents();
+         start_year_spinner.setValue(new Integer(2015));
+         start_month_spinner.setValue(new Integer(1));
+         start_day_spinner.setValue(new Integer(14));
+         end_year_spinner.setValue(new Integer(2015));
+         end_month_spinner.setValue(new Integer(1));
+         end_day_spinner.setValue(new Integer(15));
 
     }
 
@@ -40,6 +48,8 @@ public class AnalyticsGui extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox();
         jComboBox2 = new javax.swing.JComboBox();
@@ -50,10 +60,16 @@ public class AnalyticsGui extends javax.swing.JFrame {
         start_day_spinner = new javax.swing.JSpinner();
         start_month_spinner = new javax.swing.JSpinner();
         start_year_spinner = new javax.swing.JSpinner();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         graph_panel = new javax.swing.JPanel();
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 400));
@@ -61,10 +77,10 @@ public class AnalyticsGui extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 0, -1, -1));
+        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 10, -1, -1));
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 0, -1, -1));
+        jPanel1.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 10, -1, -1));
 
         load_data_button.setText("load data");
         load_data_button.addActionListener(new java.awt.event.ActionListener() {
@@ -72,13 +88,19 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 load_data_buttonActionPerformed(evt);
             }
         });
-        jPanel1.add(load_data_button, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 30, -1, -1));
-        jPanel1.add(end_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 60, -1));
-        jPanel1.add(end_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, 60, -1));
-        jPanel1.add(end_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, 90, -1));
-        jPanel1.add(start_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 60, -1));
-        jPanel1.add(start_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 60, -1));
-        jPanel1.add(start_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 40, 90, -1));
+        jPanel1.add(load_data_button, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 40, -1, -1));
+        jPanel1.add(end_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 60, -1));
+        jPanel1.add(end_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 40, 60, -1));
+        jPanel1.add(end_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 90, -1));
+        jPanel1.add(start_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 10, 60, -1));
+        jPanel1.add(start_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, 60, -1));
+        jPanel1.add(start_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 40, 90, -1));
+
+        jLabel1.setText("Starting Date :");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 4, -1, 30));
+
+        jLabel2.setText("Ending Date :");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, 40));
 
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Highlight Max", "Highlight Min" };
@@ -101,34 +123,38 @@ public class AnalyticsGui extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(133, Short.MAX_VALUE))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout graph_panelLayout = new javax.swing.GroupLayout(graph_panel);
         graph_panel.setLayout(graph_panelLayout);
         graph_panelLayout.setHorizontalGroup(
             graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 438, Short.MAX_VALUE)
         );
         graph_panelLayout.setVerticalGroup(
             graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 290, Short.MAX_VALUE)
+            .addGap(0, 272, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(graph_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -139,6 +165,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void load_data_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_data_buttonActionPerformed
+        
         String startdate = "'" + start_year_spinner.getValue() + "-"
                 + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
         String enddate;
@@ -218,10 +245,14 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private javax.swing.JPanel graph_panel;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton load_data_button;
     private javax.swing.JSpinner start_day_spinner;
     private javax.swing.JSpinner start_month_spinner;
@@ -236,3 +267,5 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
 }
+
+
