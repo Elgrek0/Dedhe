@@ -11,6 +11,7 @@ import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelHandler;
 import dedheproject.Fileopener;
 import dedheproject.exceptions.BadDateInputException;
+import dedheproject.exceptions.BadTimeInputException;
 import dedheproject.exceptions.CouldntConnectException;
 import dedheproject.exceptions.NoSuchSheetException;
 import dedheproject.exceptions.badfileexception;
@@ -176,6 +177,8 @@ public class MainWindow extends javax.swing.JFrame {
 
                         } catch (BadDateInputException ex) {
                             System.out.println("Bad date format in Excel at row : " + i);
+                        } catch (BadTimeInputException ex) {
+                            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
                     }

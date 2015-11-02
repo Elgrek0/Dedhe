@@ -43,12 +43,13 @@ public class AnalyticsGui extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox();
         jComboBox2 = new javax.swing.JComboBox();
-        start_day_textfield = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        start_month_textfield = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        start_year_textfield = new javax.swing.JTextField();
         load_data_button = new javax.swing.JButton();
+        end_day_spinner = new javax.swing.JSpinner();
+        end_month_spinner = new javax.swing.JSpinner();
+        end_year_spinner = new javax.swing.JSpinner();
+        start_day_spinner = new javax.swing.JSpinner();
+        start_month_spinner = new javax.swing.JSpinner();
+        start_year_spinner = new javax.swing.JSpinner();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
@@ -57,24 +58,13 @@ public class AnalyticsGui extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 400));
 
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 0, -1, -1));
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        start_day_textfield.setText("14");
-        start_day_textfield.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                start_day_textfieldActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("/");
-
-        start_month_textfield.setText("01");
-
-        jLabel2.setText("/");
-
-        start_year_textfield.setText("2015");
+        jPanel1.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 0, -1, -1));
 
         load_data_button.setText("load data");
         load_data_button.addActionListener(new java.awt.event.ActionListener() {
@@ -82,51 +72,13 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 load_data_buttonActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(start_day_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(start_month_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(start_year_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(98, 98, 98)
-                .addComponent(load_data_button)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(82, 82, 82))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(26, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(start_year_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(load_data_button))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(start_day_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1)
-                        .addComponent(start_month_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
+        jPanel1.add(load_data_button, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 30, -1, -1));
+        jPanel1.add(end_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 60, -1));
+        jPanel1.add(end_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, 60, -1));
+        jPanel1.add(end_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, 90, -1));
+        jPanel1.add(start_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 60, -1));
+        jPanel1.add(start_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 60, -1));
+        jPanel1.add(start_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 40, 90, -1));
 
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Highlight Max", "Highlight Min" };
@@ -186,13 +138,12 @@ public class AnalyticsGui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void start_day_textfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start_day_textfieldActionPerformed
-
-    }//GEN-LAST:event_start_day_textfieldActionPerformed
-
     private void load_data_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_data_buttonActionPerformed
-        String startdate = "'" + start_year_textfield.getText() + "-"
-                + start_month_textfield.getText() + "-" + start_day_textfield.getText() + "'";
+        String startdate = "'" + start_year_spinner.getValue() + "-"
+                + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
+        String enddate;
+        enddate = "'" + end_year_spinner.getValue() + "-"
+                + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
         try {
             check_if_valid(startdate);
         } catch (BadDateInputException ex) {
@@ -204,7 +155,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
 //
 //;
                 String query = "SELECT date,power FROM powerlinedata as p"
-                        + " where p.date  BETWEEN  " + startdate + " and " + "'2015-01-16'";
+                        + " where p.date  BETWEEN  " + startdate + " and " + enddate;
                 PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
                 pstmt.addBatch();
                 pstmt.execute();
@@ -261,19 +212,20 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner end_day_spinner;
+    private javax.swing.JSpinner end_month_spinner;
+    private javax.swing.JSpinner end_year_spinner;
     private javax.swing.JPanel graph_panel;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton load_data_button;
-    private javax.swing.JTextField start_day_textfield;
-    private javax.swing.JTextField start_month_textfield;
-    private javax.swing.JTextField start_year_textfield;
+    private javax.swing.JSpinner start_day_spinner;
+    private javax.swing.JSpinner start_month_spinner;
+    private javax.swing.JSpinner start_year_spinner;
     // End of variables declaration//GEN-END:variables
 
     private void check_if_valid(String startdate) throws BadDateInputException {
