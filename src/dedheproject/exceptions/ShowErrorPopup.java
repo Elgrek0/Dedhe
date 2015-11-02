@@ -5,6 +5,7 @@
  */
 package dedheproject.exceptions;
 
+import MySQlConnection.MainWindow;
 import javax.swing.JOptionPane;
 
 /**
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 public class ShowErrorPopup {
 
     public static void popup(Exception ex) {
+        MainWindow.ErrorArea.append(ex.toString()+"\n");
         JOptionPane.showMessageDialog(null, ex.toString(), "Error",
                 JOptionPane.ERROR_MESSAGE);
     }
