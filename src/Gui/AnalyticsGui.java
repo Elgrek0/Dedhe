@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 package Gui;
 
 import Analytics.GraphPanel;
+import MySQlConnection.MyConnection;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.exceptions.BadDateInputException;
+import dedheproject.exceptions.ShowErrorPopup;
 import java.awt.BorderLayout;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -26,17 +26,27 @@ public class AnalyticsGui extends javax.swing.JFrame {
      * Creates new form AnalyticsGui
      */
     Connection conn;
+    ResultSet rs;
 
     public AnalyticsGui(Connection conn) {
         this.conn = conn;
         initComponents();
-         start_year_spinner.setValue(new Integer(2015));
-         start_month_spinner.setValue(new Integer(1));
-         start_day_spinner.setValue(new Integer(14));
-         end_year_spinner.setValue(new Integer(2015));
-         end_month_spinner.setValue(new Integer(1));
-         end_day_spinner.setValue(new Integer(15));
+        start_year_spinner.setValue(new Integer(2015));
+        start_month_spinner.setValue(new Integer(1));
+        start_day_spinner.setValue(new Integer(14));
+        end_year_spinner.setValue(new Integer(2015));
+        end_month_spinner.setValue(new Integer(1));
+        end_day_spinner.setValue(new Integer(15));
+        try {
+            rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
 
+            db_names_combobox.removeAllItems();
+            while (rs.next()) {
+                db_names_combobox.addItem(rs.getObject(1));
+            }
+        } catch (SQLException ex) {
+            ShowErrorPopup.popup(ex);
+        }
     }
 
     /**
@@ -51,9 +61,8 @@ public class AnalyticsGui extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox();
-        jComboBox2 = new javax.swing.JComboBox();
-        load_data_button = new javax.swing.JButton();
+        data_types_combobox = new javax.swing.JComboBox();
+        db_names_combobox = new javax.swing.JComboBox();
         end_day_spinner = new javax.swing.JSpinner();
         end_month_spinner = new javax.swing.JSpinner();
         end_year_spinner = new javax.swing.JSpinner();
@@ -76,19 +85,20 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 10, -1, -1));
-
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 10, -1, -1));
-
-        load_data_button.setText("load data");
-        load_data_button.addActionListener(new java.awt.event.ActionListener() {
+        data_types_combobox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Breaker", "Transformer" }));
+        data_types_combobox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                load_data_buttonActionPerformed(evt);
+                data_types_comboboxActionPerformed(evt);
             }
         });
-        jPanel1.add(load_data_button, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 40, -1, -1));
+        jPanel1.add(data_types_combobox, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 10, -1, -1));
+
+        db_names_combobox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                db_names_comboboxActionPerformed(evt);
+            }
+        });
+        jPanel1.add(db_names_combobox, new org.netbeans.lib.awtextra.AbsoluteConstraints(446, 10, 80, -1));
         jPanel1.add(end_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 60, -1));
         jPanel1.add(end_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 40, 60, -1));
         jPanel1.add(end_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 90, -1));
@@ -130,7 +140,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         graph_panel.setLayout(graph_panelLayout);
         graph_panelLayout.setHorizontalGroup(
             graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 438, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         graph_panelLayout.setVerticalGroup(
             graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -164,32 +174,69 @@ public class AnalyticsGui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void load_data_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_data_buttonActionPerformed
-        
+    private void data_types_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_data_types_comboboxActionPerformed
+        if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
+            try {
+                rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
+
+                db_names_combobox.removeAllItems();
+                while (rs.next()) {
+                    db_names_combobox.addItem(rs.getObject(1));
+                }
+            } catch (SQLException ex) {
+                ShowErrorPopup.popup(ex);
+            }
+        }
+        if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
+            try {
+                rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM transformer; ");
+
+                db_names_combobox.removeAllItems();
+                while (rs.next()) {
+                    db_names_combobox.addItem(rs.getObject(1));
+                }
+            } catch (SQLException ex) {
+                ShowErrorPopup.popup(ex);
+            }
+        }
+    }//GEN-LAST:event_data_types_comboboxActionPerformed
+
+    private void db_names_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_db_names_comboboxActionPerformed
         String startdate = "'" + start_year_spinner.getValue() + "-"
                 + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
         String enddate;
         enddate = "'" + end_year_spinner.getValue() + "-"
                 + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
-        try {
-            check_if_valid(startdate);
-        } catch (BadDateInputException ex) {
-            return;
-        }
 
         if (conn != null) {
             try {
-//
-//;
-                String query = "SELECT date,power FROM powerlinedata as p"
-                        + " where p.date  BETWEEN  " + startdate + " and " + enddate;
+
+                int selection = db_names_combobox.getSelectedIndex();
+                rs.first();
+                if (selection > 0) {
+                    for (int k = 0; k < selection; k++) {
+                        rs.next();
+                    }
+                }
+                int id = rs.getInt(2);
+                String query = "";
+
+                if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
+                    query = "SELECT datetime,current FROM breaker_data "
+                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
+                }
+                if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
+                    query = "SELECT datetime,current FROM transformer_data "
+                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
+                }
+                System.out.println(query);
                 PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
                 pstmt.addBatch();
                 pstmt.execute();
 
-                ResultSet rs = pstmt.getResultSet();
-                GraphPanel gp = new GraphPanel(rs);
+                GraphPanel gp = new GraphPanel(pstmt.getResultSet());
                 graph_panel.setLayout(new BorderLayout());
+                graph_panel.removeAll();
                 graph_panel.add(gp.panel, BorderLayout.CENTER);
                 graph_panel.setVisible(true);
                 revalidate();
@@ -201,7 +248,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
             }
         }
-    }//GEN-LAST:event_load_data_buttonActionPerformed
+    }//GEN-LAST:event_db_names_comboboxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -239,12 +286,12 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox data_types_combobox;
+    private javax.swing.JComboBox db_names_combobox;
     private javax.swing.JSpinner end_day_spinner;
     private javax.swing.JSpinner end_month_spinner;
     private javax.swing.JSpinner end_year_spinner;
     private javax.swing.JPanel graph_panel;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JList jList1;
@@ -253,7 +300,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JButton load_data_button;
     private javax.swing.JSpinner start_day_spinner;
     private javax.swing.JSpinner start_month_spinner;
     private javax.swing.JSpinner start_year_spinner;
@@ -267,5 +313,3 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
 }
-
-
