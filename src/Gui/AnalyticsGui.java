@@ -39,7 +39,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
         end_day_spinner.setValue(new Integer(15));
         try {
             rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
-
             db_names_combobox.removeAllItems();
             while (rs.next()) {
                 db_names_combobox.addItem(rs.getObject(1));
@@ -199,11 +198,22 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void data_types_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_data_types_comboboxActionPerformed
+        /* try {
+         rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
+
+         db_names_combobox.removeAllItems();
+         while (rs.next()) {
+         db_names_combobox.addItem(rs.getObject(1));
+         }
+         } catch (SQLException ex) {
+         ShowErrorPopup.popup(ex);
+         }*/
+
         if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
             try {
+                db_names_combobox.removeAllItems();
                 rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
 
-                db_names_combobox.removeAllItems();
                 while (rs.next()) {
                     db_names_combobox.addItem(rs.getObject(1));
                 }
@@ -213,9 +223,9 @@ public class AnalyticsGui extends javax.swing.JFrame {
         }
         if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
             try {
+                db_names_combobox.removeAllItems();
                 rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM transformer; ");
 
-                db_names_combobox.removeAllItems();
                 while (rs.next()) {
                     db_names_combobox.addItem(rs.getObject(1));
                 }
@@ -245,40 +255,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
         queryfornewdata();
     }//GEN-LAST:event_end_month_spinnerStateChanged
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AnalyticsGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AnalyticsGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AnalyticsGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AnalyticsGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AnalyticsGui(null).setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox data_types_combobox;

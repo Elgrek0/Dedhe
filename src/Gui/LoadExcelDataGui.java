@@ -41,9 +41,9 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         this.conn = conn;
         initComponents();
         try {
+            db_names_combobox.removeAllItems();
             rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
 
-            db_names_combobox.removeAllItems();
             while (rs.next()) {
                 db_names_combobox.addItem(rs.getObject(1));
             }
@@ -298,9 +298,9 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
     private void data_type_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_data_type_comboboxActionPerformed
         if (data_type_combobox.getSelectedItem().toString().equals("Breaker")) {
             try {
+                db_names_combobox.removeAllItems();
                 rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
 
-                db_names_combobox.removeAllItems();
                 while (rs.next()) {
                     db_names_combobox.addItem(rs.getObject(1));
                 }
@@ -310,9 +310,9 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         }
         if (data_type_combobox.getSelectedItem().toString().equals("Transformer")) {
             try {
+                db_names_combobox.removeAllItems();
                 rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM transformer; ");
 
-                db_names_combobox.removeAllItems();
                 while (rs.next()) {
                     db_names_combobox.addItem(rs.getObject(1));
                 }
@@ -387,7 +387,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                 rs.next();
             }
             int breakerid = rs.getInt(2);
-            for (int i = 0; i < itemcount-1; i++) {
+            for (int i = 0; i < itemcount - 1; i++) {
                 try {
 
                     String query = " INSERT IGNORE INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet.data[i][0], '/', ':')
