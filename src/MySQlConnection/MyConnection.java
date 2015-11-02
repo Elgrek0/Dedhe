@@ -5,6 +5,7 @@
  */
 package MySQlConnection;
 
+import com.mysql.jdbc.PreparedStatement;
 import dedheproject.exceptions.CouldntConnectException;
 import com.mysql.jdbc.ResultSetMetaData;
 import java.sql.ResultSet;
@@ -86,22 +87,24 @@ public class MyConnection {
     public static void disablekeys(String arrayname, Connection conn) throws SQLException {
 
         Statement stmt = (Statement) conn.createStatement();
-        ResultSet rs = stmt.executeQuery("LOCK TABLES " + arrayname + " WRITE;");
-        rs = stmt.executeQuery("/*!40000 ALTER TABLE " + arrayname + " DISABLE KEYS */;");
-        rs = stmt.executeQuery("SET foreign_key_checks = 0;");
+        stmt.executeQuery("LOCK TABLES " + arrayname + " WRITE;");
+        stmt.executeQuery("/*!40000 ALTER TABLE " + arrayname + " DISABLE KEYS */;");
+        stmt.executeQuery("SET foreign_key_checks = 0;");
     }
 
     public static ResultSet execute_simple_query(Connection conn, String query) throws SQLException {
-        Statement stmt = (Statement) conn.createStatement();
-        return (stmt.executeQuery("query"));
+        PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
+        pstmt.addBatch();
+        pstmt.execute();
+        return (pstmt.getResultSet());
     }
 
     public static void enablekeys(String arrayname, Connection conn) throws SQLException {
 
         Statement stmt = (Statement) conn.createStatement();
-        ResultSet rs = stmt.executeQuery("/*!40000 ALTER TABLE " + arrayname + " ENABLE KEYS */;");
-        rs = stmt.executeQuery("SET foreign_key_checks = 1;");
-        rs = stmt.executeQuery("UNLOCK TABLES;");
+        stmt.executeQuery("/*!40000 ALTER TABLE " + arrayname + " ENABLE KEYS */;");
+        stmt.executeQuery("SET foreign_key_checks = 1;");
+        stmt.executeQuery("UNLOCK TABLES;");
 
     }
 

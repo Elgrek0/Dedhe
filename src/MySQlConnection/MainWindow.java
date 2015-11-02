@@ -6,6 +6,7 @@
 package MySQlConnection;
 
 import Gui.AnalyticsGui;
+import Gui.LoadExcelDataGui;
 import Gui.PowerLineData;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelSheetOpener;
@@ -153,6 +154,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_QueryButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
         try {
             File f = Fileopener.openfile();
             try {
@@ -163,11 +165,13 @@ public class MainWindow extends javax.swing.JFrame {
                 ExcelSheetOpener sheet1 = new ExcelSheetOpener(1, start_x, start_y, colums_to_read, rows_to_read, f);
                 int errors = 0;
                 try {
-                    MyConnection.disablekeys("powerlinedata", conn);
+                    MyConnection.disablekeys("breaker_data", conn);
                     PreparedStatement pstmt = null;
                     for (int i = 0; i < rows_to_read; i++) {
                         try {
-                            String query = " INSERT IGNORE INTO powerlinedata VALUES (" + "'" + FixValues.reversedate(sheet1.data[i][0], '/', ':') + "'" + "," + 1 + "," + 1 + "," + 1 + "," + sheet1.data[i][1].replace(',', '.') + ");\n";
+                            String query = " INSERT IGNORE INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet1.data[i][0], '/', ':')
+                                    + "'" + "," +sheet1.data[i][1].replace(',', '.') +
+                                    ","+ 1 + ");\n";
 
                             if (debug) {
                                 System.out.println(query);
@@ -184,11 +188,11 @@ public class MainWindow extends javax.swing.JFrame {
 
                     }
 
-                    MyConnection.enablekeys("powerlinedata", conn);
+                    MyConnection.enablekeys("breaker_data", conn);
                     System.out.println("query finished errors: " + errors);
                 } catch (SQLException ex) {
                     try {
-                        MyConnection.enablekeys("powerlinedata", conn);
+                        MyConnection.enablekeys("breaker_data", conn);
                     } catch (SQLException ex1) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex1);
                     }
@@ -221,7 +225,7 @@ public class MainWindow extends javax.swing.JFrame {
             @Override
             public void run() {
 
-                PowerLineData a = new PowerLineData(conn);
+                LoadExcelDataGui a = new LoadExcelDataGui(conn);
                 a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
                 a.setVisible(true);
 
