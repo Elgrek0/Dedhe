@@ -9,9 +9,10 @@ package dedheproject.exceptions;
  *
  * @author Paris
  */
-public class NoSuchSheetException extends Throwable {
+public class NoSuchSheetException extends Exception {
 
-    public NoSuchSheetException() {
+    public NoSuchSheetException(String s) {
+        super(s);
     }
     
 }

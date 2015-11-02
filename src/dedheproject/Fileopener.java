@@ -16,34 +16,22 @@ import javax.swing.JFileChooser;
  */
 public class Fileopener {
 
-    static boolean debug = true;
-
-   public static File openfile() throws badfileexception {
+    public static File openfile() throws badfileexception {
         JFileChooser fileChooser = new JFileChooser();
         int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            String path=selectedFile.getAbsolutePath();
-            if (debug) {
-                System.out.println(path);
-            }
+            String path = selectedFile.getAbsolutePath();
             String[] splitpath = path.split("\\.");
 
-            if (debug) {
-                for (String s : splitpath) {
-                    System.out.println(s);
-                }
-            }
-            
-            String extension = splitpath[splitpath.length-1];
-            if (debug) {
-                System.out.println(extension);
-            }
+            String extension = splitpath[splitpath.length - 1];
             if (extension.equals("xls")) {
                 return (selectedFile);
+            } else {
+                throw new badfileexception("is not an xls file");
             }
         }
-        throw new badfileexception();
+        return null;
 
     }
 }

@@ -83,7 +83,7 @@ public class MyConnection {
 
     }
 
-    static void disablekeys(String arrayname, Connection conn) throws SQLException {
+    public static void disablekeys(String arrayname, Connection conn) throws SQLException {
 
         Statement stmt = (Statement) conn.createStatement();
         ResultSet rs = stmt.executeQuery("LOCK TABLES " + arrayname + " WRITE;");
@@ -91,7 +91,12 @@ public class MyConnection {
         rs = stmt.executeQuery("SET foreign_key_checks = 0;");
     }
 
-    static void enablekeys(String arrayname, Connection conn) throws SQLException {
+    public static ResultSet execute_simple_query(Connection conn, String query) throws SQLException {
+        Statement stmt = (Statement) conn.createStatement();
+        return (stmt.executeQuery("query"));
+    }
+
+    public static void enablekeys(String arrayname, Connection conn) throws SQLException {
 
         Statement stmt = (Statement) conn.createStatement();
         ResultSet rs = stmt.executeQuery("/*!40000 ALTER TABLE " + arrayname + " ENABLE KEYS */;");

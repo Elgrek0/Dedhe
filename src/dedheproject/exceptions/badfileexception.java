@@ -9,9 +9,10 @@ package dedheproject.exceptions;
  *
  * @author Paris
  */
-public class badfileexception extends Throwable {
+public class badfileexception extends Exception {
 
-    public badfileexception() {
+    public badfileexception(String s) {
+        super(s);
     }
-    
+
 }

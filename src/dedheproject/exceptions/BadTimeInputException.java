@@ -11,7 +11,8 @@ package dedheproject.exceptions;
  */
 public class BadTimeInputException extends Exception {
 
-    public BadTimeInputException(String time_format_error) {
+    public BadTimeInputException(String s) {
+        super(s);
     }
     
 }

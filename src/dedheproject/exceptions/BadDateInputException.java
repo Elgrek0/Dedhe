@@ -16,7 +16,4 @@ public class BadDateInputException extends Exception {
         super(s);
     }
 
-    public BadDateInputException() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

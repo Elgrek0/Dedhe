@@ -8,7 +8,7 @@ package MySQlConnection;
 import Gui.AnalyticsGui;
 import Gui.PowerLineData;
 import com.mysql.jdbc.PreparedStatement;
-import dedheproject.ExcelHandler;
+import dedheproject.ExcelSheetOpener;
 import dedheproject.Fileopener;
 import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.BadTimeInputException;
@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  *
  * @author Paris
@@ -159,14 +160,14 @@ public class MainWindow extends javax.swing.JFrame {
                 int colums_to_read = 2;
                 int start_y = 1;
                 int start_x = 1;
-                String[][] data = ExcelHandler.returnsheet(1, start_x, start_y, colums_to_read, rows_to_read, f);
+                ExcelSheetOpener sheet1 = new ExcelSheetOpener(1, start_x, start_y, colums_to_read, rows_to_read, f);
                 int errors = 0;
                 try {
                     MyConnection.disablekeys("powerlinedata", conn);
                     PreparedStatement pstmt = null;
                     for (int i = 0; i < rows_to_read; i++) {
                         try {
-                            String query = " INSERT IGNORE INTO powerlinedata VALUES (" + "'" + FixValues.reversedate(data[i][0], '/',':') + "'" + "," + 1 + "," + 1 + "," + 1 + "," + data[i][1].replace(',', '.') + ");\n";
+                            String query = " INSERT IGNORE INTO powerlinedata VALUES (" + "'" + FixValues.reversedate(sheet1.data[i][0], '/', ':') + "'" + "," + 1 + "," + 1 + "," + 1 + "," + sheet1.data[i][1].replace(',', '.') + ");\n";
 
                             if (debug) {
                                 System.out.println(query);
@@ -178,7 +179,7 @@ public class MainWindow extends javax.swing.JFrame {
                         } catch (BadDateInputException ex) {
                             System.out.println("Bad date format in Excel at row : " + i);
                         } catch (BadTimeInputException ex) {
-                            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("Bad time format in Excel at row : " + i);
                         }
 
                     }
@@ -193,14 +194,6 @@ public class MainWindow extends javax.swing.JFrame {
                     }
                     System.out.println("bad query");
                     System.out.println(ex.getMessage());
-                }
-                if (false) {
-                    for (String[] sar : data) {
-                        for (String s : sar) {
-                            System.out.print(s + " ");
-                        }
-                        System.out.print("\n");
-                    }
                 }
             } catch (FileNotFoundException ex) {
                 System.out.println("file was not found");
