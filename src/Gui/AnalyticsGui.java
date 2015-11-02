@@ -99,10 +99,34 @@ public class AnalyticsGui extends javax.swing.JFrame {
             }
         });
         jPanel1.add(db_names_combobox, new org.netbeans.lib.awtextra.AbsoluteConstraints(446, 10, 80, -1));
+
+        end_day_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                end_day_spinnerStateChanged(evt);
+            }
+        });
         jPanel1.add(end_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 60, -1));
+
+        end_month_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                end_month_spinnerStateChanged(evt);
+            }
+        });
         jPanel1.add(end_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 40, 60, -1));
         jPanel1.add(end_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 90, -1));
+
+        start_day_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                start_day_spinnerStateChanged(evt);
+            }
+        });
         jPanel1.add(start_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 10, 60, -1));
+
+        start_month_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                start_month_spinnerStateChanged(evt);
+            }
+        });
         jPanel1.add(start_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, 60, -1));
         jPanel1.add(start_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 40, 90, -1));
 
@@ -202,53 +226,24 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }//GEN-LAST:event_data_types_comboboxActionPerformed
 
     private void db_names_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_db_names_comboboxActionPerformed
-        String startdate = "'" + start_year_spinner.getValue() + "-"
-                + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
-        String enddate;
-        enddate = "'" + end_year_spinner.getValue() + "-"
-                + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
-
-        if (conn != null) {
-            try {
-
-                int selection = db_names_combobox.getSelectedIndex();
-                rs.first();
-                if (selection > 0) {
-                    for (int k = 0; k < selection; k++) {
-                        rs.next();
-                    }
-                }
-                int id = rs.getInt(2);
-                String query = "";
-
-                if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
-                    query = "SELECT datetime,current FROM breaker_data "
-                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
-                }
-                if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
-                    query = "SELECT datetime,current FROM transformer_data "
-                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
-                }
-                System.out.println(query);
-                PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
-                pstmt.addBatch();
-                pstmt.execute();
-
-                GraphPanel gp = new GraphPanel(pstmt.getResultSet());
-                graph_panel.setLayout(new BorderLayout());
-                graph_panel.removeAll();
-                graph_panel.add(gp.panel, BorderLayout.CENTER);
-                graph_panel.setVisible(true);
-                revalidate();
-
-            } catch (SQLException ex) {
-
-                System.out.println("bad query");
-                System.out.println(ex.getMessage());
-
-            }
-        }
+        queryfornewdata();
     }//GEN-LAST:event_db_names_comboboxActionPerformed
+
+    private void start_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_start_day_spinnerStateChanged
+        queryfornewdata();
+    }//GEN-LAST:event_start_day_spinnerStateChanged
+
+    private void end_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_end_day_spinnerStateChanged
+        queryfornewdata();
+    }//GEN-LAST:event_end_day_spinnerStateChanged
+
+    private void start_month_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_start_month_spinnerStateChanged
+        queryfornewdata();
+    }//GEN-LAST:event_start_month_spinnerStateChanged
+
+    private void end_month_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_end_month_spinnerStateChanged
+        queryfornewdata();
+    }//GEN-LAST:event_end_month_spinnerStateChanged
 
     /**
      * @param args the command line arguments
@@ -309,6 +304,55 @@ public class AnalyticsGui extends javax.swing.JFrame {
         System.out.println("check not yet fixed");
         if (false) {
             throw new BadDateInputException("Wrong Date");
+        }
+    }
+
+    private void queryfornewdata() {
+        String startdate = "'" + start_year_spinner.getValue() + "-"
+                + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
+        String enddate;
+        enddate = "'" + end_year_spinner.getValue() + "-"
+                + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
+
+        if (conn != null) {
+            try {
+
+                int selection = db_names_combobox.getSelectedIndex();
+                rs.first();
+                if (selection > 0) {
+                    for (int k = 0; k < selection; k++) {
+                        rs.next();
+                    }
+                }
+                int id = rs.getInt(2);
+                String query = "";
+
+                if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
+                    query = "SELECT datetime,current FROM breaker_data "
+                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
+                }
+                if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
+                    query = "SELECT datetime,current FROM transformer_data "
+                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
+                }
+                System.out.println(query);
+                PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
+                pstmt.addBatch();
+                pstmt.execute();
+
+                GraphPanel gp = new GraphPanel(pstmt.getResultSet());
+                graph_panel.setLayout(new BorderLayout());
+                graph_panel.removeAll();
+                graph_panel.add(gp.panel, BorderLayout.CENTER);
+                graph_panel.setVisible(true);
+                revalidate();
+
+            } catch (SQLException ex) {
+
+                System.out.println("bad query");
+                System.out.println(ex.getMessage());
+
+            }
         }
     }
 
