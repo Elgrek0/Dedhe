@@ -262,7 +262,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private void check_if_valid(String startdate) throws BadDateInputException {
         System.out.println("check not yet fixed");
         if (false) {
-            throw new BadDateInputException();
+            throw new BadDateInputException("Wrong Date");
         }
     }
 
