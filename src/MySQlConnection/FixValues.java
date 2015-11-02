@@ -1,6 +1,10 @@
 package MySQlConnection;
 
+import dedheproject.exceptions.BadTimeInputException;
 import dedheproject.exceptions.BadDateInputException;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 /**
  *
@@ -8,48 +12,41 @@ import dedheproject.exceptions.BadDateInputException;
  */
 public class FixValues {
 
-    public static String reversedate(String date, char splitter) throws BadDateInputException{
-        try{
-        String array[]; // c
-        array = date.split(" "); // c
-        //System.out.println(array.length); // c
-        String fixeddate1 = "";
+    /**
+     *
+     * @param datetime is the datetime from the excel but the library changes
+     * @param date_splitter is the way the date is seperated
+     * @param time_splitter is the way the time is seperated
+     * @return should return the datetime as mysql expects it
+     * @throws BadDateInputException date or time is wrong
+     */
+    public static String reversedate(String datetime, char date_splitter, char time_splitter) throws BadDateInputException, BadTimeInputException {
 
-        String fixeddate = "";
-        if (array.length == 1) {
-            fixeddate1 = "00:00:00";
+        String datetime_parts[] = datetime.split(" ");
+        LocalTime lt;
+        LocalDate ld;
+        if (datetime_parts.length == 1) {//there is no time
+            lt = new LocalTime(0, 0, 0);
         } else {
-            String dateparts1[];
-            dateparts1 = date.split(" ")[1].split("" + splitter);
-            for (int j = dateparts1.length - 1; j >= 0; j--) {
-                fixeddate1 += dateparts1[j];
-
-                if (j != 0) {
-                    fixeddate1 += ':';
-                    // comment//
-                }
-                if (j == 0) {
-                    fixeddate1 += ":00";
-                    // comment//
-                }
-
+            String time_parts[];
+            time_parts = datetime_parts[1].split("" + time_splitter);
+            try {
+                lt = new LocalTime(Integer.parseInt(time_parts[0]), Integer.parseInt(time_parts[1]), 0);
+            } catch (Exception e) {
+                throw new BadTimeInputException("time format error");
             }
+
         }
 
         String dateparts[];
-        dateparts = date.split(" ")[0].split("" + splitter);
+        dateparts = datetime_parts[0].split("" + date_splitter);
 
-        
-        fixeddate += dateparts[2]+"-";
-        fixeddate += dateparts[0]+"-";
-        fixeddate += dateparts[1]+" ";
-
-
-        fixeddate = fixeddate.concat(fixeddate1);
-        return (fixeddate);
-        }
-        catch(Exception e){//an ginei otideipote lathos
+        try {
+            ld = new LocalDate(Integer.parseInt(dateparts[2]), Integer.parseInt(dateparts[0]), Integer.parseInt(dateparts[1]));
+        } catch (Exception e) {
             throw new BadDateInputException("date format error");
         }
+        return (ld.toString("yyyy-MM-dd") + " " + lt.toString("HH:mm:ss"));
     }
+
 }
