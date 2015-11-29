@@ -5,10 +5,7 @@
  */
 package MySQlConnection;
 
-import dedheproject.exceptions.CouldntConnectException;
-import com.mysql.jdbc.PreparedStatement;
-import java.awt.event.WindowEvent;
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JFrame;
@@ -24,10 +21,10 @@ public class QueryFrame extends javax.swing.JFrame {
     /**
      * Creates new form QueryFrame
      */
-    Connection conn;
+    DBConnection dbconn;
 
-    public QueryFrame(Connection conn) {
-        this.conn = conn;
+    public QueryFrame(DBConnection dbconn) {
+        this.dbconn = dbconn;
         initComponents();
 
     }
@@ -109,17 +106,17 @@ public class QueryFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void RunQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunQueryActionPerformed
-        if (conn != null) {
+        if (dbconn != null) {
             try {
 
                 String query = QueryArea.getText();
-                PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
+                PreparedStatement pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
                 pstmt.addBatch();
                 pstmt.execute();
 
                 ResultSet rs = pstmt.getResultSet();
                 if (rs != null) {
-                    JTable ResultTable = new JTable(MyConnection.buildTableModel(rs));
+                    JTable ResultTable = new JTable(dbconn.buildTableModel(rs));
                     JFrame result = new JFrame();
                     result.add(new JScrollPane(ResultTable));
                     result.setVisible(true);

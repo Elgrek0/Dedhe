@@ -5,14 +5,10 @@
  */
 package Gui;
 
-import MySQlConnection.MyConnection;
+import MySQlConnection.DBConnection;
 import com.mysql.jdbc.PreparedStatement;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 /**
  *
@@ -20,22 +16,22 @@ import javax.swing.JTable;
  */
 public class PowerLineData extends javax.swing.JFrame {
 
-    Connection conn;
-    public PowerLineData(Connection conn) {
+    DBConnection dbconn;
+    public PowerLineData(DBConnection dbconn) {
        
-     this.conn = conn;
+     this.dbconn = dbconn;
      initComponents();
-     if (conn != null) {
+     if (dbconn != null) {
             try {
 
                 String query = "select * from PowerLineData";
-                PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
+                PreparedStatement pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
                 pstmt.addBatch();
                 pstmt.execute();
 
                 ResultSet rs = pstmt.getResultSet();
                 if (rs != null) {
-                    querytable.setModel(MyConnection.buildTableModel(rs));
+                    querytable.setModel(dbconn.buildTableModel(rs));
                 }
             } catch (SQLException ex) {
 

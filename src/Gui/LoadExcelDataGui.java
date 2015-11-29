@@ -6,9 +6,8 @@
 package Gui;
 
 import MySQlConnection.FixValues;
+import MySQlConnection.DBConnection;
 import MySQlConnection.MainWindow;
-import static MySQlConnection.MainWindow.debug;
-import MySQlConnection.MyConnection;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelSheetOpener;
 import dedheproject.Fileopener;
@@ -24,8 +23,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -37,12 +34,14 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
     /**
      * Creates new form LoadExcelDataGui
      */
-    public LoadExcelDataGui(Connection conn) {
-        this.conn = conn;
+    
+    DBConnection dbconn;
+    public LoadExcelDataGui(DBConnection dbconn) {
+        this.dbconn = dbconn;
         initComponents();
         try {
             db_names_combobox.removeAllItems();
-            rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
+            rs = dbconn.execute_simple_query( "SELECT name,id FROM breaker; ");
 
             while (rs.next()) {
                 db_names_combobox.addItem(rs.getObject(1));
@@ -54,7 +53,6 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
     }
     File excelfile;
     ExcelSheetOpener sheet;
-    Connection conn;
     ResultSet rs;
     int itemcount = 0;
 
@@ -299,7 +297,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         if (data_type_combobox.getSelectedItem().toString().equals("Breaker")) {
             try {
                 db_names_combobox.removeAllItems();
-                rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
+                rs = dbconn.execute_simple_query( "SELECT name,id FROM breaker; ");
 
                 while (rs.next()) {
                     db_names_combobox.addItem(rs.getObject(1));
@@ -311,7 +309,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         if (data_type_combobox.getSelectedItem().toString().equals("Transformer")) {
             try {
                 db_names_combobox.removeAllItems();
-                rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM transformer; ");
+                rs = dbconn.execute_simple_query( "SELECT name,id FROM transformer; ");
 
                 while (rs.next()) {
                     db_names_combobox.addItem(rs.getObject(1));
@@ -379,7 +377,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
 
         int errors = 0;
         try {
-            MyConnection.disablekeys("breaker_data", conn);
+            dbconn.disablekeys("breaker_data");
             PreparedStatement pstmt = null;
             int selection = db_names_combobox.getSelectedIndex();
             rs.first();
@@ -394,7 +392,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                             + "'" + "," + sheet.data[i][1].replace(',', '.')
                             + "," + breakerid + ");\n";
 
-                    pstmt = (PreparedStatement) conn.prepareStatement(query);
+                    pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
                     pstmt.execute();
 
                 } catch (BadDateInputException ex) {
@@ -405,11 +403,11 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
 
             }
 
-            MyConnection.enablekeys("breaker_data", conn);
+            dbconn.enablekeys("breaker_data");
             System.out.println("query finished errors: " + errors);
         } catch (SQLException ex) {
             try {
-                MyConnection.enablekeys("breaker_data", conn);
+                dbconn.enablekeys("breaker_data");
             } catch (SQLException ex1) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex1);
             }
@@ -432,7 +430,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
 
         int errors = 0;
         try {
-            MyConnection.disablekeys("transformer_data", conn);
+            dbconn.disablekeys("transformer_data");
             PreparedStatement pstmt = null;
             int selection = db_names_combobox.getSelectedIndex();
             rs.first();
@@ -447,7 +445,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                             + "'" + "," + sheet.data[i][1].replace(',', '.')
                             + "," + breakerid + ");\n";
 
-                    pstmt = (PreparedStatement) conn.prepareStatement(query);
+                    pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
                     pstmt.execute();
 
                 } catch (BadDateInputException ex) {
@@ -458,11 +456,11 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
 
             }
 
-            MyConnection.enablekeys("transformer_data", conn);
+            dbconn.enablekeys("transformer_data");
             System.out.println("query finished errors: " + errors);
         } catch (SQLException ex) {
             try {
-                MyConnection.enablekeys("transformer_data", conn);
+                dbconn.enablekeys("transformer_data");
             } catch (SQLException ex1) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex1);
             }

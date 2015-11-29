@@ -6,15 +6,13 @@
 package Gui;
 
 import Analytics.GraphPanel;
-import MySQlConnection.MyConnection;
+import MySQlConnection.DBConnection;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.ShowErrorPopup;
 import java.awt.BorderLayout;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JFrame;
 
 /**
  *
@@ -25,11 +23,11 @@ public class AnalyticsGui extends javax.swing.JFrame {
     /**
      * Creates new form AnalyticsGui
      */
-    Connection conn;
+    DBConnection dbconn;
     ResultSet rs;
 
-    public AnalyticsGui(Connection conn) {
-        this.conn = conn;
+    public AnalyticsGui(DBConnection dbconn) {
+        this.dbconn = dbconn;
         initComponents();
         start_year_spinner.setValue(new Integer(2015));
         start_month_spinner.setValue(new Integer(1));
@@ -38,7 +36,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         end_month_spinner.setValue(new Integer(1));
         end_day_spinner.setValue(new Integer(15));
         try {
-            rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
+            rs = dbconn.execute_simple_query( "SELECT name,id FROM breaker; ");
             db_names_combobox.removeAllItems();
             while (rs.next()) {
                 db_names_combobox.addItem(rs.getObject(1));
@@ -212,7 +210,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
             try {
                 db_names_combobox.removeAllItems();
-                rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
+                rs = dbconn.execute_simple_query( "SELECT name,id FROM breaker; ");
 
                 while (rs.next()) {
                     db_names_combobox.addItem(rs.getObject(1));
@@ -224,7 +222,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
             try {
                 db_names_combobox.removeAllItems();
-                rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM transformer; ");
+                rs = dbconn.execute_simple_query( "SELECT name,id FROM transformer; ");
 
                 while (rs.next()) {
                     db_names_combobox.addItem(rs.getObject(1));
@@ -291,7 +289,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
             enddate = "'" + end_year_spinner.getValue() + "-"
                     + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
 
-            if (conn != null) {
+            if (dbconn != null) {
                 try {
 
                     int selection = db_names_combobox.getSelectedIndex();
@@ -313,7 +311,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
                                 + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
                     }
                     System.out.println(query);
-                    PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
+                    PreparedStatement pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
                     pstmt.addBatch();
                     pstmt.execute();
 

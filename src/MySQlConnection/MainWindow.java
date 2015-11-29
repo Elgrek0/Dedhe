@@ -7,8 +7,6 @@ package MySQlConnection;
 
 import Gui.AnalyticsGui;
 import Gui.LoadExcelDataGui;
-import Gui.PowerLineData;
-import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelSheetOpener;
 import dedheproject.Fileopener;
 import dedheproject.exceptions.BadDateInputException;
@@ -18,7 +16,7 @@ import dedheproject.exceptions.NoSuchSheetException;
 import dedheproject.exceptions.badfileexception;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,11 +30,20 @@ public class MainWindow extends javax.swing.JFrame {
     /**
      * Creates new form MainWindows
      */
-    Connection conn = null;
+    DBConnection dbconn;
     public static boolean debug = false;
+    H2Server server;
+    boolean h2 = false;
 
     public MainWindow() {
         initComponents();
+        server = new H2Server();
+
+        if (h2) {
+            dbconn = new H2MyConnection();
+        } else {
+            dbconn = new MySQLConnection();
+        }
     }
 
     /**
@@ -145,7 +152,7 @@ public class MainWindow extends javax.swing.JFrame {
 
             @Override
             public void run() {
-                QueryFrame a = new QueryFrame(conn);
+                QueryFrame a = new QueryFrame(dbconn);
                 a.setVisible(true);
 
             }
@@ -157,6 +164,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         try {
             File f = Fileopener.openfile();
+            if(f!=null)
             try {
                 int rows_to_read = 2024;
                 int colums_to_read = 2;
@@ -165,19 +173,20 @@ public class MainWindow extends javax.swing.JFrame {
                 ExcelSheetOpener sheet1 = new ExcelSheetOpener(1, start_x, start_y, colums_to_read, rows_to_read, f);
                 int errors = 0;
                 try {
-                    MyConnection.disablekeys("breaker_data", conn);
+                    dbconn.disablekeys("breaker_data");
                     PreparedStatement pstmt = null;
+                    
                     for (int i = 0; i < rows_to_read; i++) {
                         try {
-                            String query = " INSERT IGNORE INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet1.data[i][0], '/', ':')
-                                    + "'" + "," +sheet1.data[i][1].replace(',', '.') +
-                                    ","+ 1 + ");\n";
+                            String query = " INSERT INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet1.data[i][0], '/', ':')
+                                    + "'" + "," + sheet1.data[i][1].replace(',', '.')
+                                    + "," + 1 + ");\n";
 
                             if (debug) {
                                 System.out.println(query);
                             }
 
-                            pstmt = (PreparedStatement) conn.prepareStatement(query);
+                            pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
                             pstmt.execute();
 
                         } catch (BadDateInputException ex) {
@@ -188,11 +197,11 @@ public class MainWindow extends javax.swing.JFrame {
 
                     }
 
-                    MyConnection.enablekeys("breaker_data", conn);
+                    dbconn.enablekeys("breaker_data");
                     System.out.println("query finished errors: " + errors);
                 } catch (SQLException ex) {
                     try {
-                        MyConnection.enablekeys("breaker_data", conn);
+                        dbconn.enablekeys("breaker_data");
                     } catch (SQLException ex1) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex1);
                     }
@@ -211,7 +220,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            conn = MyConnection.connect();
+            dbconn.connect();
             System.out.println("success");
         } catch (CouldntConnectException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -225,7 +234,7 @@ public class MainWindow extends javax.swing.JFrame {
             @Override
             public void run() {
 
-                LoadExcelDataGui a = new LoadExcelDataGui(conn);
+                LoadExcelDataGui a = new LoadExcelDataGui(dbconn);
                 a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
                 a.setVisible(true);
 
@@ -240,7 +249,7 @@ public class MainWindow extends javax.swing.JFrame {
             @Override
             public void run() {
 
-                AnalyticsGui a = new AnalyticsGui(conn);
+                AnalyticsGui a = new AnalyticsGui(dbconn);
                 a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
                 a.setVisible(true);
 
