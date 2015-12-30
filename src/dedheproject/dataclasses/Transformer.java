@@ -38,7 +38,7 @@ public class Transformer implements DBItem{
             dbconn.disablekeys("Transformer");
             PreparedStatement pstmt = null;
 
-            String query = " INSERT IGNORE INTO Transformer VALUES (" + id + ",'" + name + "',"+parent_powerplant.id +");\n";
+            String query = " INSERT INTO Transformer VALUES (" + id + ",'" + name + "',"+parent_powerplant.id +");\n";
 
             pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
             pstmt.execute();

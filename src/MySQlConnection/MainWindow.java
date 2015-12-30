@@ -6,9 +6,12 @@
 package MySQlConnection;
 
 import Gui.AnalyticsGui;
+import Gui.ChoosingPanel;
 import Gui.LoadExcelDataGui;
+import Gui.LoadFromExcelFrame;
 import dedheproject.ExcelSheetOpener;
 import dedheproject.Fileopener;
+import dedheproject.dataclasses.CachedData;
 import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.BadTimeInputException;
 import dedheproject.exceptions.CouldntConnectException;
@@ -20,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
  *
@@ -33,7 +37,7 @@ public class MainWindow extends javax.swing.JFrame {
     DBConnection dbconn;
     public static boolean debug = false;
     H2Server server;
-    boolean h2 = false;
+    boolean h2 = true;
 
     public MainWindow() {
         initComponents();
@@ -71,6 +75,8 @@ public class MainWindow extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        loadfromexcel = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         jPasswordField1.setText("jPasswordField1");
 
@@ -144,6 +150,22 @@ public class MainWindow extends javax.swing.JFrame {
         });
         getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 130, -1));
 
+        loadfromexcel.setText("new load from excel");
+        loadfromexcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadfromexcelActionPerformed(evt);
+            }
+        });
+        getContentPane().add(loadfromexcel, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 50, -1, -1));
+
+        jButton6.setText("choosinggui");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 20, 110, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -164,54 +186,55 @@ public class MainWindow extends javax.swing.JFrame {
 
         try {
             File f = Fileopener.openfile();
-            if(f!=null)
-            try {
-                int rows_to_read = 2024;
-                int colums_to_read = 2;
-                int start_y = 1;
-                int start_x = 1;
-                ExcelSheetOpener sheet1 = new ExcelSheetOpener(1, start_x, start_y, colums_to_read, rows_to_read, f);
-                int errors = 0;
+            if (f != null) {
                 try {
-                    dbconn.disablekeys("breaker_data");
-                    PreparedStatement pstmt = null;
-                    
-                    for (int i = 0; i < rows_to_read; i++) {
-                        try {
-                            String query = " INSERT INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet1.data[i][0], '/', ':')
-                                    + "'" + "," + sheet1.data[i][1].replace(',', '.')
-                                    + "," + 1 + ");\n";
+                    int rows_to_read = 2024;
+                    int colums_to_read = 2;
+                    int start_y = 1;
+                    int start_x = 1;
+                    ExcelSheetOpener sheet1 = new ExcelSheetOpener(1, start_x, start_y, colums_to_read, rows_to_read, f);
+                    int errors = 0;
+                    try {
+                        dbconn.disablekeys("breaker_data");
+                        PreparedStatement pstmt = null;
 
-                            if (debug) {
-                                System.out.println(query);
+                        for (int i = 0; i < rows_to_read; i++) {
+                            try {
+                                String query = " INSERT INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet1.data[i][0], '/', ':')
+                                        + "'" + "," + sheet1.data[i][1].replace(',', '.')
+                                        + "," + 1 + ");\n";
+
+                                if (debug) {
+                                    System.out.println(query);
+                                }
+
+                                pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
+                                pstmt.execute();
+
+                            } catch (BadDateInputException ex) {
+                                System.out.println("Bad date format in Excel at row : " + i);
+                            } catch (BadTimeInputException ex) {
+                                System.out.println("Bad time format in Excel at row : " + i);
                             }
 
-                            pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
-                            pstmt.execute();
-
-                        } catch (BadDateInputException ex) {
-                            System.out.println("Bad date format in Excel at row : " + i);
-                        } catch (BadTimeInputException ex) {
-                            System.out.println("Bad time format in Excel at row : " + i);
                         }
 
-                    }
-
-                    dbconn.enablekeys("breaker_data");
-                    System.out.println("query finished errors: " + errors);
-                } catch (SQLException ex) {
-                    try {
                         dbconn.enablekeys("breaker_data");
-                    } catch (SQLException ex1) {
-                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex1);
+                        System.out.println("query finished errors: " + errors);
+                    } catch (SQLException ex) {
+                        try {
+                            dbconn.enablekeys("breaker_data");
+                        } catch (SQLException ex1) {
+                            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
+                        System.out.println("bad query");
+                        System.out.println(ex.getMessage());
                     }
-                    System.out.println("bad query");
-                    System.out.println(ex.getMessage());
+                } catch (FileNotFoundException ex) {
+                    System.out.println("file was not found");
+                } catch (NoSuchSheetException ex) {
+                    System.out.println("no such sheet");
                 }
-            } catch (FileNotFoundException ex) {
-                System.out.println("file was not found");
-            } catch (NoSuchSheetException ex) {
-                System.out.println("no such sheet");
             }
 
         } catch (badfileexception ex) {
@@ -222,9 +245,12 @@ public class MainWindow extends javax.swing.JFrame {
         try {
             dbconn.connect();
             System.out.println("success");
+            CachedData.loadall(dbconn);
         } catch (CouldntConnectException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("failure");
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -257,6 +283,38 @@ public class MainWindow extends javax.swing.JFrame {
 
         }.start();
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void loadfromexcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadfromexcelActionPerformed
+        new Thread() {
+
+            @Override
+            public void run() {
+
+                LoadFromExcelFrame a = new LoadFromExcelFrame();
+                a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                a.setVisible(true);
+
+            }
+
+        }.start();
+    }//GEN-LAST:event_loadfromexcelActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+         new Thread() {
+
+            @Override
+            public void run() {
+
+                JFrame a = new JFrame();
+                a.setSize(500, 150);
+                a.add(new ChoosingPanel());
+                a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                a.setVisible(true);
+
+            }
+
+        }.start();
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -308,11 +366,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JButton loadfromexcel;
     // End of variables declaration//GEN-END:variables
 }

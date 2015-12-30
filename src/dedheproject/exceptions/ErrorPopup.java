@@ -12,10 +12,16 @@ import javax.swing.JOptionPane;
  *
  * @author Paris
  */
-public class ShowErrorPopup {
+public class ErrorPopup {
+
+    public ErrorPopup(Exception ex) {
+        JOptionPane.showMessageDialog(null, ex.toString(), "Error",
+                JOptionPane.ERROR_MESSAGE);
+
+    }
 
     public static void popup(Exception ex) {
-        MainWindow.ErrorArea.append(ex.toString()+"\n");
+        MainWindow.ErrorArea.append(ex.toString() + "\n");
         JOptionPane.showMessageDialog(null, ex.toString(), "Error",
                 JOptionPane.ERROR_MESSAGE);
     }

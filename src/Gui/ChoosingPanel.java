@@ -9,62 +9,113 @@ import dedheproject.dataclasses.Breaker;
 import dedheproject.dataclasses.CachedData;
 import dedheproject.dataclasses.PowerPlant;
 import dedheproject.dataclasses.Transformer;
+import java.awt.event.ItemEvent;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
  * @author Paris
  */
-public class ChoosingPanel extends javax.swing.JPanel {
+public final class ChoosingPanel extends javax.swing.JPanel {
 
-    public PowerPlant chosen_plant;
-    public Transformer chosen_transformer;
-    public Breaker chosen_breaker;
+    public PowerPlant selected_plant = null;
+    public Transformer selected_transformer = null;
+    public Breaker selected_breaker = null;
 
     public ChoosingPanel() {
+
         initComponents();
 
-        plant_combobox.removeAllItems();
-        transformer_combobox.removeAllItems();
-        breaker_combobox.removeAllItems();
+        updateall();
+
+    }
+
+    void updateall() {
 
         update_plants();
-        chosen_plant = (PowerPlant) plant_combobox.getSelectedItem();
+        selected_plant = (PowerPlant) plant_combobox.getSelectedItem();
 
         update_transformers();
-        chosen_transformer = (Transformer) transformer_combobox.getSelectedItem();
+        selected_transformer = (Transformer) transformer_combobox.getSelectedItem();
 
         update_breakers();
-        chosen_breaker = (Breaker) breaker_combobox.getSelectedItem();
-
+        selected_breaker = (Breaker) breaker_combobox.getSelectedItem();
     }
 
     void update_plants() {
-        plant_combobox.removeAllItems();
+        DefaultComboBoxModel plantcombobox = new DefaultComboBoxModel();
+        plant_combobox.setModel(plantcombobox);
 
-        for (PowerPlant b : CachedData.powerplants) {
-            plant_combobox.addItem(b);
+        try {
+            CachedData.mutex.acquire();
+        } catch (InterruptedException ex) {
+            System.err.println("crash at CachedData mutex");
         }
-
+        if (CachedData.powerplants.size() > 0) {
+            plantcombobox = new DefaultComboBoxModel(CachedData.powerplants);
+            plant_combobox.setModel(plantcombobox);
+            plant_combobox.setSelectedIndex(0);
+        }
+        CachedData.mutex.release();
     }
 
     void update_transformers() {
-
-        transformer_combobox.removeAllItems();
-
-        if (chosen_plant != null) {
-            for (Transformer t : chosen_plant.transformers) {
-                transformer_combobox.addItem(t);
+        DefaultComboBoxModel transformercombobox = new DefaultComboBoxModel();
+        transformer_combobox.setModel(transformercombobox);
+        if (selected_plant != null) {
+            try {
+                CachedData.mutex.acquire();
+            } catch (InterruptedException ex) {
+                System.err.println("crash at CachedData mutex");
             }
+            if (selected_plant.transformers.size() > 0) {
+
+                transformercombobox = new DefaultComboBoxModel(selected_plant.transformers);
+                transformer_combobox.setModel(transformercombobox);
+                transformer_combobox.setSelectedIndex(0);
+            }
+            CachedData.mutex.release();
         }
+
     }
 
     void update_breakers() {
-        breaker_combobox.removeAllItems();
-        if (chosen_transformer != null) {
-            for (Breaker b : chosen_transformer.breakers) {
-                breaker_combobox.addItem(b);
+        DefaultComboBoxModel breakercombobox = new DefaultComboBoxModel();
+        breaker_combobox.setModel(breakercombobox);
+        if (selected_transformer != null) {
+            try {
+                CachedData.mutex.acquire();
+            } catch (InterruptedException ex) {
+                System.err.println("crash at CachedData mutex");
             }
+            if (selected_transformer.breakers.size() > 0) {
+
+                breakercombobox = new DefaultComboBoxModel(selected_transformer.breakers);
+                breaker_combobox.setModel(breakercombobox);
+                breaker_combobox.setSelectedIndex(0);
+            }
+            CachedData.mutex.release();
         }
+    }
+
+    void plantchange() {
+        selected_plant = (PowerPlant) plant_combobox.getSelectedItem();
+        update_transformers();
+        selected_transformer = (Transformer) transformer_combobox.getSelectedItem();
+        update_breakers();
+        selected_breaker = (Breaker) breaker_combobox.getSelectedItem();
+    }
+
+    void transformerchange() {
+        selected_transformer = (Transformer) transformer_combobox.getSelectedItem();
+        update_breakers();
+        selected_breaker = (Breaker) breaker_combobox.getSelectedItem();
+
+    }
+
+    void breakerchange() {
+        selected_breaker = (Breaker) breaker_combobox.getSelectedItem();
+
     }
 
     /**
@@ -83,6 +134,11 @@ public class ChoosingPanel extends javax.swing.JPanel {
         plant_combobox = new javax.swing.JComboBox();
         transformer_combobox = new javax.swing.JComboBox();
 
+        breaker_combobox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                breaker_comboboxItemStateChanged(evt);
+            }
+        });
         breaker_combobox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 breaker_comboboxActionPerformed(evt);
@@ -95,12 +151,22 @@ public class ChoosingPanel extends javax.swing.JPanel {
 
         breaker_label.setText("Breaker");
 
+        plant_combobox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                plant_comboboxItemStateChanged(evt);
+            }
+        });
         plant_combobox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 plant_comboboxActionPerformed(evt);
             }
         });
 
+        transformer_combobox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                transformer_comboboxItemStateChanged(evt);
+            }
+        });
         transformer_combobox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 transformer_comboboxActionPerformed(evt);
@@ -137,10 +203,11 @@ public class ChoosingPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(transformer_label)
-                    .addComponent(jLabel1)
-                    .addComponent(breaker_label))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(transformer_label, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(breaker_label)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(plant_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -151,31 +218,44 @@ public class ChoosingPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void breaker_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_breaker_comboboxActionPerformed
-        chosen_breaker = (Breaker) breaker_combobox.getSelectedItem();
+
     }//GEN-LAST:event_breaker_comboboxActionPerformed
 
     private void plant_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plant_comboboxActionPerformed
-        chosen_plant = (PowerPlant) plant_combobox.getSelectedItem();
-        update_transformers();
-        chosen_transformer = (Transformer) transformer_combobox.getSelectedItem();
-        update_breakers();
-        chosen_breaker = (Breaker) breaker_combobox.getSelectedItem();
+
+
     }//GEN-LAST:event_plant_comboboxActionPerformed
 
     private void transformer_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transformer_comboboxActionPerformed
-        chosen_transformer = (Transformer) transformer_combobox.getSelectedItem();
-        update_breakers();
-        chosen_breaker = (Breaker) breaker_combobox.getSelectedItem();
 
     }//GEN-LAST:event_transformer_comboboxActionPerformed
 
+    private void plant_comboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_plant_comboboxItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+
+            plantchange();
+        }
+    }//GEN-LAST:event_plant_comboboxItemStateChanged
+
+    private void transformer_comboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_transformer_comboboxItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            transformerchange();
+        }
+    }//GEN-LAST:event_transformer_comboboxItemStateChanged
+
+    private void breaker_comboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_breaker_comboboxItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            breakerchange();
+        }
+    }//GEN-LAST:event_breaker_comboboxItemStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox breaker_combobox;
-    private javax.swing.JLabel breaker_label;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JComboBox plant_combobox;
-    private javax.swing.JComboBox transformer_combobox;
-    private javax.swing.JLabel transformer_label;
+    public javax.swing.JComboBox breaker_combobox;
+    public javax.swing.JLabel breaker_label;
+    public javax.swing.JLabel jLabel1;
+    public javax.swing.JComboBox plant_combobox;
+    public javax.swing.JComboBox transformer_combobox;
+    public javax.swing.JLabel transformer_label;
     // End of variables declaration//GEN-END:variables
 }

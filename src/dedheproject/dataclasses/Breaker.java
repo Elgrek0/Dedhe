@@ -36,7 +36,7 @@ public class Breaker implements DBItem {
             dbconn.disablekeys("Breaker");
             PreparedStatement pstmt = null;
 
-            String query = " INSERT IGNORE INTO Breaker VALUES (" + id + ",'" + name + "',"+parent_transformer.id +");\n";
+            String query = " INSERT INTO Breaker VALUES (" + id + ",'" + name + "',"+parent_transformer.id +");\n";
 
             pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
             pstmt.execute();

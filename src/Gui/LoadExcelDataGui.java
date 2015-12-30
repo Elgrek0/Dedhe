@@ -14,7 +14,7 @@ import dedheproject.Fileopener;
 import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.BadTimeInputException;
 import dedheproject.exceptions.NoSuchSheetException;
-import dedheproject.exceptions.ShowErrorPopup;
+import dedheproject.exceptions.ErrorPopup;
 import dedheproject.exceptions.badfileexception;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,7 +47,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                 db_names_combobox.addItem(rs.getObject(1));
             }
         } catch (SQLException ex) {
-            ShowErrorPopup.popup(ex);
+            ErrorPopup.popup(ex);
         }
         itemcount = (int) to_line_spinner.getValue() - (int) from_line_spinner.getValue();
     }
@@ -252,7 +252,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
             revalidate();
         } catch (FileNotFoundException | NoSuchSheetException | badfileexception ex) {
             excelfile = null;
-            ShowErrorPopup.popup(ex);
+            ErrorPopup.popup(ex);
         }
     }//GEN-LAST:event_load_temporary_data_buttonActionPerformed
 
@@ -288,7 +288,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                 }
             } catch (FileNotFoundException | NoSuchSheetException ex) {
                 excelfile = null;
-                ShowErrorPopup.popup(ex);
+                ErrorPopup.popup(ex);
             }
         }
     }//GEN-LAST:event_sheet_number_spinnerStateChanged
@@ -303,7 +303,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                     db_names_combobox.addItem(rs.getObject(1));
                 }
             } catch (SQLException ex) {
-                ShowErrorPopup.popup(ex);
+                ErrorPopup.popup(ex);
             }
         }
         if (data_type_combobox.getSelectedItem().toString().equals("Transformer")) {
@@ -315,7 +315,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                     db_names_combobox.addItem(rs.getObject(1));
                 }
             } catch (SQLException ex) {
-                ShowErrorPopup.popup(ex);
+                ErrorPopup.popup(ex);
             }
         }
 
@@ -372,7 +372,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                     itemcount, excelfile);
         } catch (FileNotFoundException | NoSuchSheetException ex) {
             excelfile = null;
-            ShowErrorPopup.popup(ex);
+            ErrorPopup.popup(ex);
         }
 
         int errors = 0;
@@ -425,7 +425,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                     itemcount, excelfile);
         } catch (FileNotFoundException | NoSuchSheetException ex) {
             excelfile = null;
-            ShowErrorPopup.popup(ex);
+            ErrorPopup.popup(ex);
         }
 
         int errors = 0;

@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Gui;
+package dedheproject.exceptions;
 
 /**
  *
  * @author Paris
  */
-public class LoadDataFromExcelUpdated {
+public class NoParentTransformerException extends Exception {
+
+    public NoParentTransformerException() {
+    }
     
 }

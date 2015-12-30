@@ -33,6 +33,9 @@ public class CachedData {
     static {
         conn = null;
         mutex = new Semaphore(1);
+        powerplants=new Vector<>();
+        transformers=new Vector<>();
+        breakers=new Vector<>();
     }
 
     public static void loadall(DBConnection dbconn) throws InterruptedException {
