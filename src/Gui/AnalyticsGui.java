@@ -8,11 +8,16 @@ package Gui;
 import Analytics.GraphPanel;
 import MySQlConnection.DBConnection;
 import com.mysql.jdbc.PreparedStatement;
+import dedheproject.dataclasses.Breaker;
+import dedheproject.dataclasses.CachedData;
+import dedheproject.dataclasses.Transformer;
 import dedheproject.exceptions.BadDateInputException;
-import dedheproject.exceptions.ShowErrorPopup;
+import dedheproject.exceptions.ErrorPopup;
 import java.awt.BorderLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,13 +41,13 @@ public class AnalyticsGui extends javax.swing.JFrame {
         end_month_spinner.setValue(new Integer(1));
         end_day_spinner.setValue(new Integer(15));
         try {
-            rs = dbconn.execute_simple_query( "SELECT name,id FROM breaker; ");
+            rs = dbconn.execute_simple_query("SELECT name,id FROM breaker; ");
             db_names_combobox.removeAllItems();
             while (rs.next()) {
                 db_names_combobox.addItem(rs.getObject(1));
             }
         } catch (SQLException ex) {
-            ShowErrorPopup.popup(ex);
+            ErrorPopup.popup(ex);
         }
     }
 
@@ -196,41 +201,30 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void data_types_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_data_types_comboboxActionPerformed
-        /* try {
-         rs = MyConnection.execute_simple_query(conn, "SELECT name,id FROM breaker; ");
 
-         db_names_combobox.removeAllItems();
-         while (rs.next()) {
-         db_names_combobox.addItem(rs.getObject(1));
-         }
-         } catch (SQLException ex) {
-         ShowErrorPopup.popup(ex);
-         }*/
-
+        try {
+            CachedData.mutex.acquire();
+        } catch (InterruptedException ex) {
+            CachedData.mutex.release();            
+            Logger.getLogger(AnalyticsGui.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
-            try {
-                db_names_combobox.removeAllItems();
-                rs = dbconn.execute_simple_query( "SELECT name,id FROM breaker; ");
 
-                while (rs.next()) {
-                    db_names_combobox.addItem(rs.getObject(1));
-                }
-            } catch (SQLException ex) {
-                ShowErrorPopup.popup(ex);
+            db_names_combobox.removeAllItems();
+            for (Breaker b : CachedData.breakers) {
+                db_names_combobox.addItem(b.name);
             }
+
         }
         if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
-            try {
-                db_names_combobox.removeAllItems();
-                rs = dbconn.execute_simple_query( "SELECT name,id FROM transformer; ");
 
-                while (rs.next()) {
-                    db_names_combobox.addItem(rs.getObject(1));
-                }
-            } catch (SQLException ex) {
-                ShowErrorPopup.popup(ex);
+            db_names_combobox.removeAllItems();
+            for (Transformer t : CachedData.transformers) {
+                db_names_combobox.addItem(t.name);
             }
         }
+        CachedData.mutex.release();
     }//GEN-LAST:event_data_types_comboboxActionPerformed
 
     private void db_names_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_db_names_comboboxActionPerformed
