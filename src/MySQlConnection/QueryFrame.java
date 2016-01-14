@@ -76,7 +76,7 @@ public class QueryFrame extends javax.swing.JFrame {
 
         QueryArea.setColumns(20);
         QueryArea.setRows(5);
-        QueryArea.setText("select *\nfrom task\nwhere EndDate is not null and EndDate!='';");
+        QueryArea.setText("select *\nfrom breaker_data;");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

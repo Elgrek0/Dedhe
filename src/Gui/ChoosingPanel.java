@@ -25,7 +25,7 @@ public final class ChoosingPanel extends javax.swing.JPanel {
     public ChoosingPanel() {
 
         initComponents();
-
+        setBounds(0,0,400,70);
         updateall();
 
     }

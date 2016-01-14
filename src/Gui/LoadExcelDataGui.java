@@ -11,6 +11,7 @@ import MySQlConnection.MainWindow;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelSheetOpener;
 import dedheproject.Fileopener;
+import dedheproject.dataclasses.Breaker;
 import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.BadTimeInputException;
 import dedheproject.exceptions.NoSuchSheetException;
@@ -21,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -34,26 +36,19 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
     /**
      * Creates new form LoadExcelDataGui
      */
-    
     DBConnection dbconn;
+    ChoosingPanel cp;
+
     public LoadExcelDataGui(DBConnection dbconn) {
         this.dbconn = dbconn;
         initComponents();
-        try {
-            db_names_combobox.removeAllItems();
-            rs = dbconn.execute_simple_query( "SELECT name,id FROM breaker; ");
-
-            while (rs.next()) {
-                db_names_combobox.addItem(rs.getObject(1));
-            }
-        } catch (SQLException ex) {
-            ErrorPopup.popup(ex);
-        }
+        cp = new ChoosingPanel();
+        cp.setVisible(true);
+        add(cp);
         itemcount = (int) to_line_spinner.getValue() - (int) from_line_spinner.getValue();
     }
     File excelfile;
     ExcelSheetOpener sheet;
-    ResultSet rs;
     int itemcount = 0;
 
     /**
@@ -65,7 +60,6 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        data_type_combobox = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         sample_data_table = new javax.swing.JTable();
@@ -74,22 +68,12 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         sheet_number_spinner = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
         pass_data_to_DB_button = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        db_names_combobox = new javax.swing.JComboBox();
-        jLabel5 = new javax.swing.JLabel();
         from_line_spinner = new javax.swing.JSpinner();
         to_line_spinner = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        data_type_combobox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Breaker", "Transformer" }));
-        data_type_combobox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                data_type_comboboxActionPerformed(evt);
-            }
-        });
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
@@ -132,16 +116,6 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setText("Data Type");
-
-        db_names_combobox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                db_names_comboboxActionPerformed(evt);
-            }
-        });
-
-        jLabel5.setText("In DB names");
-
         from_line_spinner.setValue(1);
         from_line_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -169,28 +143,18 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(34, 306, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(data_type_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel1))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(load_temporary_data_button))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(db_names_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(load_temporary_data_button, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addComponent(jLabel2)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(sheet_number_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap())
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(pass_data_to_DB_button))))
+                            .addComponent(pass_data_to_DB_button, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel6)
@@ -204,17 +168,11 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(load_temporary_data_button)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel5))
+                .addComponent(load_temporary_data_button)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sheet_number_spinner, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(data_type_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(db_names_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2)))
+                    .addComponent(jLabel2))
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -258,12 +216,8 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
 
     private void pass_data_to_DB_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pass_data_to_DB_buttonActionPerformed
 
-        if (data_type_combobox.getSelectedItem().toString().equals("Breaker")) {
             pass_data_to_breaker();
-        }
-        if (data_type_combobox.getSelectedItem().toString().equals("Transformer")) {
-            pass_data_to_transformer();
-        }
+        
 
     }//GEN-LAST:event_pass_data_to_DB_buttonActionPerformed
 
@@ -293,34 +247,6 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_sheet_number_spinnerStateChanged
 
-    private void data_type_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_data_type_comboboxActionPerformed
-        if (data_type_combobox.getSelectedItem().toString().equals("Breaker")) {
-            try {
-                db_names_combobox.removeAllItems();
-                rs = dbconn.execute_simple_query( "SELECT name,id FROM breaker; ");
-
-                while (rs.next()) {
-                    db_names_combobox.addItem(rs.getObject(1));
-                }
-            } catch (SQLException ex) {
-                ErrorPopup.popup(ex);
-            }
-        }
-        if (data_type_combobox.getSelectedItem().toString().equals("Transformer")) {
-            try {
-                db_names_combobox.removeAllItems();
-                rs = dbconn.execute_simple_query( "SELECT name,id FROM transformer; ");
-
-                while (rs.next()) {
-                    db_names_combobox.addItem(rs.getObject(1));
-                }
-            } catch (SQLException ex) {
-                ErrorPopup.popup(ex);
-            }
-        }
-
-    }//GEN-LAST:event_data_type_comboboxActionPerformed
-
     private void from_line_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_from_line_spinnerStateChanged
         if ((int) from_line_spinner.getValue() > (int) to_line_spinner.getValue()) {
             from_line_spinner.setValue(to_line_spinner.getValue());
@@ -340,19 +266,11 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         itemcount = (int) to_line_spinner.getValue() - (int) from_line_spinner.getValue();        // TODO add your handling code here:
     }//GEN-LAST:event_to_line_spinnerStateChanged
 
-    private void db_names_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_db_names_comboboxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_db_names_comboboxActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox data_type_combobox;
-    private javax.swing.JComboBox db_names_combobox;
     private javax.swing.JSpinner from_line_spinner;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
@@ -376,96 +294,40 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         }
 
         int errors = 0;
+        boolean fatalerror = false;
         try {
             dbconn.disablekeys("breaker_data");
-            PreparedStatement pstmt = null;
-            int selection = db_names_combobox.getSelectedIndex();
-            rs.first();
-            for (int k = 0; k < selection; k++) {
-                rs.next();
-            }
-            int breakerid = rs.getInt(2);
+            Statement stmt = dbconn.conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            Breaker b=(Breaker)cp.breaker_combobox.getSelectedItem();
             for (int i = 0; i < itemcount - 1; i++) {
                 try {
-
-                    String query = " INSERT IGNORE INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet.data[i][0], '/', ':')
+                    String query = " INSERT INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet.data[i][0], '/', ':')
                             + "'" + "," + sheet.data[i][1].replace(',', '.')
-                            + "," + breakerid + ");\n";
+                            + "," + b.id + ");\n";
 
-                    pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
-                    pstmt.execute();
+                    stmt.executeUpdate(query);
 
                 } catch (BadDateInputException ex) {
                     System.out.println("Bad date format in Excel at row : " + i);
                 } catch (BadTimeInputException ex) {
                     System.out.println("Bad time format in Excel at row : " + i);
                 }
-
             }
 
             dbconn.enablekeys("breaker_data");
-            System.out.println("query finished errors: " + errors);
         } catch (SQLException ex) {
             try {
                 dbconn.enablekeys("breaker_data");
             } catch (SQLException ex1) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex1);
             }
-            System.out.println("bad query");
+            fatalerror = true;
+            System.out.println("query error at loadexceldatagui");
             System.out.println(ex.getMessage());
         }
-    }
-
-    private void pass_data_to_transformer() {
-
-        try {
-            // to 1 sto x einai giati ta onomata einai axrista
-            // to 1 sto y giati exoun balei kati columnname
-            sheet = new ExcelSheetOpener((int) sheet_number_spinner.getValue(), 1, (int) from_line_spinner.getValue(), 2,
-                    itemcount, excelfile);
-        } catch (FileNotFoundException | NoSuchSheetException ex) {
-            excelfile = null;
-            ErrorPopup.popup(ex);
-        }
-
-        int errors = 0;
-        try {
-            dbconn.disablekeys("transformer_data");
-            PreparedStatement pstmt = null;
-            int selection = db_names_combobox.getSelectedIndex();
-            rs.first();
-            for (int k = 0; k < selection; k++) {
-                rs.next();
-            }
-            int breakerid = rs.getInt(2);
-            for (int i = 0; i < itemcount; i++) {
-                try {
-
-                    String query = " INSERT IGNORE INTO transformer_data VALUES (" + "'" + FixValues.reversedate(sheet.data[i][0], '/', ':')
-                            + "'" + "," + sheet.data[i][1].replace(',', '.')
-                            + "," + breakerid + ");\n";
-
-                    pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
-                    pstmt.execute();
-
-                } catch (BadDateInputException ex) {
-                    System.out.println("Bad date format in Excel at row : " + i);
-                } catch (BadTimeInputException ex) {
-                    System.out.println("Bad time format in Excel at row : " + i);
-                }
-
-            }
-
-            dbconn.enablekeys("transformer_data");
-            System.out.println("query finished errors: " + errors);
-        } catch (SQLException ex) {
-            try {
-                dbconn.enablekeys("transformer_data");
-            } catch (SQLException ex1) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            System.out.println("bad query");
-            System.out.println(ex.getMessage());
+        if (fatalerror == false) {
+            System.out.println("querycompleted sucesfully");
+            System.out.println("errrors #" + errors);
         }
     }
 }

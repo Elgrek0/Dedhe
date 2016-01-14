@@ -24,7 +24,6 @@ public abstract class DBConnection {
     public Connection conn = null;
     String dbname;
 
-
     public abstract void connect() throws CouldntConnectException;
 
     public DefaultTableModel buildTableModel(ResultSet rs)
@@ -62,10 +61,9 @@ public abstract class DBConnection {
     }
 
     public ResultSet execute_simple_query(String query) throws SQLException {
-        PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(query);
-        pstmt.addBatch();
-        pstmt.execute();
-        return (pstmt.getResultSet());
+        Statement stmt = (PreparedStatement) conn.createStatement();
+        stmt.execute(query);
+        return (stmt.getResultSet());
     }
 
     public void enablekeys(String tablename) throws SQLException {

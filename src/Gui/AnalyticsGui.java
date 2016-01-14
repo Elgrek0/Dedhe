@@ -16,6 +16,7 @@ import dedheproject.exceptions.ErrorPopup;
 import java.awt.BorderLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,10 +30,13 @@ public class AnalyticsGui extends javax.swing.JFrame {
      * Creates new form AnalyticsGui
      */
     DBConnection dbconn;
-    ResultSet rs;
+    ChoosingPanel cp = new ChoosingPanel();
 
     public AnalyticsGui(DBConnection dbconn) {
         this.dbconn = dbconn;
+        this.add(cp);
+        cp.setVisible(true);
+        cp.setLocation(400, 0);
         initComponents();
         start_year_spinner.setValue(new Integer(2015));
         start_month_spinner.setValue(new Integer(1));
@@ -40,15 +44,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         end_year_spinner.setValue(new Integer(2015));
         end_month_spinner.setValue(new Integer(1));
         end_day_spinner.setValue(new Integer(15));
-        try {
-            rs = dbconn.execute_simple_query("SELECT name,id FROM breaker; ");
-            db_names_combobox.removeAllItems();
-            while (rs.next()) {
-                db_names_combobox.addItem(rs.getObject(1));
-            }
-        } catch (SQLException ex) {
-            ErrorPopup.popup(ex);
-        }
+
     }
 
     /**
@@ -63,8 +59,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
-        data_types_combobox = new javax.swing.JComboBox();
-        db_names_combobox = new javax.swing.JComboBox();
         end_day_spinner = new javax.swing.JSpinner();
         end_month_spinner = new javax.swing.JSpinner();
         end_year_spinner = new javax.swing.JSpinner();
@@ -86,21 +80,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(400, 400));
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        data_types_combobox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Breaker", "Transformer" }));
-        data_types_combobox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                data_types_comboboxActionPerformed(evt);
-            }
-        });
-        jPanel1.add(data_types_combobox, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 10, -1, -1));
-
-        db_names_combobox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                db_names_comboboxActionPerformed(evt);
-            }
-        });
-        jPanel1.add(db_names_combobox, new org.netbeans.lib.awtextra.AbsoluteConstraints(446, 10, 80, -1));
 
         end_day_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -166,7 +145,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         graph_panel.setLayout(graph_panelLayout);
         graph_panelLayout.setHorizontalGroup(
             graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 681, Short.MAX_VALUE)
         );
         graph_panelLayout.setVerticalGroup(
             graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,10 +160,10 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(graph_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,37 +178,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void data_types_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_data_types_comboboxActionPerformed
-
-        try {
-            CachedData.mutex.acquire();
-        } catch (InterruptedException ex) {
-            CachedData.mutex.release();            
-            Logger.getLogger(AnalyticsGui.class.getName()).log(Level.SEVERE, null, ex);
-            return;
-        }
-        if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
-
-            db_names_combobox.removeAllItems();
-            for (Breaker b : CachedData.breakers) {
-                db_names_combobox.addItem(b.name);
-            }
-
-        }
-        if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
-
-            db_names_combobox.removeAllItems();
-            for (Transformer t : CachedData.transformers) {
-                db_names_combobox.addItem(t.name);
-            }
-        }
-        CachedData.mutex.release();
-    }//GEN-LAST:event_data_types_comboboxActionPerformed
-
-    private void db_names_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_db_names_comboboxActionPerformed
-        queryfornewdata();
-    }//GEN-LAST:event_db_names_comboboxActionPerformed
 
     private void start_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_start_day_spinnerStateChanged
         queryfornewdata();
@@ -249,8 +197,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox data_types_combobox;
-    private javax.swing.JComboBox db_names_combobox;
     private javax.swing.JSpinner end_day_spinner;
     private javax.swing.JSpinner end_month_spinner;
     private javax.swing.JSpinner end_year_spinner;
@@ -276,54 +222,41 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
     private void queryfornewdata() {
-        if (rs != null) {
-            String startdate = "'" + start_year_spinner.getValue() + "-"
-                    + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
-            String enddate;
-            enddate = "'" + end_year_spinner.getValue() + "-"
-                    + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
+        String startdate = "'" + start_year_spinner.getValue() + "-"
+                + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
+        String enddate;
+        enddate = "'" + end_year_spinner.getValue() + "-"
+                + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
 
-            if (dbconn != null) {
-                try {
+        if (dbconn != null) {
+            try {
 
-                    int selection = db_names_combobox.getSelectedIndex();
-                    rs.first();
-                    if (selection > 0) {
-                        for (int k = 0; k < selection; k++) {
-                            rs.next();
-                        }
-                    }
-                    int id = rs.getInt(2);
-                    String query = "";
+                String query = "";
 
-                    if (data_types_combobox.getSelectedItem().toString().equals("Breaker")) {
-                        query = "SELECT datetime,current FROM breaker_data "
-                                + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
-                    }
-                    if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
-                        query = "SELECT datetime,current FROM transformer_data "
-                                + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + id + ";";
-                    }
-                    System.out.println(query);
-                    PreparedStatement pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
-                    pstmt.addBatch();
-                    pstmt.execute();
+                Breaker b = (Breaker) cp.breaker_combobox.getSelectedItem();
+                query = "SELECT datetime,current FROM breaker_data "
+                        + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + b.id + ";";
 
-                    GraphPanel gp = new GraphPanel(pstmt.getResultSet());
-                    graph_panel.setLayout(new BorderLayout());
-                    graph_panel.removeAll();
-                    graph_panel.add(gp.panel, BorderLayout.CENTER);
-                    graph_panel.setVisible(true);
-                    revalidate();
+                System.out.println(query);
+                Statement pstmt = dbconn.conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                // (PreparedStatement) dbconn.conn.prepareStatement(query);
+                pstmt.executeQuery(query);
 
-                } catch (SQLException ex) {
+                GraphPanel gp = new GraphPanel(pstmt.getResultSet());
+                graph_panel.setLayout(new BorderLayout());
+                graph_panel.removeAll();
+                graph_panel.add(gp.panel, BorderLayout.CENTER);
+                graph_panel.setVisible(true);
+                revalidate();
 
-                    System.out.println("bad query");
-                    System.out.println(ex.getMessage());
+            } catch (SQLException ex) {
 
-                }
+                System.out.println("bad query");
+                System.out.println(ex.getMessage());
+
             }
         }
+
     }
 
 }
