@@ -5,6 +5,7 @@
  */
 package MySQlConnection;
 
+import DB_connection.FixValues;
 import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.BadTimeInputException;
 import org.junit.After;

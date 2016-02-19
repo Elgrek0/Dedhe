@@ -5,6 +5,7 @@
  */
 package MySQlConnection;
 
+import DB_connection.DBConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

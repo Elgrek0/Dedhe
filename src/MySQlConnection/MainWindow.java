@@ -5,10 +5,16 @@
  */
 package MySQlConnection;
 
+import DB_connection.FixValues;
+import DB_connection.H2Server;
+import DB_connection.H2MyConnection;
+import DB_connection.DBConnection;
+import DB_connection.MySQLConnection;
 import Gui.AnalyticsGui;
 import Gui.ChoosingPanel;
 import Gui.LoadExcelDataGui;
 import Gui.LoadFromExcelFrame;
+import data_classes.LoginInfo;
 import dedheproject.ExcelSheetOpener;
 import dedheproject.Fileopener;
 import dedheproject.dataclasses.CachedData;
@@ -167,8 +173,10 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        LoginInfo login= new LoginInfo(UsernameBox.getText(),String.valueOf(PasswordBox.getPassword()));
+        
         try {
-            dbconn.connect();
+            dbconn.connect(login);
             System.out.println("success");
             CachedData.loadall(dbconn);
         } catch (CouldntConnectException ex) {

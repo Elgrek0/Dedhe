@@ -5,7 +5,7 @@
  */
 package dedheproject.dataclasses;
 
-import MySQlConnection.DBConnection;
+import DB_connection.DBConnection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Vector;

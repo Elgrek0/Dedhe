@@ -6,10 +6,10 @@
 package Gui;
 
 import Analytics.GraphPanel;
-import MySQlConnection.DBConnection;
+import DB_connection.DBConnection;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.exceptions.BadDateInputException;
-import dedheproject.exceptions.ShowErrorPopup;
+import dedheproject.exceptions.ErrorPopup;
 import java.awt.BorderLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ import java.sql.SQLException;
  *
  * @author Paris
  */
-public class AnalyticsGui extends javax.swing.JFrame {
+public class AnalyticsGui2 extends javax.swing.JFrame {
 
     /**
      * Creates new form AnalyticsGui
@@ -26,7 +26,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
     DBConnection dbconn;
     ResultSet rs;
 
-    public AnalyticsGui(DBConnection dbconn) {
+    public AnalyticsGui2(DBConnection dbconn) {
         this.dbconn = dbconn;
         initComponents();
         start_year_spinner.setValue(new Integer(2015));
@@ -42,7 +42,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 db_names_combobox.addItem(rs.getObject(1));
             }
         } catch (SQLException ex) {
-            ShowErrorPopup.popup(ex);
+            ErrorPopup.popup(ex);
         }
     }
 
@@ -216,7 +216,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
                     db_names_combobox.addItem(rs.getObject(1));
                 }
             } catch (SQLException ex) {
-                ShowErrorPopup.popup(ex);
+                ErrorPopup.popup(ex);
             }
         }
         if (data_types_combobox.getSelectedItem().toString().equals("Transformer")) {
@@ -228,7 +228,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
                     db_names_combobox.addItem(rs.getObject(1));
                 }
             } catch (SQLException ex) {
-                ShowErrorPopup.popup(ex);
+                ErrorPopup.popup(ex);
             }
         }
     }//GEN-LAST:event_data_types_comboboxActionPerformed

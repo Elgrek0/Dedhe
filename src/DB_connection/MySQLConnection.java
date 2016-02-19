@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MySQlConnection;
+package DB_connection;
 
+import MySQlConnection.MainWindow;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.exceptions.CouldntConnectException;
 import com.mysql.jdbc.ResultSetMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.mysql.jdbc.Statement;
+import data_classes.LoginInfo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Arrays;
@@ -24,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
 public class MySQLConnection extends DBConnection {
 
     @Override
-    public void connect() throws CouldntConnectException {
+    public void connect(LoginInfo login) throws CouldntConnectException {
         try {
             // The newInstance() call is a work around for some
             // broken Java implementations
@@ -35,11 +37,8 @@ public class MySQLConnection extends DBConnection {
         }
 
         try {
-            String pass = "";
-            for (char c : MainWindow.PasswordBox.getPassword()) {
-                pass = pass + c;
-            }
-            conn = DriverManager.getConnection("jdbc:mysql://" + MainWindow.AdressBox.getText()
+            String pass = login.password;
+            conn = DriverManager.getConnection("jdbc:mysql://" + login.username
                     + "/" + MainWindow.DBNameBox.getText() + "?"
                     + "user=" + MainWindow.UsernameBox.getText() + "&password="
                     + pass + "");

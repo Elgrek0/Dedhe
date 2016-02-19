@@ -6,7 +6,7 @@
 package Gui;
 
 import Analytics.GraphPanel;
-import MySQlConnection.DBConnection;
+import DB_connection.DBConnection;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.dataclasses.Breaker;
 import dedheproject.dataclasses.CachedData;

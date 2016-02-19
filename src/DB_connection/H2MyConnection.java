@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MySQlConnection;
+package DB_connection;
 
+import MySQlConnection.MainWindow;
+import data_classes.LoginInfo;
 import dedheproject.exceptions.CouldntConnectException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,7 +23,7 @@ import java.util.logging.Logger;
 public class H2MyConnection extends DBConnection {
 
     @Override
-    public void connect() throws CouldntConnectException {
+    public void connect(LoginInfo login) throws CouldntConnectException {
 
         try {
             Class.forName("org.h2.Driver");
@@ -30,11 +32,8 @@ public class H2MyConnection extends DBConnection {
         }
 
         try {
-            String pass = "";
-            for (char c : MainWindow.PasswordBox.getPassword()) {
-                pass = pass + c;
-            }
-            conn = DriverManager.getConnection("jdbc:h2:database./DB", MainWindow.UsernameBox.getText(), pass);
+            String pass =login.password;
+            conn = DriverManager.getConnection("jdbc:h2:database./DB", login.username, pass);
             dbname= MainWindow.DBNameBox.getText();
             conn.prepareStatement("use " + dbname + ";").execute();
         } catch (SQLException ex) {
@@ -48,7 +47,7 @@ public class H2MyConnection extends DBConnection {
         }
 
     }
-
+   
     @Override
     public void disablekeys(String tablename) throws SQLException {
         conn.prepareStatement("SET REFERENTIAL_INTEGRITY FALSE;").execute();

@@ -8,7 +8,7 @@ package dedheproject.dataclasses;
 import dedheproject.exceptions.TransformerParentNotFoundException;
 import dedheproject.exceptions.PowerPlantParentNotFoundException;
 import dedheproject.exceptions.NoActiveDbConnectionException;
-import MySQlConnection.DBConnection;
+import DB_connection.DBConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;

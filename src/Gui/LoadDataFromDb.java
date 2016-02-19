@@ -9,9 +9,8 @@ package Gui;
  *
  * @author Paris
  */
-public class LoadDataFromDb implements LoadDataFromDBInterface {
+public class LoadDataFromDb  {
 
-    @Override
     public String[] getalltransformers() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

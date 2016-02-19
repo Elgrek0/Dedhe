@@ -1,4 +1,4 @@
-package MySQlConnection;
+package DB_connection;
 
 import dedheproject.exceptions.BadTimeInputException;
 import dedheproject.exceptions.BadDateInputException;

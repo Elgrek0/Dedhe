@@ -5,8 +5,8 @@
  */
 package Gui;
 
-import MySQlConnection.FixValues;
-import MySQlConnection.DBConnection;
+import DB_connection.FixValues;
+import DB_connection.DBConnection;
 import MySQlConnection.MainWindow;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelSheetOpener;

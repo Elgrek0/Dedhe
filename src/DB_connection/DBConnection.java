@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MySQlConnection;
+package DB_connection;
 
+import data_classes.LoginInfo;
 import dedheproject.exceptions.CouldntConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,7 +25,7 @@ public abstract class DBConnection {
     public Connection conn = null;
     String dbname;
 
-    public abstract void connect() throws CouldntConnectException;
+    public abstract void connect(LoginInfo login) throws CouldntConnectException;
 
     public DefaultTableModel buildTableModel(ResultSet rs)
             throws SQLException {
