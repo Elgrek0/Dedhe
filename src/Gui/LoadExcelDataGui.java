@@ -5,13 +5,14 @@
  */
 package Gui;
 
+import plant_transformer_breaker_component.ChoosingPanel;
 import DB_connection.FixValues;
 import DB_connection.DBConnection;
 import MySQlConnection.MainWindow;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelSheetOpener;
 import dedheproject.Fileopener;
-import dedheproject.dataclasses.Breaker;
+import data_classes.Breaker;
 import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.BadTimeInputException;
 import dedheproject.exceptions.NoSuchSheetException;

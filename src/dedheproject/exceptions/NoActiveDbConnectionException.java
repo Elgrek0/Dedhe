@@ -13,5 +13,9 @@ public class NoActiveDbConnectionException extends Exception {
 
     public NoActiveDbConnectionException() {
     }
+
+    public NoActiveDbConnectionException(String connection_wasn_null) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

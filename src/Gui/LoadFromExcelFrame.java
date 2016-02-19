@@ -5,13 +5,18 @@
  */
 package Gui;
 
+import DB_data_loader.LoadDataFromDB;
+import plant_transformer_breaker_component.ChoosingPanel;
 import dedheproject.exceptions.NoParentTransformerException;
 import dedheproject.exceptions.NoParentPlantException;
-import dedheproject.dataclasses.Breaker;
-import dedheproject.dataclasses.CachedData;
-import dedheproject.dataclasses.PowerPlant;
-import dedheproject.dataclasses.Transformer;
+import data_classes.Breaker;
+import DB_data_loader.StaticCachedData;
+import data_classes.PowerPlant;
+import data_classes.Transformer;
 import dedheproject.exceptions.ErrorPopup;
+import dedheproject.exceptions.NoActiveDbConnectionException;
+import dedheproject.exceptions.PowerPlantParentNotFoundException;
+import dedheproject.exceptions.TransformerParentNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -147,18 +152,33 @@ public class LoadFromExcelFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void add_plant_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_plant_buttonActionPerformed
-        PowerPlant p = new PowerPlant(CachedData.powerplants.lastElement().id + 1, plantname_textfield.getText());
-        CachedData.powerplants.add(p);
+        PowerPlant p = new PowerPlant(StaticCachedData.db_powerplants.lastElement().id + 1, plantname_textfield.getText());
+        StaticCachedData.db_powerplants.add(p);
         p.store();
-        choosingpanel.updateall();
+        try {
+            LoadDataFromDB.refresh_powerplants();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoActiveDbConnectionException ex) {
+            Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        choosingpanel.refresh();
     }//GEN-LAST:event_add_plant_buttonActionPerformed
 
     private void add_transformer_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_transformer_buttonActionPerformed
         if (choosingpanel.selected_plant != null) {
-            Transformer t = new Transformer(CachedData.transformers.lastElement().id + 1, transformername_textfield.getText(), choosingpanel.selected_plant);
-            CachedData.transformers.add(t);
+            Transformer t = new Transformer(StaticCachedData.db_transformers.lastElement().id + 1, transformername_textfield.getText(), choosingpanel.selected_plant);
+            StaticCachedData.db_transformers.add(t);
             t.store();
-            choosingpanel.plantchange();
+            try {
+                LoadDataFromDB.refresh_transformers();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoActiveDbConnectionException ex) {
+                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (PowerPlantParentNotFoundException ex) {
+                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             try {
                 throw new NoParentPlantException();
@@ -166,14 +186,23 @@ public class LoadFromExcelFrame extends javax.swing.JFrame {
                 new ErrorPopup(ex);
             }
         }
+        choosingpanel.refresh();
     }//GEN-LAST:event_add_transformer_buttonActionPerformed
 
     private void add_breaker_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_breaker_buttonActionPerformed
         if (choosingpanel.selected_transformer != null) {
-            Breaker b = new Breaker(CachedData.breakers.lastElement().id + 1, breakername_textfield.getText(), choosingpanel.selected_transformer);
-            CachedData.breakers.add(b);
+            Breaker b = new Breaker(StaticCachedData.db_breakers.lastElement().id + 1, breakername_textfield.getText(), choosingpanel.selected_transformer);
+            StaticCachedData.db_breakers.add(b);
             b.store();
-            choosingpanel.transformerchange();
+            try {
+                LoadDataFromDB.refresh_breakers();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoActiveDbConnectionException ex) {
+                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (TransformerParentNotFoundException ex) {
+                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             try {
                 throw new NoParentTransformerException();
@@ -181,6 +210,7 @@ public class LoadFromExcelFrame extends javax.swing.JFrame {
                 new ErrorPopup(ex);
             }
         }
+        choosingpanel.refresh();
     }//GEN-LAST:event_add_breaker_buttonActionPerformed
 
 

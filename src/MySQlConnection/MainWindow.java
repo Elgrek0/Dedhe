@@ -10,17 +10,19 @@ import DB_connection.H2Server;
 import DB_connection.H2MyConnection;
 import DB_connection.DBConnection;
 import DB_connection.MySQLConnection;
+import DB_data_loader.LoadDataFromDB;
 import Gui.AnalyticsGui;
-import Gui.ChoosingPanel;
+import plant_transformer_breaker_component.ChoosingPanel;
 import Gui.LoadExcelDataGui;
 import Gui.LoadFromExcelFrame;
 import data_classes.LoginInfo;
 import dedheproject.ExcelSheetOpener;
 import dedheproject.Fileopener;
-import dedheproject.dataclasses.CachedData;
+import DB_data_loader.StaticCachedData;
 import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.BadTimeInputException;
 import dedheproject.exceptions.CouldntConnectException;
+import dedheproject.exceptions.NoActiveDbConnectionException;
 import dedheproject.exceptions.NoSuchSheetException;
 import dedheproject.exceptions.badfileexception;
 import java.io.File;
@@ -173,17 +175,25 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        LoginInfo login= new LoginInfo(UsernameBox.getText(),String.valueOf(PasswordBox.getPassword()));
-        
+        LoginInfo login = new LoginInfo(UsernameBox.getText(), String.valueOf(PasswordBox.getPassword()));
+
         try {
             dbconn.connect(login);
-            System.out.println("success");
-            CachedData.loadall(dbconn);
+            System.out.println("Connection with DB establised");
+
         } catch (CouldntConnectException ex) {
+            //Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Login failed");
+        }
+        try {
+            LoadDataFromDB.initialize(dbconn);
+        } catch (NoActiveDbConnectionException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("failure");
+        }
+        try {
+            LoadDataFromDB.loadall();
         } catch (InterruptedException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+           Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -264,8 +274,8 @@ public class MainWindow extends javax.swing.JFrame {
                         for (int i = 0; i < rows_to_read; i++) {
                             try {
                                 String query = " INSERT INTO breaker_data VALUES (" + "'" + FixValues.reversedate(sheet1.data[i][0], '/', ':')
-                                + "'" + "," + sheet1.data[i][1].replace(',', '.')
-                                + "," + 1 + ");\n";
+                                        + "'" + "," + sheet1.data[i][1].replace(',', '.')
+                                        + "," + 1 + ");\n";
 
                                 if (debug) {
                                     System.out.println(query);

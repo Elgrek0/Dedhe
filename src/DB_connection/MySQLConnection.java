@@ -6,18 +6,10 @@
 package DB_connection;
 
 import MySQlConnection.MainWindow;
-import com.mysql.jdbc.PreparedStatement;
 import dedheproject.exceptions.CouldntConnectException;
-import com.mysql.jdbc.ResultSetMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import com.mysql.jdbc.Statement;
 import data_classes.LoginInfo;
-import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.Arrays;
-import java.util.Vector;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *

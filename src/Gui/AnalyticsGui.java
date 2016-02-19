@@ -5,12 +5,13 @@
  */
 package Gui;
 
+import plant_transformer_breaker_component.ChoosingPanel;
 import Analytics.GraphPanel;
 import DB_connection.DBConnection;
 import com.mysql.jdbc.PreparedStatement;
-import dedheproject.dataclasses.Breaker;
-import dedheproject.dataclasses.CachedData;
-import dedheproject.dataclasses.Transformer;
+import data_classes.Breaker;
+import DB_data_loader.StaticCachedData;
+import data_classes.Transformer;
 import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.ErrorPopup;
 import java.awt.BorderLayout;

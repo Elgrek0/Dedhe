@@ -3,16 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject.dataclasses;
+package DB_data_loader;
 
-import dedheproject.exceptions.TransformerParentNotFoundException;
-import dedheproject.exceptions.PowerPlantParentNotFoundException;
-import dedheproject.exceptions.NoActiveDbConnectionException;
 import DB_connection.DBConnection;
+import static DB_data_loader.StaticCachedData.conn;
+import static DB_data_loader.StaticCachedData.db_breakers;
+import static DB_data_loader.StaticCachedData.db_powerplants;
+import static DB_data_loader.StaticCachedData.db_transformers;
+import data_classes.Breaker;
+import data_classes.PowerPlant;
+import data_classes.Transformer;
+import dedheproject.exceptions.NoActiveDbConnectionException;
+import dedheproject.exceptions.PowerPlantParentNotFoundException;
+import dedheproject.exceptions.TransformerParentNotFoundException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
-import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,38 +26,32 @@ import java.util.logging.Logger;
  *
  * @author Paris
  */
-public class CachedData {
+public class LoadDataFromDB {
 
     static boolean debug = false;
-    static DBConnection conn;
-    
-    public static Vector<PowerPlant> powerplants;
-    public static Vector<Transformer> transformers;
-    public static Vector<Breaker> breakers;
-    public static Semaphore mutex;
 
-    static {
-        conn = null;
-        mutex = new Semaphore(1);
-        powerplants=new Vector<>();
-        transformers=new Vector<>();
-        breakers=new Vector<>();
+    public static void initialize(DBConnection dbconn) throws NoActiveDbConnectionException {
+        if (dbconn != null) {
+            StaticCachedData.conn = dbconn;
+        } else {
+            throw new NoActiveDbConnectionException("connection was null");
+        }
     }
 
-    public static void loadall(DBConnection dbconn) throws InterruptedException {
-        conn = dbconn;
+    public static void loadall() throws InterruptedException {
+
         try {
             refresh_powerplants();
             if (debug) {
-                System.out.println("powerplants done size :" + powerplants.size());
+                System.out.println("powerplants done size :" + db_powerplants.size());
             }
             refresh_transformers();
             if (debug) {
-                System.out.println("transformers done size :" + transformers.size());
+                System.out.println("transformers done size :" + db_transformers.size());
             }
             refresh_breakers();
             if (debug) {
-                System.out.println("breakers done size :" + breakers.size());
+                System.out.println("breakers done size :" + db_breakers.size());
             }
         } catch (NoActiveDbConnectionException ex) {
             System.err.println("dbconn parameter was invalid");
@@ -63,60 +63,61 @@ public class CachedData {
 
     }
 
-    public static void storeall(){
-        
+    public static void storeall() {
+
     }
+
     public static void refresh_powerplants() throws InterruptedException, NoActiveDbConnectionException {
 
-        mutex.acquire();
+        StaticCachedData.lock();
         if (conn == null) {
-            mutex.release();
+            StaticCachedData.unlock();
             throw new NoActiveDbConnectionException();
         } else {
             ResultSet rs = null;
-            powerplants = new Vector<PowerPlant>();
+            db_powerplants = new Vector<PowerPlant>();
             try {
                 rs = conn.execute_simple_query("SELECT name,id FROM Electrical_Plant; ");
             } catch (SQLException ex) {
 
-                mutex.release();
+                StaticCachedData.unlock();
                 System.err.println("get powerplants query failed");
-                Logger.getLogger(CachedData.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(StaticCachedData.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
 
             try {
                 while (rs.next()) {
                     PowerPlant p = new PowerPlant(rs.getInt("id"), rs.getString("name"));
-                    powerplants.add(p);
+                    db_powerplants.add(p);
                 }
             } catch (SQLException ex) {
-                mutex.release();
-                System.err.println("error at powerplant #" + powerplants.size());
-                Logger.getLogger(CachedData.class.getName()).log(Level.SEVERE, null, ex);
+                StaticCachedData.unlock();
+                System.err.println("error at powerplant #" + db_powerplants.size());
+                Logger.getLogger(StaticCachedData.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
-            mutex.release();
+            StaticCachedData.unlock();
         }
 
     }
 
     public static void refresh_transformers() throws InterruptedException, NoActiveDbConnectionException, PowerPlantParentNotFoundException {
 
-        mutex.acquire();
-        if (conn == null) {
-            mutex.release();
+        StaticCachedData.lock();
+        if (StaticCachedData.conn == null) {
+            StaticCachedData.unlock();
             throw new NoActiveDbConnectionException();
         } else {
             ResultSet rs = null;
-            transformers = new Vector<Transformer>();
+            db_transformers = new Vector<Transformer>();
             try {
                 rs = conn.execute_simple_query("SELECT name,id,Electrical_Plant_ID FROM Transformer; ");
             } catch (SQLException ex) {
 
-                mutex.release();
+                StaticCachedData.unlock();
                 System.err.println("get Transformers query failed");
-                Logger.getLogger(CachedData.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(StaticCachedData.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
 
@@ -125,63 +126,63 @@ public class CachedData {
 
                     int parent_id = rs.getInt("Electrical_Plant_ID");
                     boolean done = false;
-                    if (powerplants.size() >= parent_id - 1) {
-                        if (powerplants.get(parent_id - 1).id == parent_id) {
+                    if (db_powerplants.size() >= parent_id - 1) {
+                        if (db_powerplants.get(parent_id - 1).id == parent_id) {
 
-                            PowerPlant parent = powerplants.get(parent_id - 1);
+                            PowerPlant parent = db_powerplants.get(parent_id - 1);
 
                             Transformer t = new Transformer(rs.getInt("id"), rs.getString("name"), parent);
 
-                            transformers.add(t);
+                            db_transformers.add(t);
                             done = true;
 
                         }
                     }
                     if (done == false) {
-                        for (PowerPlant parent : powerplants) {
+                        for (PowerPlant parent : db_powerplants) {
                             if (parent.id == parent_id) {
 
                                 Transformer t = new Transformer(rs.getInt("id"), rs.getString("name"), parent);
 
-                                transformers.add(t);
+                                db_transformers.add(t);
                                 done = true;
                                 break;
                             }
                         }
                     }
                     if (done == false) {
-                        mutex.release();
-                        System.err.println("error at transformer #" + transformers.size());
+                        StaticCachedData.unlock();
+                        System.err.println("error at transformer #" + db_transformers.size());
                         throw new PowerPlantParentNotFoundException();
                     }
                 }
             } catch (SQLException ex) {
-                mutex.release();
-                System.err.println("error at Transformer #" + transformers.size());
-                Logger.getLogger(CachedData.class.getName()).log(Level.SEVERE, null, ex);
+                StaticCachedData.unlock();
+                System.err.println("error at Transformer #" + db_transformers.size());
+                Logger.getLogger(StaticCachedData.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
-            mutex.release();
+            StaticCachedData.unlock();
         }
 
     }
 
     public static void refresh_breakers() throws InterruptedException, NoActiveDbConnectionException, TransformerParentNotFoundException {
 
-        mutex.acquire();
+        StaticCachedData.lock();
         if (conn == null) {
-            mutex.release();
+            StaticCachedData.unlock();
             throw new NoActiveDbConnectionException();
         } else {
             ResultSet rs = null;
-            breakers = new Vector<Breaker>();
+            db_breakers = new Vector<Breaker>();
             try {
                 rs = conn.execute_simple_query("SELECT name,id,Transformer_ID FROM Breaker; ");
             } catch (SQLException ex) {
 
-                mutex.release();
+                StaticCachedData.unlock();
                 System.err.println("get Breakers query failed");
-                Logger.getLogger(CachedData.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(StaticCachedData.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
 
@@ -189,41 +190,42 @@ public class CachedData {
                 while (rs.next()) {
                     int parent_id = rs.getInt("Transformer_ID");
                     boolean done = false;
-                    if (transformers.size() >= parent_id-1) {
-                        if (transformers.get(parent_id-1).id == parent_id) {
+                    if (db_transformers.size() >= parent_id - 1) {
+                        if (db_transformers.get(parent_id - 1).id == parent_id) {
 
-                            Transformer parent = transformers.get(parent_id-1);
+                            Transformer parent = db_transformers.get(parent_id - 1);
 
                             Breaker b = new Breaker(rs.getInt("id"), rs.getString("name"), parent);
-                            breakers.add(b);
+                            db_breakers.add(b);
                             done = true;
 
                         }
                     }
                     if (done == false) {
-                        for (Transformer parent : transformers) {
+                        for (Transformer parent : db_transformers) {
                             if (parent.id == parent_id) {
                                 Breaker b = new Breaker(rs.getInt("id"), rs.getString("name"), parent);
-                                breakers.add(b);
+                                db_breakers.add(b);
                                 done = true;
                                 break;
                             }
                         }
                     }
                     if (done == false) {
-                        mutex.release();
-                        System.err.println("error at breaker #" + transformers.size());
+                        StaticCachedData.unlock();
+                        System.err.println("error at breaker #" + db_transformers.size());
                         throw new TransformerParentNotFoundException();
                     }
                 }
             } catch (SQLException ex) {
-                mutex.release();
-                System.err.println("error at breaker #" + transformers.size());
-                Logger.getLogger(CachedData.class.getName()).log(Level.SEVERE, null, ex);
+                StaticCachedData.unlock();
+                System.err.println("error at breaker #" + db_transformers.size());
+                Logger.getLogger(StaticCachedData.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
-            mutex.release();
+            StaticCachedData.unlock();
         }
 
     }
+
 }

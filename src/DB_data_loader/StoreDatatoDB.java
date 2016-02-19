@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject.dataclasses;
+package DB_data_loader;
 
 import DB_connection.DBConnection;
+import static DB_data_loader.StaticCachedData.conn;
+import data_classes.PowerPlant;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,28 +18,21 @@ import java.util.logging.Logger;
  *
  * @author Paris
  */
-public class Breaker implements DBItem {
-
-    public Transformer parent_transformer;
-
-    public int id;
-    public String name;
-
-    public Breaker(int id, String name, Transformer parent_transformer) {
-        this.id = id;
-        this.name = name;
-        this.parent_transformer = parent_transformer;
-        parent_transformer.breakers.add(this);
-    }
-    @Override
-    public void store() {
-        DBConnection dbconn=null;
+public class StoreDatatoDB {
+    
+    
+    public static void store(String arrayname,String values){
+        
+        
+         DBConnection dbconn=conn;
         try {
-            dbconn = CachedData.conn;
-            dbconn.disablekeys("Breaker");
+            dbconn = StaticCachedData.conn;
+            dbconn.disablekeys(arrayname);
             PreparedStatement pstmt = null;
 
-            String query = " INSERT INTO Breaker VALUES (" + id + ",'" + name + "',"+parent_transformer.id +");\n";
+            
+   
+            String query = " INSERT INTO "+arrayname+" VALUES ("+values+");\n";
 
             pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
             pstmt.execute();
@@ -45,14 +41,10 @@ public class Breaker implements DBItem {
         }
         if (dbconn != null) {
             try {
-                dbconn.enablekeys("Breaker");
+                dbconn.enablekeys(arrayname);
             } catch (SQLException ex) {
                 Logger.getLogger(PowerPlant.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-    @Override
-    public String toString(){
-        return name;
     }
 }
