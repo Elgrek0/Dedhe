@@ -3,17 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject.exceptions;
+package exceptions;
 
 /**
  *
  * @author Paris
  */
-public class CouldntConnectException extends Exception {
+public class NoParentTransformerException extends Exception {
 
-    public CouldntConnectException(String s) {
-        super(s);
+    public NoParentTransformerException() {
     }
-
-
+    
 }

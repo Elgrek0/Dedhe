@@ -3,19 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package data_classes;
+package exceptions;
 
 /**
  *
  * @author Paris
  */
-public class LoginInfo {
+public class NoSuchSheetException extends Exception {
 
-    public LoginInfo(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public NoSuchSheetException(String s) {
+        super(s);
     }
     
-    public String username;
-    public String password;
 }

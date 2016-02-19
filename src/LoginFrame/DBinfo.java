@@ -3,15 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject.exceptions;
+package LoginFrame;
 
 /**
  *
  * @author Paris
  */
-public class NoParentPlantException extends Exception {
+public class DBinfo {
+   public String DB_name;
+   public String DB_adress;
 
-    public NoParentPlantException() {
+    public DBinfo(String DB_name, String DB_adress) {
+        this.DB_name = DB_name;
+        this.DB_adress = DB_adress;
     }
+  
     
 }

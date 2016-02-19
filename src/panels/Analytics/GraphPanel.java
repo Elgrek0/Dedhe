@@ -1,4 +1,4 @@
-package Analytics;
+package panels.Analytics;
 
 import java.awt.Color;
 import java.sql.ResultSet;

@@ -5,13 +5,13 @@
  */
 package DB_data_loader;
 
-import dedheproject.exceptions.TransformerParentNotFoundException;
-import dedheproject.exceptions.PowerPlantParentNotFoundException;
-import dedheproject.exceptions.NoActiveDbConnectionException;
+import exceptions.TransformerParentNotFoundException;
+import exceptions.PowerPlantParentNotFoundException;
+import exceptions.NoActiveDbConnectionException;
 import DB_connection.DBConnection;
-import data_classes.Breaker;
-import data_classes.PowerPlant;
-import data_classes.Transformer;
+import DB_data_loader.data_classes.Breaker;
+import DB_data_loader.data_classes.PowerPlant;
+import DB_data_loader.data_classes.Transformer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject;
+package ExcelComponents;
 
 import com.aspose.cells.Cells;
-import dedheproject.exceptions.NoSuchSheetException;
+import exceptions.NoSuchSheetException;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import java.io.File;

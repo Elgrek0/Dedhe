@@ -6,17 +6,17 @@
 package Gui;
 
 import DB_data_loader.LoadDataFromDB;
-import plant_transformer_breaker_component.ChoosingPanel;
-import dedheproject.exceptions.NoParentTransformerException;
-import dedheproject.exceptions.NoParentPlantException;
-import data_classes.Breaker;
+import panels.plant_transformer_breaker_component.ChoosingPanel;
+import exceptions.NoParentTransformerException;
+import exceptions.NoParentPlantException;
+import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.StaticCachedData;
-import data_classes.PowerPlant;
-import data_classes.Transformer;
-import dedheproject.exceptions.ErrorPopup;
-import dedheproject.exceptions.NoActiveDbConnectionException;
-import dedheproject.exceptions.PowerPlantParentNotFoundException;
-import dedheproject.exceptions.TransformerParentNotFoundException;
+import DB_data_loader.data_classes.PowerPlant;
+import DB_data_loader.data_classes.Transformer;
+import exceptions.ErrorPopup;
+import exceptions.NoActiveDbConnectionException;
+import exceptions.PowerPlantParentNotFoundException;
+import exceptions.TransformerParentNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

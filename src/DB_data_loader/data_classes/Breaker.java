@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package data_classes;
+package DB_data_loader.data_classes;
 
 import DB_data_loader.StaticCachedData;
 import DB_connection.DBConnection;

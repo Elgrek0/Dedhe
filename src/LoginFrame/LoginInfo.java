@@ -3,16 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject.exceptions;
+package LoginFrame;
 
 /**
  *
  * @author Paris
  */
-public class BadTimeInputException extends Exception {
+public class LoginInfo {
 
-    public BadTimeInputException(String s) {
-        super(s);
+    public LoginInfo(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
     
+    public String username;
+    public String password;
 }

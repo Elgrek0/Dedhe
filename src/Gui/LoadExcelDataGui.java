@@ -5,21 +5,20 @@
  */
 package Gui;
 
-import plant_transformer_breaker_component.ChoosingPanel;
+import panels.plant_transformer_breaker_component.ChoosingPanel;
 import DB_connection.FixValues;
 import DB_connection.DBConnection;
 import ExcelComponents.ExcelFileOpener;
-import MySQlConnection.MainWindow;
 import com.mysql.jdbc.PreparedStatement;
-import dedheproject.ExcelSheetOpener;
-import dedheproject.Fileopener;
-import data_classes.Breaker;
-import dedheproject.exceptions.BadDateInputException;
-import dedheproject.exceptions.BadTimeInputException;
-import dedheproject.exceptions.NoSuchSheetException;
-import dedheproject.exceptions.ErrorPopup;
-import dedheproject.exceptions.NoFileSelectedException;
-import dedheproject.exceptions.badfileexception;
+import ExcelComponents.ExcelSheetOpener;
+import ExcelComponents.Fileopener;
+import DB_data_loader.data_classes.Breaker;
+import exceptions.BadDateInputException;
+import exceptions.BadTimeInputException;
+import exceptions.NoSuchSheetException;
+import exceptions.ErrorPopup;
+import exceptions.NoFileSelectedException;
+import exceptions.badfileexception;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Connection;

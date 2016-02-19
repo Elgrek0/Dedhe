@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package plant_transformer_breaker_component;
+package panels.plant_transformer_breaker_component;
 
-import data_classes.Breaker;
+import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.StaticCachedData;
-import data_classes.PowerPlant;
-import data_classes.Transformer;
+import DB_data_loader.data_classes.PowerPlant;
+import DB_data_loader.data_classes.Transformer;
 import java.awt.event.ItemEvent;
 import javax.swing.DefaultComboBoxModel;
 

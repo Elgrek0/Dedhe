@@ -10,12 +10,10 @@ import DB_connection.H2MyConnection;
 import DB_connection.H2Server;
 import DB_connection.MySQLConnection;
 import DB_data_loader.LoadDataFromDB;
-import MySQlConnection.MainWindow;
-import data_classes.DBinfo;
-import data_classes.LoginInfo;
-import dedheproject.exceptions.CouldntConnectException;
-import dedheproject.exceptions.ErrorPopup;
-import dedheproject.exceptions.NoActiveDbConnectionException;
+import Gui.MainWindow;
+import exceptions.CouldntConnectException;
+import exceptions.ErrorPopup;
+import exceptions.NoActiveDbConnectionException;
 
 /**
  *

@@ -3,20 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package data_classes;
+package exceptions;
 
 /**
  *
  * @author Paris
  */
-public class DBinfo {
-   public String DB_name;
-   public String DB_adress;
+public class BadTimeInputException extends Exception {
 
-    public DBinfo(String DB_name, String DB_adress) {
-        this.DB_name = DB_name;
-        this.DB_adress = DB_adress;
+    public BadTimeInputException(String s) {
+        super(s);
     }
-  
     
 }

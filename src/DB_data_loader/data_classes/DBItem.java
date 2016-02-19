@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject.exceptions;
+package DB_data_loader.data_classes;
 
 /**
  *
  * @author Paris
  */
-public class PowerPlantParentNotFoundException extends Exception {
-
-    public PowerPlantParentNotFoundException() {
-    }
+public interface DBItem {
     
+    public void store();
+    @Override
+    public String toString();
 }

@@ -5,10 +5,10 @@
  */
 package DB_connection;
 
-import MySQlConnection.MainWindow;
-import data_classes.DBinfo;
-import data_classes.LoginInfo;
-import dedheproject.exceptions.CouldntConnectException;
+import Gui.MainWindow;
+import LoginFrame.DBinfo;
+import LoginFrame.LoginInfo;
+import exceptions.CouldntConnectException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

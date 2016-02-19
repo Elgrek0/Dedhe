@@ -5,12 +5,10 @@
  */
 package ExcelComponents;
 
-import dedheproject.exceptions.NoFileSelectedException;
-import dedheproject.ExcelSheetOpener;
-import dedheproject.Fileopener;
-import dedheproject.exceptions.ErrorPopup;
-import dedheproject.exceptions.NoSuchSheetException;
-import dedheproject.exceptions.badfileexception;
+import exceptions.NoFileSelectedException;
+import exceptions.ErrorPopup;
+import exceptions.NoSuchSheetException;
+import exceptions.badfileexception;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
@@ -24,21 +22,15 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class ExcelFileOpener {
 
-    public static File open_excel_file() throws NoFileSelectedException {
+    public static File open_excel_file() throws NoFileSelectedException, badfileexception {
+        File excelfile = null;
+        excelfile = Fileopener.openfile();
 
-        File excelfile=null;
-        try {
-
-            excelfile = Fileopener.openfile();
-
-            if (excelfile == null) {
-                throw new NoFileSelectedException();
-            }
-            if(!FilenameUtils.getExtension(excelfile.getPath()).equals("xls")){
-                throw new badfileexception("file type is "+FilenameUtils.getExtension(excelfile.getPath()));
-            }
-        } catch (badfileexception ex) {
-            Logger.getLogger(ExcelFileOpener.class.getName()).log(Level.SEVERE, null, ex);
+        if (excelfile == null) {
+            throw new NoFileSelectedException();
+        }
+        if (!FilenameUtils.getExtension(excelfile.getPath()).equals("xls")) {
+            throw new badfileexception("file type is " + FilenameUtils.getExtension(excelfile.getPath()));
         }
 
         return excelfile;

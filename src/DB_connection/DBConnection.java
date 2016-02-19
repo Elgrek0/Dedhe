@@ -5,9 +5,9 @@
  */
 package DB_connection;
 
-import data_classes.DBinfo;
-import data_classes.LoginInfo;
-import dedheproject.exceptions.CouldntConnectException;
+import LoginFrame.DBinfo;
+import LoginFrame.LoginInfo;
+import exceptions.CouldntConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MySQlConnection;
+package Gui;
 
 import DB_connection.FixValues;
 import DB_connection.H2Server;
@@ -12,19 +12,19 @@ import DB_connection.DBConnection;
 import DB_connection.MySQLConnection;
 import DB_data_loader.LoadDataFromDB;
 import Gui.AnalyticsGui;
-import plant_transformer_breaker_component.ChoosingPanel;
+import panels.plant_transformer_breaker_component.ChoosingPanel;
 import Gui.LoadExcelDataGui;
 import Gui.LoadFromExcelFrame;
-import data_classes.LoginInfo;
-import dedheproject.ExcelSheetOpener;
-import dedheproject.Fileopener;
+import LoginFrame.LoginInfo;
+import ExcelComponents.ExcelSheetOpener;
+import ExcelComponents.Fileopener;
 import DB_data_loader.StaticCachedData;
-import dedheproject.exceptions.BadDateInputException;
-import dedheproject.exceptions.BadTimeInputException;
-import dedheproject.exceptions.CouldntConnectException;
-import dedheproject.exceptions.NoActiveDbConnectionException;
-import dedheproject.exceptions.NoSuchSheetException;
-import dedheproject.exceptions.badfileexception;
+import exceptions.BadDateInputException;
+import exceptions.BadTimeInputException;
+import exceptions.CouldntConnectException;
+import exceptions.NoActiveDbConnectionException;
+import exceptions.NoSuchSheetException;
+import exceptions.badfileexception;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.PreparedStatement;
@@ -77,7 +77,6 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(303, 315));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         QueryButton.setText("Queries");

@@ -3,11 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject;
+package ExcelComponents;
 
-import dedheproject.exceptions.badfileexception;
 import java.io.File;
-import java.io.IOException;
 import javax.swing.JFileChooser;
 
 /**
@@ -16,20 +14,12 @@ import javax.swing.JFileChooser;
  */
 public class Fileopener {
 
-    public static File openfile() throws badfileexception {
+    public static File openfile() {
         JFileChooser fileChooser = new JFileChooser();
         int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            String path = selectedFile.getAbsolutePath();
-            String[] splitpath = path.split("\\.");
-
-            String extension = splitpath[splitpath.length - 1];
-            if (extension.equals("xls")) {
-                return (selectedFile);
-            } else {
-                throw new badfileexception("is not an xls file");
-            }
+            return (selectedFile);
         }
         return null;
 

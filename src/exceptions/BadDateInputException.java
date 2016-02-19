@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject.exceptions;
+package exceptions;
 
 /**
  *
  * @author Paris
  */
-public class NoSuchSheetException extends Exception {
-
-    public NoSuchSheetException(String s) {
+public class BadDateInputException extends Exception {
+    
+    
+    public BadDateInputException(String s) {
         super(s);
     }
-    
+
 }

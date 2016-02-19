@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MySQlConnection;
+package Gui;
 
 import DB_connection.DBConnection;
 import java.sql.PreparedStatement;

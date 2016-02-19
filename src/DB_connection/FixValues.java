@@ -1,7 +1,7 @@
 package DB_connection;
 
-import dedheproject.exceptions.BadTimeInputException;
-import dedheproject.exceptions.BadDateInputException;
+import exceptions.BadTimeInputException;
+import exceptions.BadDateInputException;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;

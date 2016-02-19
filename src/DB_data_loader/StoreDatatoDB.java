@@ -7,7 +7,7 @@ package DB_data_loader;
 
 import DB_connection.DBConnection;
 import static DB_data_loader.StaticCachedData.conn;
-import data_classes.PowerPlant;
+import DB_data_loader.data_classes.PowerPlant;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Vector;

@@ -3,17 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject.exceptions;
+package exceptions;
 
 /**
  *
  * @author Paris
  */
-public class BadDateInputException extends Exception {
-    
-    
-    public BadDateInputException(String s) {
-        super(s);
-    }
+public class NoParentPlantException extends Exception {
 
+    public NoParentPlantException() {
+    }
+    
 }

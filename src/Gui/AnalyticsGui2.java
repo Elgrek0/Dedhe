@@ -5,11 +5,11 @@
  */
 package Gui;
 
-import Analytics.GraphPanel;
+import panels.Analytics.GraphPanel;
 import DB_connection.DBConnection;
 import com.mysql.jdbc.PreparedStatement;
-import dedheproject.exceptions.BadDateInputException;
-import dedheproject.exceptions.ErrorPopup;
+import exceptions.BadDateInputException;
+import exceptions.ErrorPopup;
 import java.awt.BorderLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -3,15 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package data_classes;
+package exceptions;
 
 /**
  *
  * @author Paris
  */
-public interface DBItem {
-    
-    public void store();
-    @Override
-    public String toString();
+public class CouldntConnectException extends Exception {
+
+    public CouldntConnectException(String s) {
+        super(s);
+    }
+
+
 }

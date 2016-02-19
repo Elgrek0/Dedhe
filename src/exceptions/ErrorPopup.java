@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dedheproject.exceptions;
+package exceptions;
 
-import MySQlConnection.MainWindow;
+import Gui.MainWindow;
 import javax.swing.JOptionPane;
 
 /**

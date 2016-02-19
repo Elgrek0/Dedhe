@@ -6,8 +6,8 @@
 package MySQlConnection;
 
 import DB_connection.FixValues;
-import dedheproject.exceptions.BadDateInputException;
-import dedheproject.exceptions.BadTimeInputException;
+import exceptions.BadDateInputException;
+import exceptions.BadTimeInputException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
