@@ -8,6 +8,7 @@ package Gui;
 import plant_transformer_breaker_component.ChoosingPanel;
 import DB_connection.FixValues;
 import DB_connection.DBConnection;
+import ExcelComponents.ExcelFileOpener;
 import MySQlConnection.MainWindow;
 import com.mysql.jdbc.PreparedStatement;
 import dedheproject.ExcelSheetOpener;
@@ -17,6 +18,7 @@ import dedheproject.exceptions.BadDateInputException;
 import dedheproject.exceptions.BadTimeInputException;
 import dedheproject.exceptions.NoSuchSheetException;
 import dedheproject.exceptions.ErrorPopup;
+import dedheproject.exceptions.NoFileSelectedException;
 import dedheproject.exceptions.badfileexception;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -193,12 +195,14 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void load_temporary_data_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_temporary_data_buttonActionPerformed
-        try {
-            excelfile = Fileopener.openfile();
-
-            if (excelfile == null) {
+           try {
+                excelfile = ExcelFileOpener.open_excel_file();
+            } catch (NoFileSelectedException ex) {
                 return;
             }
+           
+        try {     
+            
             //int sheet_number, int start_x, int start_y, int columns_to_read, int rows_to_read, File excelfile
             int columncount = 3;
             sheet = new ExcelSheetOpener((int) sheet_number_spinner.getValue(), 0, (int) from_line_spinner.getValue(), columncount, 10, excelfile);
@@ -209,10 +213,12 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
             DefaultTableModel dtb = new DefaultTableModel(sheet.data, columnnames);
             sample_data_table.setModel(dtb);
             revalidate();
-        } catch (FileNotFoundException | NoSuchSheetException | badfileexception ex) {
-            excelfile = null;
-            ErrorPopup.popup(ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchSheetException ex) {
+            Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
         }
+    
     }//GEN-LAST:event_load_temporary_data_buttonActionPerformed
 
     private void pass_data_to_DB_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pass_data_to_DB_buttonActionPerformed
@@ -319,8 +325,12 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         } catch (SQLException ex) {
             try {
                 dbconn.enablekeys("breaker_data");
-            } catch (SQLException ex1) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex1);
+            
+
+} catch (SQLException ex1) {
+                Logger.getLogger(MainWindow.class  
+
+.getName()).log(Level.SEVERE, null, ex1);
             }
             fatalerror = true;
             System.out.println("query error at loadexceldatagui");

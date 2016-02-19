@@ -5,6 +5,7 @@
  */
 package DB_connection;
 
+import data_classes.DBinfo;
 import data_classes.LoginInfo;
 import dedheproject.exceptions.CouldntConnectException;
 import java.sql.Connection;
@@ -25,7 +26,7 @@ public abstract class DBConnection {
     public Connection conn = null;
     String dbname;
 
-    public abstract void connect(LoginInfo login) throws CouldntConnectException;
+    public abstract void connect(LoginInfo login,DBinfo dbinfo) throws CouldntConnectException;
 
     public DefaultTableModel buildTableModel(ResultSet rs)
             throws SQLException {

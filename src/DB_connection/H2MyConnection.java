@@ -6,6 +6,7 @@
 package DB_connection;
 
 import MySQlConnection.MainWindow;
+import data_classes.DBinfo;
 import data_classes.LoginInfo;
 import dedheproject.exceptions.CouldntConnectException;
 import java.sql.Connection;
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
 public class H2MyConnection extends DBConnection {
 
     @Override
-    public void connect(LoginInfo login) throws CouldntConnectException {
+    public void connect(LoginInfo login,DBinfo dbinfo) throws CouldntConnectException {
 
         try {
             Class.forName("org.h2.Driver");
@@ -34,7 +35,7 @@ public class H2MyConnection extends DBConnection {
         try {
             String pass =login.password;
             conn = DriverManager.getConnection("jdbc:h2:database./DB", login.username, pass);
-            dbname= MainWindow.DBNameBox.getText();
+            dbname=dbinfo.DB_name;
             conn.prepareStatement("use " + dbname + ";").execute();
         } catch (SQLException ex) {
             // handle any errors
