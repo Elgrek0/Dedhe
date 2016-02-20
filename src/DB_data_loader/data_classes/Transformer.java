@@ -6,6 +6,7 @@
 package DB_data_loader.data_classes;
 
 import DB_data_loader.StoreDatatoDB;
+import exceptions.CouldntStoreDataException;
 import java.util.Vector;
 
 /**
@@ -29,7 +30,7 @@ public class Transformer implements DBItem {
     }
 
     @Override
-    public void store() {
+    public void store() throws CouldntStoreDataException {
         StoreDatatoDB.store("Transformer", id + ",'" + name + "'," + parent_powerplant.id);
 
     }

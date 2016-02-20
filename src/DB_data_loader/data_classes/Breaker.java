@@ -6,6 +6,7 @@
 package DB_data_loader.data_classes;
 
 import DB_data_loader.StoreDatatoDB;
+import exceptions.CouldntStoreDataException;
 
 /**
  *
@@ -25,7 +26,7 @@ public class Breaker implements DBItem {
         parent_transformer.breakers.add(this);
     }
     @Override
-    public void store() {
+    public void store() throws CouldntStoreDataException {
         
         StoreDatatoDB.store("Breaker", id + ",'" + name + "',"+parent_transformer.id);
         

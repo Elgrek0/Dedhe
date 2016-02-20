@@ -36,7 +36,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         add(cp);
         add(dp);
         cp.setVisible(true);
-        cp.setLocation(400, 0);
+        cp.setLocation(600, 0);
         initComponents();
         setSize(1200, 700);
         cp.addChangeListener(new ActionListener() {

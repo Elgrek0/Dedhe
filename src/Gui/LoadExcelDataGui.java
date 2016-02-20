@@ -16,6 +16,7 @@ import ExcelComponents.FileOpener;
 import ExcelComponents.SpreadSheetOpener;
 import exceptions.BadDateInputException;
 import exceptions.BadTimeInputException;
+import exceptions.CouldntStoreDataException;
 import exceptions.NoSuchSheetException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -216,20 +217,23 @@ void load_temp_data() {
     }//GEN-LAST:event_pass_data_to_transformer_buttonActionPerformed
 
     private void sheet_number_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sheet_number_spinnerStateChanged
-        if ((int) sheet_number_spinner.getValue() < 0 || sheetfile == null) {
-            sheet_number_spinner.setValue(0);
-        } else {
-            try {
-                sheetopener = new ExcelSheetOpener((int) sheet_number_spinner.getValue(), sheetfile);
 
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(LoadExcelDataGui.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchSheetException ex) {
-                Logger.getLogger(LoadExcelDataGui.class
-                        .getName()).log(Level.SEVERE, null, ex);
+        if (FilenameUtils.getExtension(sheetfile.getPath()).equals("xls")) {
+            if ((int) sheet_number_spinner.getValue() < 0 || sheetfile == null) {
+                sheet_number_spinner.setValue(0);
+            } else {
+                try {
+                    sheetopener = new ExcelSheetOpener((int) sheet_number_spinner.getValue(), sheetfile);
+
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(LoadExcelDataGui.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                } catch (NoSuchSheetException ex) {
+                    Logger.getLogger(LoadExcelDataGui.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+                load_temp_data();
             }
-            load_temp_data();
         }
     }//GEN-LAST:event_sheet_number_spinnerStateChanged
 
@@ -252,6 +256,7 @@ void load_temp_data() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         parent.setEnabled(true);
+                        cp.refresh();
                     }
                 });
             }
@@ -302,21 +307,27 @@ void load_temp_data() {
 
                     StoreDatatoDB.store("Breaker_data", data);
                 } catch (BadDateInputException ex) {
-                    Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
+                    errors++;
                 } catch (BadTimeInputException ex) {
-                    Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
+                    errors++;
+                } catch (CouldntStoreDataException ex) {
+                    errors++;
                 }
 
             }
         }
         if (sheetopener.getClass() == CSVSheetOpener.class) {
             for (int i = 1; i < sheetopener.max_row; i++) {
-                String[] breakerdata = sheetopener.getrow(0, 2, i);
-                data = "'" + breakerdata[0]
-                        + ":00'" + "," + breakerdata[1].replace(',', '.')
-                        + "," + cp.selected_breaker.id;
+                try {
+                    String[] breakerdata = sheetopener.getrow(0, 2, i);
+                    data = "'" + breakerdata[0]
+                            + ":00'" + "," + breakerdata[1].replace(',', '.')
+                            + "," + cp.selected_breaker.id;
 
-                StoreDatatoDB.store("Breaker_data", data);
+                    StoreDatatoDB.store("Breaker_data", data);
+                } catch (CouldntStoreDataException ex) {
+                    errors++;
+                }
 
             }
         }
@@ -342,9 +353,11 @@ void load_temp_data() {
 
                     StoreDatatoDB.store("Transformer_data", data);
                 } catch (BadDateInputException ex) {
-                    Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
+                    errors++;
                 } catch (BadTimeInputException ex) {
-                    Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
+                    errors++;
+                } catch (CouldntStoreDataException ex) {
+                    errors++;
                 }
 
             }
@@ -352,12 +365,16 @@ void load_temp_data() {
         if (sheetopener.getClass() == CSVSheetOpener.class) {
             for (int i = 1; i < sheetopener.max_row; i++) {
 
-                String[] breakerdata = sheetopener.getrow(0, 2, i);
-                data = "'" + breakerdata[0]
-                        + ":00'" + "," + breakerdata[1].replace(',', '.')
-                        + "," + cp.selected_transformer.id;
+                try {
+                    String[] breakerdata = sheetopener.getrow(0, 2, i);
+                    data = "'" + breakerdata[0]
+                            + ":00'" + "," + breakerdata[1].replace(',', '.')
+                            + "," + cp.selected_transformer.id;
 
-                StoreDatatoDB.store("Transformer_data", data);
+                    StoreDatatoDB.store("Transformer_data", data);
+                } catch (CouldntStoreDataException ex) {
+                    errors++;
+                }
 
             }
         }

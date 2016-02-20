@@ -5,6 +5,7 @@
  */
 package DB_data_loader;
 
+import exceptions.CouldntStoreDataException;
 import DB_connection.DBConnection;
 import static DB_data_loader.StaticCachedData.conn;
 import DB_data_loader.data_classes.PowerPlant;
@@ -19,28 +20,26 @@ import java.util.logging.Logger;
  * @author Paris
  */
 public class StoreDatatoDB {
-    
-    
-    public static void store(String arrayname,String values){
-        
-        
-         DBConnection dbconn=conn;
+
+    public static void store(String arrayname, String values) throws CouldntStoreDataException {
+
+        DBConnection dbconn = conn;
         try {
             dbconn = StaticCachedData.conn;
             dbconn.disablekeys(arrayname);
-            PreparedStatement pstmt = null;            
-   
-            String query = " INSERT INTO "+arrayname+" VALUES ("+values+");\n";
+            PreparedStatement pstmt = null;
+
+            String query = " INSERT INTO " + arrayname + " VALUES (" + values + ");\n";
 
             pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
             pstmt.execute();
         } catch (SQLException ex) {
-             try {
-                 dbconn.enablekeys(arrayname);
-             } catch (SQLException ex1) {
-                 Logger.getLogger(StoreDatatoDB.class.getName()).log(Level.SEVERE, null, ex1);
-             }
-            Logger.getLogger(PowerPlant.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                dbconn.enablekeys(arrayname);
+            } catch (SQLException ex1) {
+                Logger.getLogger(StoreDatatoDB.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+            throw new CouldntStoreDataException();
         }
         if (dbconn != null) {
             try {
@@ -48,6 +47,7 @@ public class StoreDatatoDB {
             } catch (SQLException ex) {
                 Logger.getLogger(PowerPlant.class.getName()).log(Level.SEVERE, null, ex);
             }
+            throw new CouldntStoreDataException();
         }
     }
 }

@@ -5,6 +5,7 @@
  */
 package DB_connection;
 
+import exceptions.ErrorPopup;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -24,13 +25,12 @@ public class H2Server {
         JdbcDataSource ds = new JdbcDataSource();
         try {
             ds.setURL("jdbc:h2:database./DB;" + 
-                    "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;"+
-                    "RUNSCRIPT FROM './populate.sql';");
+                    "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;");
             ds.setUser("root");
             ds.getConnection();
             
         } catch (Exception e) {
-            //System.out.println(e);
+            ErrorPopup.popup(e);
         }
 
     }

@@ -3,17 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DB_data_loader.data_classes;
-
-import exceptions.CouldntStoreDataException;
+package exceptions;
 
 /**
  *
  * @author Paris
  */
-public interface DBItem {
+public class CouldntStoreDataException extends Exception {
+
+    public CouldntStoreDataException() {
+    }
     
-    public void store() throws CouldntStoreDataException;
-    @Override
-    public String toString();
 }
