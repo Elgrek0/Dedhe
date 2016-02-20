@@ -414,7 +414,7 @@ public class DatePanel extends javax.swing.JPanel {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         startdate = startdate.plusYears(-1);
-        enddate = enddate.plusYears(1);
+        enddate = enddate.plusYears(-1);
         statechangedevent();
     }//GEN-LAST:event_jButton6ActionPerformed
 

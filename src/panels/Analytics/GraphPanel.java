@@ -81,7 +81,7 @@ public class GraphPanel extends JPanel {
         renderer.setBaseShapesVisible(false);
 
         DateAxis axis = (DateAxis) plot.getDomainAxis();
-        axis.setDateFormatOverride(new SimpleDateFormat("HH-mm"));
+        axis.setDateFormatOverride(new SimpleDateFormat("HH-mm MM-dd"));
 
         return chart;
 
