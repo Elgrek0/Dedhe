@@ -5,6 +5,8 @@
  */
 package panels.date_panel;
 
+import java.awt.event.ActionListener;
+import java.util.Vector;
 import javax.swing.JFrame;
 import org.joda.time.LocalDate;
 
@@ -16,36 +18,44 @@ public class DatePanel extends javax.swing.JPanel {
 
     public LocalDate startdate;
     public LocalDate enddate;
+
+    Vector<ActionListener> changelisteners = new Vector<>();
+
+    public void addChangeListener(ActionListener changelistener) {
+        changelisteners.add(changelistener);
+
+    }
+
+    private void statechangedevent() {
+        for (int i = 0; i < changelisteners.size(); i++) {
+            changelisteners.get(i).actionPerformed(null);
+        }
+        update_spinners();
+    }
+
     /**
      * Creates new form DatePanel
      */
     public DatePanel() {
-        
-        
-         
+
         initComponents();
-        
-        startdate = new LocalDate(2015,9,1);
-        enddate   = new LocalDate(2016,8,31);
+
+        startdate = new LocalDate(2015, 9, 1);
+        enddate = new LocalDate(2016, 8, 31);
+        update_spinners();
+
+    }
+
+    private void update_spinners() {
+
         start_day_spinner.setValue(startdate.getDayOfMonth());
         start_month_spinner.setValue(startdate.getMonthOfYear());
         start_year_spinner.setValue(startdate.getYear());
         end_day_spinner.setValue(enddate.getDayOfMonth());
         end_month_spinner.setValue(enddate.getMonthOfYear());
         end_year_spinner.setValue(enddate.getYear());
-         
-         
     }
-    private void update_spinner(){
-        
-       start_day_spinner.setValue(startdate.getDayOfMonth());
-       start_month_spinner.setValue(startdate.getMonthOfYear());
-       start_year_spinner.setValue(startdate.getYear());
-       end_day_spinner.setValue(enddate.getDayOfMonth());
-       end_month_spinner.setValue(enddate.getMonthOfYear());
-       end_year_spinner.setValue(enddate.getYear());
-    }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -96,7 +106,11 @@ public class DatePanel extends javax.swing.JPanel {
                 end_day_spinnerStateChanged(evt);
             }
         });
-
+    end_month_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                end_month_spinnerStateChanged(evt);
+            }
+        });
         end_year_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 end_year_spinnerStateChanged(evt);
@@ -110,113 +124,120 @@ public class DatePanel extends javax.swing.JPanel {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(69, 69, 69)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(start_label)
-                    .addComponent(end_label))
-                .addGap(44, 44, 44)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(day_label)
-                        .addGap(65, 65, 65)
-                        .addComponent(month_label))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGap(69, 69, 69)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(start_label)
+                                .addComponent(end_label))
+                        .addGap(44, 44, 44)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGap(24, 24, 24)
+                                        .addComponent(day_label)
+                                        .addGap(65, 65, 65)
+                                        .addComponent(month_label))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(start_day_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(end_day_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(42, 42, 42)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(end_month_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(start_month_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(start_day_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(end_day_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(42, 42, 42)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(end_month_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(start_month_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(year_label)
-                        .addGap(13, 13, 13))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(end_year_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(start_year_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(33, 33, 33))
+                                .addGroup(layout.createSequentialGroup()
+                                        .addGap(39, 39, 39)
+                                        .addComponent(year_label)
+                                        .addGap(13, 13, 13))
+                                .addGroup(layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(end_year_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(start_year_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(33, 33, 33))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(day_label)
-                    .addComponent(month_label)
-                    .addComponent(year_label))
-                .addGap(2, 2, 2)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(start_day_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(start_month_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(start_year_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(start_label))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(end_day_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(end_month_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(end_year_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(end_label))
-                .addContainerGap(212, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(day_label)
+                                .addComponent(month_label)
+                                .addComponent(year_label))
+                        .addGap(2, 2, 2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(start_day_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(start_month_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(start_year_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(start_label))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(end_day_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(end_month_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(end_year_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(end_label))
+                        .addContainerGap(212, Short.MAX_VALUE))
         );
     }// </editor-fold>                        
 
-    private void start_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                               
-     int a=(int) start_day_spinner.getValue();
-     int b= (int) startdate.getDayOfMonth();
-     int c = a-b;
-     startdate= startdate.plusDays(c);
-     
-    }                                              
+    private void start_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {
+        int newstartday = (int) start_day_spinner.getValue();
+        int oldstartday = (int) startdate.getDayOfMonth();
+        int datechange = newstartday - oldstartday;
+        startdate = startdate.plusDays(datechange);
+        statechangedevent();
+    }
 
-    private void end_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                             
-     int a=(int) end_day_spinner.getValue();
-     int b= (int) enddate.getDayOfMonth();
-     int c = a-b;
-     enddate = enddate.plusDays(c);
-     
-    }                                            
+    private void end_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {
+        int newendday = (int) end_day_spinner.getValue();
+        int oldendday = (int) enddate.getDayOfMonth();
+        int datechange = newendday - oldendday;
+        enddate = enddate.plusDays(datechange);
+        statechangedevent();
+    }
 
-    private void start_month_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                                 
-     int a=(int) start_month_spinner.getValue();
-     int b= (int) startdate.getMonthOfYear();
-     int c = a-b;
-    startdate=  startdate.plusMonths(c);
-        
-    }                                                
+    private void start_month_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {
+        int newstartmonth = (int) start_month_spinner.getValue();
+        int oldstartmonth = (int) startdate.getMonthOfYear();
+        int monthchange = newstartmonth - oldstartmonth;
+        startdate = startdate.plusMonths(monthchange);
+        statechangedevent();
+    }
 
-    private void start_year_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                                
-     int a=(int) start_year_spinner.getValue();
-     int b= (int) startdate.getYear();
-     int c = a-b;
-     startdate =startdate.plusYears(c);
-    }                                               
+    private void start_year_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {
+        int newstartyear = (int) start_year_spinner.getValue();
+        int oldstartyear = (int) startdate.getYear();
+        int yearchange = newstartyear - oldstartyear;
+        startdate = startdate.plusYears(yearchange);
+        statechangedevent();
+    }
 
-    private void end_year_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                              
-        int a=(int) end_year_spinner.getValue();
-        int b=(int) enddate.getYear();
-        int c = a-b;
-        enddate= enddate.plusYears(c);
-    }                                             
+    private void end_year_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {
+
+        int newendyear = (int) end_year_spinner.getValue();
+        int oldendyear = (int) enddate.getYear();
+        int yearchange = newendyear - oldendyear;
+        enddate = enddate.plusYears(yearchange);
+        statechangedevent();
+
+    }
+
     private void end_month_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {
-        int a=(int) end_month_spinner.getValue();
-        int b=(int) enddate.getMonthOfYear();
-        int c = a-b;
-        enddate= enddate.plusMonths(c);   
-     } 
 
-     public static void main(String args[]){
-         JFrame frame=new JFrame();
-         frame.add(new DatePanel());
-         frame.setVisible(true);
-         frame.setBounds(500,500,500, 500);
-     }
+        int newendmonth = (int) end_month_spinner.getValue();
+        int oldendmonth = (int) enddate.getMonthOfYear();
+        int monthchange = newendmonth - oldendmonth;
+        enddate = enddate.plusMonths(monthchange);
+        statechangedevent();
+    }
+
+    public static void main(String args[]) {
+        JFrame frame = new JFrame();
+        frame.add(new DatePanel());
+        frame.setVisible(true);
+        frame.setBounds(500, 500, 500, 500);
+    }
     // Variables declaration - do not modify                     
     private javax.swing.JLabel day_label;
     private javax.swing.JSpinner end_day_spinner;
