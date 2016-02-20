@@ -27,8 +27,8 @@ public class AnalyticsGui extends javax.swing.JFrame {
      */
     DBConnection dbconn;
     ChoosingPanel cp = new ChoosingPanel();
-    LocalDate startdate = new LocalDate(2015, 1, 14);
-    LocalDate enddate = new LocalDate(2015, 1, 15);
+    LocalDate startdate = new LocalDate(2014, 1, 14);
+    LocalDate enddate = new LocalDate(2014, 1, 15);
     Vector<ElectricalValue> data;
 
     public AnalyticsGui(DBConnection dbconn) {
