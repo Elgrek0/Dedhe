@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 import org.joda.time.LocalDate;
+import panels.date_panel.DatePanel;
 
 /**
  *
@@ -27,18 +28,25 @@ public class AnalyticsGui extends javax.swing.JFrame {
      */
     DBConnection dbconn;
     ChoosingPanel cp = new ChoosingPanel();
-    LocalDate startdate = new LocalDate(2014, 1, 14);
-    LocalDate enddate = new LocalDate(2014, 1, 15);
+    DatePanel dp = new DatePanel();
     Vector<ElectricalValue> data;
 
     public AnalyticsGui(DBConnection dbconn) {
-        this.dbconn = dbconn;
-        this.add(cp);
+        dbconn = dbconn;
+        add(cp);
+        add(dp);
         cp.setVisible(true);
         cp.setLocation(400, 0);
         initComponents();
-        setSize(1200, 600);
+        setSize(1200, 700);
         cp.addChangeListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                queryfornewdata();
+            }
+        });
+        dp.addChangeListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -59,10 +67,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        graph_panel = new javax.swing.JPanel();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -71,57 +75,15 @@ public class AnalyticsGui extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 400));
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Highlight Max", "Highlight Min" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(115, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout graph_panelLayout = new javax.swing.GroupLayout(graph_panel);
-        graph_panel.setLayout(graph_panelLayout);
-        graph_panelLayout.setHorizontalGroup(
-            graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 681, Short.MAX_VALUE)
-        );
-        graph_panelLayout.setVerticalGroup(
-            graph_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 272, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(graph_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 534, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(84, 84, 84)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(graph_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addGap(0, 423, Short.MAX_VALUE)
         );
 
         pack();
@@ -129,18 +91,19 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel graph_panel;
-    private javax.swing.JList jList1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
+    GraphPanel graph = null;
 
     private void queryfornewdata() {
-        data = LoadDataFromDB.get_breaker_data(cp.selected_breaker, startdate, enddate);
-        graph_panel.removeAll();
-        graph_panel.add(new GraphPanel(data));
+        data = LoadDataFromDB.get_breaker_data(cp.selected_breaker, dp.startdate, dp.enddate);
+        if (graph != null) {
+            remove(graph);
+        }
+        graph = new GraphPanel(data);
+        graph.setLocation(400, 80);
+        add(graph);
         revalidate();
     }
 
