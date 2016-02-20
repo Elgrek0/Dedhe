@@ -8,18 +8,13 @@ package Gui;
 import panels.plant_transformer_breaker_component.ChoosingPanel;
 import panels.Analytics.GraphPanel;
 import DB_connection.DBConnection;
-import com.mysql.jdbc.PreparedStatement;
-import DB_data_loader.data_classes.Breaker;
-import DB_data_loader.StaticCachedData;
-import DB_data_loader.data_classes.Transformer;
+import DB_data_loader.LoadDataFromDB;
+import DB_data_loader.data_classes.ElectricalValue;
 import exceptions.BadDateInputException;
-import exceptions.ErrorPopup;
-import java.awt.BorderLayout;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+import org.joda.time.LocalDate;
 
 /**
  *
@@ -32,6 +27,9 @@ public class AnalyticsGui extends javax.swing.JFrame {
      */
     DBConnection dbconn;
     ChoosingPanel cp = new ChoosingPanel();
+    LocalDate startdate = new LocalDate(2015, 1, 14);
+    LocalDate enddate = new LocalDate(2015, 1, 15);
+    Vector<ElectricalValue> data;
 
     public AnalyticsGui(DBConnection dbconn) {
         this.dbconn = dbconn;
@@ -39,13 +37,15 @@ public class AnalyticsGui extends javax.swing.JFrame {
         cp.setVisible(true);
         cp.setLocation(400, 0);
         initComponents();
-        start_year_spinner.setValue(new Integer(2015));
-        start_month_spinner.setValue(new Integer(1));
-        start_day_spinner.setValue(new Integer(14));
-        end_year_spinner.setValue(new Integer(2015));
-        end_month_spinner.setValue(new Integer(1));
-        end_day_spinner.setValue(new Integer(15));
+        setSize(1200, 600);
+        cp.addChangeListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                queryfornewdata();
+            }
+        });
+        queryfornewdata();
     }
 
     /**
@@ -59,15 +59,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jPanel1 = new javax.swing.JPanel();
-        end_day_spinner = new javax.swing.JSpinner();
-        end_month_spinner = new javax.swing.JSpinner();
-        end_year_spinner = new javax.swing.JSpinner();
-        start_day_spinner = new javax.swing.JSpinner();
-        start_month_spinner = new javax.swing.JSpinner();
-        start_year_spinner = new javax.swing.JSpinner();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
@@ -79,44 +70,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 400));
-
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        end_day_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                end_day_spinnerStateChanged(evt);
-            }
-        });
-        jPanel1.add(end_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 60, -1));
-
-        end_month_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                end_month_spinnerStateChanged(evt);
-            }
-        });
-        jPanel1.add(end_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 40, 60, -1));
-        jPanel1.add(end_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 90, -1));
-
-        start_day_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                start_day_spinnerStateChanged(evt);
-            }
-        });
-        jPanel1.add(start_day_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 10, 60, -1));
-
-        start_month_spinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                start_month_spinnerStateChanged(evt);
-            }
-        });
-        jPanel1.add(start_month_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, 60, -1));
-        jPanel1.add(start_year_spinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 40, 90, -1));
-
-        jLabel1.setText("Starting Date :");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 4, -1, 30));
-
-        jLabel2.setText("Ending Date :");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, 40));
 
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Highlight Max", "Highlight Min" };
@@ -161,17 +114,11 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(graph_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(84, 84, 84)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(graph_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -180,84 +127,21 @@ public class AnalyticsGui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void start_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_start_day_spinnerStateChanged
-        queryfornewdata();
-    }//GEN-LAST:event_start_day_spinnerStateChanged
-
-    private void end_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_end_day_spinnerStateChanged
-        queryfornewdata();
-    }//GEN-LAST:event_end_day_spinnerStateChanged
-
-    private void start_month_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_start_month_spinnerStateChanged
-        queryfornewdata();
-    }//GEN-LAST:event_start_month_spinnerStateChanged
-
-    private void end_month_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_end_month_spinnerStateChanged
-        queryfornewdata();
-    }//GEN-LAST:event_end_month_spinnerStateChanged
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSpinner end_day_spinner;
-    private javax.swing.JSpinner end_month_spinner;
-    private javax.swing.JSpinner end_year_spinner;
     private javax.swing.JPanel graph_panel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JList jList1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JSpinner start_day_spinner;
-    private javax.swing.JSpinner start_month_spinner;
-    private javax.swing.JSpinner start_year_spinner;
     // End of variables declaration//GEN-END:variables
 
-    private void check_if_valid(String startdate) throws BadDateInputException {
-        System.out.println("check not yet fixed");
-        if (false) {
-            throw new BadDateInputException("Wrong Date");
-        }
-    }
-
     private void queryfornewdata() {
-        String startdate = "'" + start_year_spinner.getValue() + "-"
-                + start_month_spinner.getValue() + "-" + start_day_spinner.getValue() + "'";
-        String enddate;
-        enddate = "'" + end_year_spinner.getValue() + "-"
-                + end_month_spinner.getValue() + "-" + end_day_spinner.getValue() + "'";
-
-        if (dbconn != null) {
-            try {
-
-                String query = "";
-
-                Breaker b = (Breaker) cp.breaker_combobox.getSelectedItem();
-                query = "SELECT datetime,current FROM breaker_data "
-                        + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + b.id + ";";
-
-                System.out.println(query);
-                Statement pstmt = dbconn.conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                // (PreparedStatement) dbconn.conn.prepareStatement(query);
-                pstmt.executeQuery(query);
-
-                GraphPanel gp = new GraphPanel(pstmt.getResultSet());
-                graph_panel.setLayout(new BorderLayout());
-                graph_panel.removeAll();
-                graph_panel.add(gp.panel, BorderLayout.CENTER);
-                graph_panel.setVisible(true);
-                revalidate();
-
-            } catch (SQLException ex) {
-
-                System.out.println("bad query");
-                System.out.println(ex.getMessage());
-
-            }
-        }
-
+        data = LoadDataFromDB.get_breaker_data(cp.selected_breaker, startdate, enddate);
+        graph_panel.removeAll();
+        graph_panel.add(new GraphPanel(data));
+        revalidate();
     }
 
 }

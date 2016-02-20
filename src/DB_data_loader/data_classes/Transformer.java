@@ -5,14 +5,8 @@
  */
 package DB_data_loader.data_classes;
 
-import DB_data_loader.StaticCachedData;
-import DB_connection.DBConnection;
 import DB_data_loader.StoreDatatoDB;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

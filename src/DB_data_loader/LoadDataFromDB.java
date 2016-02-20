@@ -11,16 +11,20 @@ import static DB_data_loader.StaticCachedData.db_breakers;
 import static DB_data_loader.StaticCachedData.db_powerplants;
 import static DB_data_loader.StaticCachedData.db_transformers;
 import DB_data_loader.data_classes.Breaker;
+import DB_data_loader.data_classes.ElectricalValue;
 import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
 import exceptions.NoActiveDbConnectionException;
 import exceptions.PowerPlantParentNotFoundException;
 import exceptions.TransformerParentNotFoundException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 /**
  *
@@ -228,4 +232,81 @@ public class LoadDataFromDB {
 
     }
 
+    public static Vector<ElectricalValue> get_breaker_data(Breaker b, LocalDate start_date, LocalDate end_date) {
+
+        Vector<ElectricalValue> data = new Vector<ElectricalValue>();
+
+        if (b != null) {
+            String startdate = "'" + start_date.getYear() + "-"
+                    + start_date.getMonthOfYear() + "-" + start_date.getDayOfMonth() + "'";
+            String enddate;
+            enddate = "'" + end_date.getYear() + "-"
+                    + end_date.getMonthOfYear() + "-" + end_date.getDayOfMonth() + "'";
+
+            if (conn != null) {
+                try {
+
+                    String query = "SELECT datetime,current FROM breaker_data "
+                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + b.id + ";";
+
+                    PreparedStatement pstmt = (PreparedStatement) conn.conn.prepareStatement(query);
+                    pstmt.addBatch();
+                    pstmt.execute();
+
+                    ResultSet rs = pstmt.getResultSet();
+                    while (rs.next()) {
+                        data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)),rs.getFloat(2)));
+                    }
+
+                } catch (SQLException ex) {
+
+                    System.out.println("bad query");
+                    System.out.println(ex.getMessage());
+
+                }
+            }
+        }
+
+        return data;
+
+    }
+
+    public static Vector<ElectricalValue> get_transformer_data(Transformer t, LocalDate start_date, LocalDate end_date) {
+
+        Vector<ElectricalValue> data = new Vector<ElectricalValue>();
+
+        if (t != null) {
+            String startdate = "'" + start_date.getYear() + "-"
+                    + start_date.getMonthOfYear() + "-" + start_date.getDayOfMonth() + "'";
+            String enddate;
+            enddate = "'" + end_date.getYear() + "-"
+                    + end_date.getMonthOfYear() + "-" + end_date.getDayOfMonth() + "'";
+
+            if (conn != null) {
+                try {
+
+                    String query = "SELECT datetime,current FROM transformer_data "
+                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Transformer_ID = " + t.id + ";";
+
+                    PreparedStatement pstmt = (PreparedStatement) conn.conn.prepareStatement(query);
+                    pstmt.addBatch();
+                    pstmt.execute();
+
+                    ResultSet rs = pstmt.getResultSet();
+                    while (rs.next()) {
+                        data.add(new ElectricalValue( new DateTime(rs.getTimestamp(1)),rs.getFloat(2)));
+                    }
+
+                } catch (SQLException ex) {
+
+                    System.out.println("bad query");
+                    System.out.println(ex.getMessage());
+
+                }
+            }
+        }
+
+        return data;
+
+    }
 }

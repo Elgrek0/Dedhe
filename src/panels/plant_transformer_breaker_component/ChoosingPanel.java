@@ -9,7 +9,9 @@ import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.StaticCachedData;
 import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -21,13 +23,25 @@ public final class ChoosingPanel extends javax.swing.JPanel {
     public PowerPlant selected_plant = null;
     public Transformer selected_transformer = null;
     public Breaker selected_breaker = null;
+    Vector<ActionListener> changelisteners = new Vector<ActionListener>();
+
+    public void addChangeListener(ActionListener changelistener) {
+        changelisteners.add(changelistener);
+
+    }
+
+    private void statechangedevent() {
+        for (int i = 0; i < changelisteners.size(); i++) {
+            changelisteners.get(i).actionPerformed(null);
+        }
+    }
 
     public ChoosingPanel() {
 
         initComponents();
         setBounds(0, 0, 400, 70);
-
         refresh();
+        setVisible(true);
 
     }
 
@@ -115,6 +129,12 @@ public final class ChoosingPanel extends javax.swing.JPanel {
         plant_combobox = new javax.swing.JComboBox();
         transformer_combobox = new javax.swing.JComboBox();
 
+        breaker_combobox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                breaker_comboboxItemStateChanged(evt);
+            }
+        });
+
         jLabel1.setText("Plant");
 
         transformer_label.setText("Transformer");
@@ -182,6 +202,7 @@ public final class ChoosingPanel extends javax.swing.JPanel {
             selected_plant = (PowerPlant) plant_combobox.getSelectedItem();
             update_transformers();
             update_breakers();
+            statechangedevent();
         }
     }//GEN-LAST:event_plant_comboboxItemStateChanged
 
@@ -189,11 +210,15 @@ public final class ChoosingPanel extends javax.swing.JPanel {
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             selected_transformer = (Transformer) transformer_combobox.getSelectedItem();
             update_breakers();
+            statechangedevent();
         }
     }//GEN-LAST:event_transformer_comboboxItemStateChanged
 
     private void breaker_comboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_breaker_comboboxItemStateChanged
-
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            selected_breaker = (Breaker) breaker_combobox.getSelectedItem();
+            statechangedevent();
+        }
     }//GEN-LAST:event_breaker_comboboxItemStateChanged
 
 

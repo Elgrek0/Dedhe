@@ -162,8 +162,8 @@ void load_temp_data() {
             String[][] data = new String[Math.min(10, sheet.max_row)][2];
 
             for (int x = 1; x < 3; x++) {
-                for (int y = 1;y < Math.min(11, sheet.max_row+1); y++) {
-                    data[y-1][x-1] = sheet.data_x_y[x][y];
+                for (int y = 1; y < Math.min(11, sheet.max_row + 1); y++) {
+                    data[y - 1][x - 1] = sheet.data_x_y[x][y];
                 }
             }
 
@@ -247,8 +247,10 @@ void load_temp_data() {
 
                 } catch (BadDateInputException ex) {
                     System.out.println("Bad date format in Excel at row : " + i);
+                    errors++;
                 } catch (BadTimeInputException ex) {
                     System.out.println("Bad time format in Excel at row : " + i);
+                    errors++;
                 }
             }
 

@@ -8,10 +8,6 @@ package MySQlConnection;
 import DB_connection.FixValues;
 import exceptions.BadDateInputException;
 import exceptions.BadTimeInputException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

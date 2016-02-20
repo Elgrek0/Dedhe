@@ -1,12 +1,10 @@
 package panels.Analytics;
 
+import DB_data_loader.data_classes.ElectricalValue;
 import java.awt.Color;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Vector;
+import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -17,6 +15,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.Year;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RectangleInsets;
 
@@ -25,37 +24,28 @@ import org.jfree.ui.RectangleInsets;
  * used, except that the renderer is modified to show filled shapes (as well as
  * lines) at each data point.
  */
-public class GraphPanel {
+public class GraphPanel extends JPanel {
 
     public ChartPanel panel;
 
-    public GraphPanel(ResultSet rs) {
+    public GraphPanel(Vector<ElectricalValue> values) {
 
         TimeSeries s1 = new TimeSeries("Current of powerstation_name");
 
-        try {
-            while (rs.next()) {
-                java.util.Date date;
-                Timestamp timestamp = rs.getTimestamp(1);
-                if (timestamp != null) {
-                    date = new java.util.Date(timestamp.getTime());
-                    // System.out.println(date.toString());
-                    s1.add(new Minute(date), rs.getFloat(2));
-                }
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(GraphPanel.class.getName()).log(Level.SEVERE, null, ex);
+        for (int i = 0; i < values.size(); i++) {
+            s1.add(new Minute(values.get(i).datetime.toDate()), values.get(i).value);
         }
 
-        TimeSeriesCollection dataset = new TimeSeriesCollection();
-        dataset.addSeries(s1);
+        TimeSeriesCollection dataset = new TimeSeriesCollection(s1);
 
         JFreeChart chart = createChart(dataset);
         panel = new ChartPanel(chart);
         panel.setFillZoomRectangle(false);
         panel.setMouseWheelEnabled(true);
-        
+        this.add(panel);
+        this.setSize(800, 500);
+        this.setVisible(true);
+
     }
 
     private static JFreeChart createChart(XYDataset dataset) {
