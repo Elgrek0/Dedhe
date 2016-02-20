@@ -14,7 +14,7 @@ import DB_data_loader.LoadDataFromDB;
 import Gui.AnalyticsGui;
 import panels.plant_transformer_breaker_component.ChoosingPanel;
 import Gui.LoadExcelDataGui;
-import Gui.LoadFromExcelFrame;
+import Gui.AddNewElectricalItems;
 import LoginFrame.LoginInfo;
 import ExcelComponents.ExcelSheetOpener;
 import ExcelComponents.Fileopener;
@@ -68,7 +68,6 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        loadfromexcel = new javax.swing.JButton();
 
         jPasswordField1.setText("jPasswordField1");
 
@@ -91,7 +90,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel6.setText("Error Window");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 86, -1, -1));
 
-        jButton3.setText("Excel to db v2");
+        jButton3.setText("Excel to db");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -106,14 +105,6 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 130, -1));
-
-        loadfromexcel.setText("excel to db v3");
-        loadfromexcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadfromexcelActionPerformed(evt);
-            }
-        });
-        getContentPane().add(loadfromexcel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 130, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -148,21 +139,6 @@ public class MainWindow extends javax.swing.JFrame {
         }.start();
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void loadfromexcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadfromexcelActionPerformed
-        new Thread() {
-
-            @Override
-            public void run() {
-
-                LoadFromExcelFrame a = new LoadFromExcelFrame();
-                a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-                a.setVisible(true);
-
-            }
-
-        }.start();
-    }//GEN-LAST:event_loadfromexcelActionPerformed
-
     private void QueryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QueryButtonActionPerformed
         new Thread() {
 
@@ -187,6 +163,5 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JButton loadfromexcel;
     // End of variables declaration//GEN-END:variables
 }

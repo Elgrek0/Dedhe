@@ -28,15 +28,18 @@ public class StoreDatatoDB {
         try {
             dbconn = StaticCachedData.conn;
             dbconn.disablekeys(arrayname);
-            PreparedStatement pstmt = null;
-
-            
+            PreparedStatement pstmt = null;            
    
             String query = " INSERT INTO "+arrayname+" VALUES ("+values+");\n";
 
             pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
             pstmt.execute();
         } catch (SQLException ex) {
+             try {
+                 dbconn.enablekeys(arrayname);
+             } catch (SQLException ex1) {
+                 Logger.getLogger(StoreDatatoDB.class.getName()).log(Level.SEVERE, null, ex1);
+             }
             Logger.getLogger(PowerPlant.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (dbconn != null) {

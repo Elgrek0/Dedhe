@@ -24,14 +24,14 @@ import java.util.logging.Logger;
  *
  * @author Paris
  */
-public class LoadFromExcelFrame extends javax.swing.JFrame {
+public class AddNewElectricalItems extends javax.swing.JFrame {
 
     /**
      * Creates new form LoadFromExcelFrame
      */
     ChoosingPanel choosingpanel;
 
-    public LoadFromExcelFrame() {
+    public AddNewElectricalItems() {
         initComponents();
 
         setSize(500, 400);
@@ -41,6 +41,15 @@ public class LoadFromExcelFrame extends javax.swing.JFrame {
         choosingpanel.setSize(500, 100);
         add(choosingpanel);
 
+    }
+
+    void fullrefresh() {
+        try {
+            LoadDataFromDB.loadall();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        choosingpanel.refresh();
     }
 
     /**
@@ -158,11 +167,11 @@ public class LoadFromExcelFrame extends javax.swing.JFrame {
         try {
             LoadDataFromDB.refresh_powerplants();
         } catch (InterruptedException ex) {
-            Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoActiveDbConnectionException ex) {
-            Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
         }
-        choosingpanel.refresh();
+        fullrefresh();
     }//GEN-LAST:event_add_plant_buttonActionPerformed
 
     private void add_transformer_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_transformer_buttonActionPerformed
@@ -173,11 +182,11 @@ public class LoadFromExcelFrame extends javax.swing.JFrame {
             try {
                 LoadDataFromDB.refresh_transformers();
             } catch (InterruptedException ex) {
-                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NoActiveDbConnectionException ex) {
-                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
             } catch (PowerPlantParentNotFoundException ex) {
-                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
@@ -186,7 +195,7 @@ public class LoadFromExcelFrame extends javax.swing.JFrame {
                 new ErrorPopup(ex);
             }
         }
-        choosingpanel.refresh();
+        fullrefresh();
     }//GEN-LAST:event_add_transformer_buttonActionPerformed
 
     private void add_breaker_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_breaker_buttonActionPerformed
@@ -197,11 +206,11 @@ public class LoadFromExcelFrame extends javax.swing.JFrame {
             try {
                 LoadDataFromDB.refresh_breakers();
             } catch (InterruptedException ex) {
-                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NoActiveDbConnectionException ex) {
-                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
             } catch (TransformerParentNotFoundException ex) {
-                Logger.getLogger(LoadFromExcelFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
@@ -210,7 +219,7 @@ public class LoadFromExcelFrame extends javax.swing.JFrame {
                 new ErrorPopup(ex);
             }
         }
-        choosingpanel.refresh();
+        fullrefresh();
     }//GEN-LAST:event_add_breaker_buttonActionPerformed
 
 
