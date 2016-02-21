@@ -61,12 +61,13 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         sample_data_table = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        load_excel_file = new javax.swing.JButton();
+        open_sheet_button = new javax.swing.JButton();
         sheet_number_spinner = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
         pass_data_to_transformer_button = new javax.swing.JButton();
         pass_data_to_breaker_button = new javax.swing.JButton();
         add_new_electrical_items = new javax.swing.JButton();
+        progress_bar = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -89,10 +90,10 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
 
         jLabel1.setText("Sample Data");
 
-        load_excel_file.setText("Open File");
-        load_excel_file.addActionListener(new java.awt.event.ActionListener() {
+        open_sheet_button.setText("Open File");
+        open_sheet_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                load_excel_fileActionPerformed(evt);
+                open_sheet_buttonActionPerformed(evt);
             }
         });
 
@@ -129,41 +130,45 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(34, 336, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(load_excel_file, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(open_sheet_button, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(sheet_number_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(sheet_number_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(add_new_electrical_items, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(pass_data_to_transformer_button)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pass_data_to_breaker_button)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(progress_bar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(load_excel_file)
+                .addComponent(open_sheet_button)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sheet_number_spinner, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(pass_data_to_transformer_button)
-                    .addComponent(pass_data_to_breaker_button)
-                    .addComponent(add_new_electrical_items))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(pass_data_to_transformer_button)
+                        .addComponent(pass_data_to_breaker_button)
+                        .addComponent(add_new_electrical_items))
+                    .addComponent(progress_bar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -184,36 +189,43 @@ void load_temp_data() {
 
     }
 
-    private void load_excel_fileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_excel_fileActionPerformed
+    private void open_sheet_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_open_sheet_buttonActionPerformed
 
+        setEnabled(false);
         sheetfile = FileOpener.openfile();
+        if (sheetfile != null) {
+            if (FilenameUtils.getExtension(sheetfile.getPath()).equals("xls")) {
+                try {
+                    sheetopener = new ExcelSheetOpener(0, sheetfile);
 
-        if (FilenameUtils.getExtension(sheetfile.getPath()).equals("xls")) {
-            try {
-                sheetopener = new ExcelSheetOpener(0, sheetfile);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(LoadExcelDataGui.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                } catch (NoSuchSheetException ex) {
+                    Logger.getLogger(LoadExcelDataGui.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
 
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(LoadExcelDataGui.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchSheetException ex) {
-                Logger.getLogger(LoadExcelDataGui.class
-                        .getName()).log(Level.SEVERE, null, ex);
             }
-
-        }
-        if (FilenameUtils.getExtension(sheetfile.getPath()).equals("csv")) {
-            try {
-                sheetopener = new CSVSheetOpener(sheetfile);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
+            if (FilenameUtils.getExtension(sheetfile.getPath()).equals("csv")) {
+                try {
+                    sheetopener = new CSVSheetOpener(sheetfile);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            progress_bar.setValue(50);
+            load_temp_data();
+            progress_bar.setValue(0);
+            setEnabled(true);
         }
-        load_temp_data();
-
-    }//GEN-LAST:event_load_excel_fileActionPerformed
+    }//GEN-LAST:event_open_sheet_buttonActionPerformed
 
     private void pass_data_to_transformer_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pass_data_to_transformer_buttonActionPerformed
+        setEnabled(false);
         pass_data_to_Transformer();
+        progress_bar.setValue(0);
+        setEnabled(true);
     }//GEN-LAST:event_pass_data_to_transformer_buttonActionPerformed
 
     private void sheet_number_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sheet_number_spinnerStateChanged
@@ -238,7 +250,10 @@ void load_temp_data() {
     }//GEN-LAST:event_sheet_number_spinnerStateChanged
 
     private void pass_data_to_breaker_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pass_data_to_breaker_buttonActionPerformed
+        setEnabled(false);
         pass_data_to_breaker();
+        progress_bar.setValue(0);
+        setEnabled(true);
     }//GEN-LAST:event_pass_data_to_breaker_buttonActionPerformed
 
     private void add_new_electrical_itemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_new_electrical_itemsActionPerformed
@@ -283,9 +298,10 @@ void load_temp_data() {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton load_excel_file;
+    private javax.swing.JButton open_sheet_button;
     private javax.swing.JButton pass_data_to_breaker_button;
     private javax.swing.JButton pass_data_to_transformer_button;
+    private javax.swing.JProgressBar progress_bar;
     private javax.swing.JTable sample_data_table;
     private javax.swing.JSpinner sheet_number_spinner;
     // End of variables declaration//GEN-END:variables
@@ -304,6 +320,10 @@ void load_temp_data() {
                     data = "'" + FixValues.reversedate(breakerdata[1], '/', ':')
                             + "'" + "," + breakerdata[2].replace(',', '.')
                             + "," + cp.selected_breaker.id;
+                    if (i % 100 == 0) {
+                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                        progress_bar.update(progress_bar.getGraphics());
+                    }
 
                     StoreDatatoDB.store("Breaker_data", data);
                 } catch (BadDateInputException ex) {
@@ -323,6 +343,10 @@ void load_temp_data() {
                     data = "'" + breakerdata[0]
                             + ":00'" + "," + breakerdata[1].replace(',', '.')
                             + "," + cp.selected_breaker.id;
+                    if (i % 100 == 0) {
+                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                        progress_bar.update(progress_bar.getGraphics());
+                    }
 
                     StoreDatatoDB.store("Breaker_data", data);
                 } catch (CouldntStoreDataException ex) {
@@ -350,7 +374,10 @@ void load_temp_data() {
                     data = "'" + FixValues.reversedate(breakerdata[1], '/', ':')
                             + "'" + "," + breakerdata[2].replace(',', '.')
                             + "," + cp.selected_transformer.id;
-
+                    if (i % 100 == 0) {
+                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                        progress_bar.update(progress_bar.getGraphics());
+                    }
                     StoreDatatoDB.store("Transformer_data", data);
                 } catch (BadDateInputException ex) {
                     errors++;
@@ -370,7 +397,10 @@ void load_temp_data() {
                     data = "'" + breakerdata[0]
                             + ":00'" + "," + breakerdata[1].replace(',', '.')
                             + "," + cp.selected_transformer.id;
-
+                    if (i % 128 == 0) {
+                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                        progress_bar.update(progress_bar.getGraphics());
+                    }
                     StoreDatatoDB.store("Transformer_data", data);
                 } catch (CouldntStoreDataException ex) {
                     errors++;

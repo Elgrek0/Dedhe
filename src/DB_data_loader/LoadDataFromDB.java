@@ -81,7 +81,7 @@ public class LoadDataFromDB {
             ResultSet rs = null;
             db_powerplants = new Vector<PowerPlant>();
             try {
-                rs = conn.execute_simple_query("SELECT name,id FROM Electrical_Plant; ");
+                rs = conn.execute_simple_query("SELECT name,id FROM Power_Plant; ");
             } catch (SQLException ex) {
 
                 StaticCachedData.unlock();
@@ -116,7 +116,7 @@ public class LoadDataFromDB {
             ResultSet rs = null;
             db_transformers = new Vector<Transformer>();
             try {
-                rs = conn.execute_simple_query("SELECT name,id,Electrical_Plant_ID FROM Transformer; ");
+                rs = conn.execute_simple_query("SELECT name,id,Power_Plant_ID FROM Transformer; ");
             } catch (SQLException ex) {
 
                 StaticCachedData.unlock();
@@ -128,7 +128,7 @@ public class LoadDataFromDB {
             try {
                 while (rs.next()) {
 
-                    int parent_id = rs.getInt("Electrical_Plant_ID");
+                    int parent_id = rs.getInt("Power_Plant_ID");
                     boolean done = false;
                     if (db_powerplants.size() >= parent_id - 1) {
                         if (db_powerplants.get(parent_id - 1).id == parent_id) {

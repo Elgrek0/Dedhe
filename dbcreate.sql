@@ -5,7 +5,7 @@ USE `mydb` ;
 
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Electrical_Plant` (
+CREATE TABLE IF NOT EXISTS `mydb`.`Power_Plant` (
   `ID` INT NOT NULL ,
   `Name` VARCHAR(45) NOT NULL ,
   PRIMARY KEY (`ID`)  );
@@ -16,11 +16,11 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Electrical_Plant` (
 CREATE TABLE IF NOT EXISTS `mydb`.`Transformer` (
   `ID` INT NOT NULL ,
   `Name` VARCHAR(45) NOT NULL ,
-  `Electrical_Plant_ID` INT NOT NULL ,
-  PRIMARY KEY (`ID`, `Electrical_Plant_ID`)  ,
-  CONSTRAINT `fk_Transformer_Electrical_Plant1`
-    FOREIGN KEY (`Electrical_Plant_ID`)
-    REFERENCES `mydb`.`Electrical_Plant` (`ID`)
+  `Power_Plant_ID` INT NOT NULL ,
+  PRIMARY KEY (`ID`, `Power_Plant_ID`)  ,
+  CONSTRAINT `fk_Transformer_Power_Plant1`
+    FOREIGN KEY (`Power_Plant_ID`)
+    REFERENCES `mydb`.`Power_Plant` (`ID`)
     ON DELETE NO ACTION
  ON UPDATE NO ACTION);
 
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Transformer_Data` (
     ON UPDATE NO ACTION);
 CREATE INDEX IF NOT EXISTS `fk_Breaker_Transformer1_idx` ON `mydb`.`Breaker` (`Transformer_ID` ASC) ;
 	
-CREATE INDEX IF NOT EXISTS `fk_Transformer_Electrical_Plant1_idx` ON `mydb`.`Transformer` (`Electrical_Plant_ID` ASC) ;
+CREATE INDEX IF NOT EXISTS `fk_Transformer_Power_Plant1_idx` ON `mydb`.`Transformer` (`Power_Plant_ID` ASC) ;
 	
 CREATE INDEX IF NOT EXISTS `fk_Breaker_Data_Breaker1_idx` ON `mydb`.`Breaker_Data` (`Breaker_ID` ASC)  ;
 	

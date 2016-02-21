@@ -27,7 +27,7 @@ public class PowerPlant implements DBItem {
     @Override
     public void store() throws CouldntStoreDataException {
 
-        StoreDatatoDB.store("Electrical_Plant", id + ",'" + name+"'");
+        StoreDatatoDB.store("Power_Plant", id + ",'" + name+"'");
 
     }
 

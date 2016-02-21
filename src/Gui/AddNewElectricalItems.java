@@ -13,6 +13,7 @@ import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.StaticCachedData;
 import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
+import exceptions.CouldntStoreDataException;
 import exceptions.ErrorPopup;
 import exceptions.NoActiveDbConnectionException;
 import exceptions.PowerPlantParentNotFoundException;
@@ -44,12 +45,20 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
     }
 
     void fullrefresh() {
+        int plantselection = choosingpanel.plant_combobox.getSelectedIndex();
+        int transformerselection = choosingpanel.transformer_combobox.getSelectedIndex();
+        int breakerselection = choosingpanel.breaker_combobox.getSelectedIndex();
+
         try {
             LoadDataFromDB.loadall();
         } catch (InterruptedException ex) {
             Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
         }
         choosingpanel.refresh();
+
+        choosingpanel.plant_combobox.setSelectedIndex(plantselection);
+        choosingpanel.transformer_combobox.setSelectedIndex(transformerselection);
+        choosingpanel.breaker_combobox.setSelectedIndex(breakerselection);
     }
 
     /**
@@ -163,12 +172,16 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
     private void add_plant_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_plant_buttonActionPerformed
         PowerPlant p;
         if (StaticCachedData.db_powerplants.size() > 0) {
-            p = new PowerPlant(StaticCachedData.db_powerplants.lastElement().id +1, plantname_textfield.getText());
+            p = new PowerPlant(StaticCachedData.db_powerplants.lastElement().id + 1, plantname_textfield.getText());
         } else {
             p = new PowerPlant(1, plantname_textfield.getText());
         }
         StaticCachedData.db_powerplants.add(p);
-        p.store();
+        try {
+            p.store();
+        } catch (CouldntStoreDataException ex) {
+            Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
         try {
             LoadDataFromDB.refresh_powerplants();
         } catch (InterruptedException ex) {
@@ -177,6 +190,7 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
             Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
         }
         fullrefresh();
+        choosingpanel.plant_combobox.setSelectedIndex(choosingpanel.plant_combobox.getItemCount() - 1);
     }//GEN-LAST:event_add_plant_buttonActionPerformed
 
     private void add_transformer_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_transformer_buttonActionPerformed
@@ -184,42 +198,46 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
             Transformer t;
 
             if (StaticCachedData.db_transformers.size() > 0) {
-                t = new Transformer(StaticCachedData.db_transformers.lastElement().id +1, transformername_textfield.getText(), choosingpanel.selected_plant);
+                t = new Transformer(StaticCachedData.db_transformers.lastElement().id + 1, transformername_textfield.getText(), choosingpanel.selected_plant);
             } else {
                 t = new Transformer(1, transformername_textfield.getText(), choosingpanel.selected_plant);
             }
             StaticCachedData.db_transformers.add(t);
-            t.store();
             try {
+                t.store();
+            } catch (CouldntStoreDataException ex) {
+                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+
                 LoadDataFromDB.refresh_transformers();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoActiveDbConnectionException ex) {
-                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (PowerPlantParentNotFoundException ex) {
+
+            } catch (InterruptedException | NoActiveDbConnectionException | PowerPlantParentNotFoundException ex) {
                 Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            try {
-                throw new NoParentPlantException();
-            } catch (NoParentPlantException ex) {
-                new ErrorPopup(ex);
-            }
+            new ErrorPopup(new NoParentPlantException());
+
         }
         fullrefresh();
+        choosingpanel.transformer_combobox.setSelectedIndex(choosingpanel.transformer_combobox.getItemCount() - 1);
     }//GEN-LAST:event_add_transformer_buttonActionPerformed
 
     private void add_breaker_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_breaker_buttonActionPerformed
         if (choosingpanel.selected_transformer != null) {
             Breaker b;
             if (StaticCachedData.db_breakers.size() > 0) {
-                b = new Breaker(StaticCachedData.db_breakers.lastElement().id +1 , breakername_textfield.getText(), choosingpanel.selected_transformer);
+                b = new Breaker(StaticCachedData.db_breakers.lastElement().id + 1, breakername_textfield.getText(), choosingpanel.selected_transformer);
             } else {
                 b = new Breaker(1, breakername_textfield.getText(), choosingpanel.selected_transformer);
             }
 
             StaticCachedData.db_breakers.add(b);
-            b.store();
+            try {
+                b.store();
+            } catch (CouldntStoreDataException ex) {
+                Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
+            }
             try {
                 LoadDataFromDB.refresh_breakers();
             } catch (InterruptedException ex) {
@@ -230,13 +248,10 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
                 Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            try {
-                throw new NoParentTransformerException();
-            } catch (NoParentTransformerException ex) {
-                new ErrorPopup(ex);
-            }
+            new ErrorPopup(new NoParentTransformerException());
         }
         fullrefresh();
+        choosingpanel.breaker_combobox.setSelectedIndex(choosingpanel.breaker_combobox.getItemCount() - 1);
     }//GEN-LAST:event_add_breaker_buttonActionPerformed
 
 

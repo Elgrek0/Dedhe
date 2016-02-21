@@ -47,6 +47,8 @@ public class StoreDatatoDB {
             } catch (SQLException ex) {
                 Logger.getLogger(PowerPlant.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+        } else {
             throw new CouldntStoreDataException();
         }
     }
