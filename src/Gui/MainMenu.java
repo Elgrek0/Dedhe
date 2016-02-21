@@ -5,39 +5,13 @@
  */
 package Gui;
 
-import DB_connection.FixValues;
-import DB_connection.H2Server;
-import DB_connection.H2MyConnection;
 import DB_connection.DBConnection;
-import DB_connection.MySQLConnection;
-import DB_data_loader.LoadDataFromDB;
-import Gui.AnalyticsGui;
-import panels.plant_transformer_breaker_component.ChoosingPanel;
-import Gui.LoadExcelDataGui;
-import Gui.AddNewElectricalItems;
-import LoginFrame.LoginInfo;
-import ExcelComponents.ExcelSheetOpener;
-import ExcelComponents.FileOpener;
-import DB_data_loader.StaticCachedData;
-import exceptions.BadDateInputException;
-import exceptions.BadTimeInputException;
-import exceptions.CouldntConnectException;
-import exceptions.NoActiveDbConnectionException;
-import exceptions.NoSuchSheetException;
-import exceptions.badfileexception;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
 
 /**
  *
  * @author Paris
  */
-public class MainWindow extends javax.swing.JFrame {
+public class MainMenu extends javax.swing.JFrame {
 
     /**
      * Creates new form MainWindows
@@ -45,10 +19,12 @@ public class MainWindow extends javax.swing.JFrame {
     DBConnection dbconn;
     public static boolean debug = false;
 
-    public MainWindow(DBConnection dbconn) {
+    public MainMenu(DBConnection dbconn) {
         this.dbconn=dbconn;
         initComponents();
         setVisible(true);
+        setSize(320, 350);
+        setResizable(false);
     }
 
     /**
@@ -76,27 +52,28 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        QueryButton.setText("Queries");
+        QueryButton.setText("SQL Queries");
         QueryButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 QueryButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(QueryButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 52, 125, -1));
+        getContentPane().add(QueryButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 130, -1));
         getContentPane().add(ErrorArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 114, 243, 182));
 
         jLabel6.setText("Error Window");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 86, -1, -1));
 
-        jButton3.setText("Excel to db");
+        jButton3.setText("Load data from Excel");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 120, -1));
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 180, 30));
 
         jButton4.setText("analytics");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -104,7 +81,7 @@ public class MainWindow extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 130, -1));
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 50, 130, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

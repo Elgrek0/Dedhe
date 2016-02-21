@@ -5,7 +5,7 @@
  */
 package DB_connection;
 
-import Gui.MainWindow;
+import Gui.MainMenu;
 import LoginFrame.DBinfo;
 import LoginFrame.LoginInfo;
 import exceptions.CouldntConnectException;

@@ -45,6 +45,7 @@ public class QueryFrame extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         QueryArea1 = new javax.swing.JTextArea();
         RunQuery = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
         QueryArea = new javax.swing.JTextArea();
 
         jTextField1.setText("jTextField1");
@@ -77,30 +78,25 @@ public class QueryFrame extends javax.swing.JFrame {
 
         QueryArea.setColumns(20);
         QueryArea.setRows(5);
-        QueryArea.setText("select *\nfrom breaker_data;");
+        jScrollPane1.setViewportView(QueryArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(QueryArea, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(RunQuery)
                 .addGap(35, 35, 35))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(QueryArea, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(RunQuery)))
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addGap(21, 21, 21)
+                .addComponent(RunQuery)
+                .addContainerGap(256, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
         );
 
         pack();
@@ -139,6 +135,7 @@ public class QueryFrame extends javax.swing.JFrame {
     public javax.swing.JList QueryResult;
     private javax.swing.JButton RunQuery;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

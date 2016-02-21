@@ -5,7 +5,7 @@
  */
 package exceptions;
 
-import Gui.MainWindow;
+import Gui.MainMenu;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,7 +21,7 @@ public class ErrorPopup {
     }
 
     public static void popup(Exception ex) {
-        MainWindow.ErrorArea.append(ex.toString() + "\n");
+        MainMenu.ErrorArea.append(ex.toString() + "\n");
         JOptionPane.showMessageDialog(null, ex.toString(), "Error",
                 JOptionPane.ERROR_MESSAGE);
     }
