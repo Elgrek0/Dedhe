@@ -12,7 +12,7 @@ import DB_connection.MySQLConnection;
 import DB_data_loader.LoadDataFromDB;
 import Gui.MainMenu;
 import exceptions.CouldntConnectException;
-import exceptions.ErrorPopup;
+import panels.ErrorPopup;
 import exceptions.NoActiveDbConnectionException;
 
 /**

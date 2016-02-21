@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exceptions;
+package panels;
 
 import Gui.MainMenu;
 import javax.swing.JOptionPane;

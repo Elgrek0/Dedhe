@@ -17,6 +17,8 @@ import ExcelComponents.SpreadSheetOpener;
 import exceptions.BadDateInputException;
 import exceptions.BadTimeInputException;
 import exceptions.CouldntStoreDataException;
+import panels.ErrorPopup;
+import exceptions.NoFileSelectedException;
 import exceptions.NoSuchSheetException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,6 +48,8 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         cp = new ChoosingPanel();
         cp.setVisible(true);
         add(cp);
+        setLocation(400, 0);
+
     }
 
     /**
@@ -217,8 +221,9 @@ void load_temp_data() {
             progress_bar.setValue(50);
             load_temp_data();
             progress_bar.setValue(0);
-            setEnabled(true);
+
         }
+        setEnabled(true);
     }//GEN-LAST:event_open_sheet_buttonActionPerformed
 
     private void pass_data_to_transformer_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pass_data_to_transformer_buttonActionPerformed
@@ -272,6 +277,8 @@ void load_temp_data() {
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         parent.setEnabled(true);
                         cp.refresh();
+                        parent.toFront();
+                        parent.repaint();
                     }
                 });
             }
@@ -307,110 +314,117 @@ void load_temp_data() {
     // End of variables declaration//GEN-END:variables
 
     private void pass_data_to_breaker() {
+        if (sheetopener != null) {
+            int errors = 0;
+            boolean fatalerror = false;
 
-        int errors = 0;
-        boolean fatalerror = false;
+            String data;
 
-        String data;
+            if (sheetopener.getClass() == ExcelSheetOpener.class) {
+                for (int i = 1; i < sheetopener.max_row; i++) {
+                    try {
+                        String[] breakerdata = sheetopener.getrow(0, 2, i);
+                        data = "'" + FixValues.reversedate(breakerdata[1], '/', ':')
+                                + "'" + "," + breakerdata[2].replace(',', '.')
+                                + "," + cp.selected_breaker.id;
+                        if (i % 100 == 0) {
+                            progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                            progress_bar.update(progress_bar.getGraphics());
+                        }
 
-        if (sheetopener.getClass() == ExcelSheetOpener.class) {
-            for (int i = 1; i < sheetopener.max_row; i++) {
-                try {
-                    String[] breakerdata = sheetopener.getrow(0, 2, i);
-                    data = "'" + FixValues.reversedate(breakerdata[1], '/', ':')
-                            + "'" + "," + breakerdata[2].replace(',', '.')
-                            + "," + cp.selected_breaker.id;
-                    if (i % 100 == 0) {
-                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
-                        progress_bar.update(progress_bar.getGraphics());
+                        StoreDatatoDB.store("Breaker_data", data);
+                    } catch (BadDateInputException ex) {
+                        errors++;
+                    } catch (BadTimeInputException ex) {
+                        errors++;
+                    } catch (CouldntStoreDataException ex) {
+                        errors++;
                     }
 
-                    StoreDatatoDB.store("Breaker_data", data);
-                } catch (BadDateInputException ex) {
-                    errors++;
-                } catch (BadTimeInputException ex) {
-                    errors++;
-                } catch (CouldntStoreDataException ex) {
-                    errors++;
                 }
-
             }
-        }
-        if (sheetopener.getClass() == CSVSheetOpener.class) {
-            for (int i = 1; i < sheetopener.max_row; i++) {
-                try {
-                    String[] breakerdata = sheetopener.getrow(0, 2, i);
-                    data = "'" + breakerdata[0]
-                            + ":00'" + "," + breakerdata[1].replace(',', '.')
-                            + "," + cp.selected_breaker.id;
-                    if (i % 100 == 0) {
-                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
-                        progress_bar.update(progress_bar.getGraphics());
+            if (sheetopener.getClass() == CSVSheetOpener.class) {
+                for (int i = 1; i < sheetopener.max_row; i++) {
+                    try {
+                        String[] breakerdata = sheetopener.getrow(0, 2, i);
+                        data = "'" + breakerdata[0]
+                                + ":00'" + "," + breakerdata[1].replace(',', '.')
+                                + "," + cp.selected_breaker.id;
+                        if (i % 100 == 0) {
+                            progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                            progress_bar.update(progress_bar.getGraphics());
+                        }
+
+                        StoreDatatoDB.store("Breaker_data", data);
+                    } catch (CouldntStoreDataException ex) {
+                        errors++;
                     }
 
-                    StoreDatatoDB.store("Breaker_data", data);
-                } catch (CouldntStoreDataException ex) {
-                    errors++;
                 }
-
             }
-        }
-        if (fatalerror
-                == false) {
-            System.out.println("querycompleted sucesfully");
-            System.out.println("errrors #" + errors);
+            if (fatalerror
+                    == false) {
+                System.out.println("querycompleted sucesfully");
+                System.out.println("errrors #" + errors);
+            }
+        } else {
+            ErrorPopup.popup(new NoFileSelectedException());
         }
     }
 
     private void pass_data_to_Transformer() {
-
-        int errors = 0;
-        boolean fatalerror = false;
-        String data;
-        if (sheetopener.getClass() == ExcelSheetOpener.class) {
-            for (int i = 1; i < sheetopener.max_row; i++) {
-                try {
-                    String[] breakerdata = sheetopener.getrow(0, 2, i);
-                    data = "'" + FixValues.reversedate(breakerdata[1], '/', ':')
-                            + "'" + "," + breakerdata[2].replace(',', '.')
-                            + "," + cp.selected_transformer.id;
-                    if (i % 100 == 0) {
-                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
-                        progress_bar.update(progress_bar.getGraphics());
+        if (sheetopener != null) {
+            int errors = 0;
+            boolean fatalerror = false;
+            String data;
+            if (sheetopener.getClass() == ExcelSheetOpener.class) {
+                for (int i = 1; i < sheetopener.max_row; i++) {
+                    try {
+                        String[] breakerdata = sheetopener.getrow(0, 2, i);
+                        data = "'" + FixValues.reversedate(breakerdata[1], '/', ':')
+                                + "'" + "," + breakerdata[2].replace(',', '.')
+                                + "," + cp.selected_transformer.id;
+                        if (i % 100 == 0) {
+                            progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                            progress_bar.update(progress_bar.getGraphics());
+                        }
+                        StoreDatatoDB.store("Transformer_data", data);
+                    } catch (BadDateInputException ex) {
+                        errors++;
+                    } catch (BadTimeInputException ex) {
+                        errors++;
+                    } catch (CouldntStoreDataException ex) {
+                        errors++;
                     }
-                    StoreDatatoDB.store("Transformer_data", data);
-                } catch (BadDateInputException ex) {
-                    errors++;
-                } catch (BadTimeInputException ex) {
-                    errors++;
-                } catch (CouldntStoreDataException ex) {
-                    errors++;
+
                 }
-
             }
-        }
-        if (sheetopener.getClass() == CSVSheetOpener.class) {
-            for (int i = 1; i < sheetopener.max_row; i++) {
+            if (sheetopener.getClass() == CSVSheetOpener.class) {
+                for (int i = 1; i < sheetopener.max_row; i++) {
 
-                try {
-                    String[] breakerdata = sheetopener.getrow(0, 2, i);
-                    data = "'" + breakerdata[0]
-                            + ":00'" + "," + breakerdata[1].replace(',', '.')
-                            + "," + cp.selected_transformer.id;
-                    if (i % 128 == 0) {
-                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
-                        progress_bar.update(progress_bar.getGraphics());
+                    try {
+                        String[] breakerdata = sheetopener.getrow(0, 2, i);
+                        data = "'" + breakerdata[0]
+                                + ":00'" + "," + breakerdata[1].replace(',', '.')
+                                + "," + cp.selected_transformer.id;
+                        if (i % 128 == 0) {
+                            progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                            progress_bar.update(progress_bar.getGraphics());
+                        }
+                        StoreDatatoDB.store("Transformer_data", data);
+                    } catch (CouldntStoreDataException ex) {
+                        errors++;
                     }
-                    StoreDatatoDB.store("Transformer_data", data);
-                } catch (CouldntStoreDataException ex) {
-                    errors++;
-                }
 
+                }
             }
-        }
-        if (fatalerror == false) {
-            System.out.println("querycompleted sucesfully");
-            System.out.println("errrors #" + errors);
+            if (fatalerror == false) {
+                System.out.println("querycompleted sucesfully");
+                System.out.println("errrors #" + errors);
+            }
+        } else {
+            ErrorPopup.popup(new NoFileSelectedException());
         }
     }
+
 }

@@ -27,7 +27,7 @@ public class QueryFrame extends javax.swing.JFrame {
     public QueryFrame(DBConnection dbconn) {
         this.dbconn = dbconn;
         initComponents();
-
+        setLocation(400, 0);
     }
 
     /**
