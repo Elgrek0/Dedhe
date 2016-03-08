@@ -5,6 +5,7 @@
  */
 package panels.condence_panel;
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 import org.joda.time.DateTime;
@@ -22,8 +23,17 @@ public class CondencePanel extends javax.swing.JPanel {
         initComponents();
         setSize(getPreferredSize());
 
+        all_button.setForeground(Color.green);
         setVisible(true);
     }
+
+    private void resetbuttoncolours() {
+        all_button.setForeground(Color.black);
+        day_button.setForeground(Color.black);
+        week_button.setForeground(Color.black);
+        month_button.setForeground(Color.black);
+    }
+
     public int condence_value = 1;
 
     Vector<ActionListener> changelisteners = new Vector<>();
@@ -39,21 +49,21 @@ public class CondencePanel extends javax.swing.JPanel {
         }
     }
 
-    public boolean is_inside_period(DateTime startdate,DateTime testdate){
-        
-        switch(condence_value){
+    public boolean is_inside_period(DateTime startdate, DateTime testdate) {
+
+        switch (condence_value) {
             case 1:
-            return false;
+                return false;
             case 2:
-            return startdate.plusDays(1).isAfter(testdate);
+                return startdate.plusDays(1).isAfter(testdate);
             case 3:
-            return startdate.plusDays(7).isAfter(testdate);
+                return startdate.plusDays(7).isAfter(testdate);
             case 4:
-            return startdate.plusMonths(1).isAfter(testdate);
+                return startdate.plusMonths(1).isAfter(testdate);
         }
         return false;
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -171,21 +181,29 @@ public class CondencePanel extends javax.swing.JPanel {
     private void day_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_day_buttonActionPerformed
         condence_value = 2;
         statechangedevent();
+        resetbuttoncolours();
+        day_button.setForeground(Color.green);
     }//GEN-LAST:event_day_buttonActionPerformed
 
     private void week_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_week_buttonActionPerformed
         condence_value = 3;
         statechangedevent();
+        resetbuttoncolours();
+        week_button.setForeground(Color.green);
     }//GEN-LAST:event_week_buttonActionPerformed
 
     private void month_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_month_buttonActionPerformed
         condence_value = 4;
         statechangedevent();
+        resetbuttoncolours();
+        month_button.setForeground(Color.green);
     }//GEN-LAST:event_month_buttonActionPerformed
 
     private void all_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_all_buttonActionPerformed
         condence_value = 1;
         statechangedevent();
+        resetbuttoncolours();
+        all_button.setForeground(Color.green);
     }//GEN-LAST:event_all_buttonActionPerformed
 
 

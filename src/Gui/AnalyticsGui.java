@@ -81,7 +81,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
             }
         });
 
-
         queryfornewdata();
     }
 
@@ -166,14 +165,18 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private void queryfornewdata() {
         data = LoadDataFromDB.get_breaker_data(choosing_panel.selected_breaker, date_panel.startdate, date_panel.enddate);
 
+        recalculatemetrics();
         remakegraph(modify_data(data));
+
+    }
+
+    private void recalculatemetrics() {
         if (rp != null) {
             remove(rp);
         }
         rp = new ReportPanel(data);
         rp.setLocation(0, 500);
         add(rp);
-
     }
 
     private void remakegraph(Vector<ElectricalValue> data) {
@@ -181,7 +184,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
             remove(graph_panel);
         }
         graph_panel = new GraphPanel(data, smoothing_panel.jSlider1.getValue());
-        
+
         add(graph_panel);
         graph_panel.setSize(graph_panel.getPreferredSize());
         graph_panel.setLocation(400, 80);
