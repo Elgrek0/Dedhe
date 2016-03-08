@@ -10,6 +10,7 @@ import panels.Analytics.GraphPanel;
 import DB_connection.DBConnection;
 import DB_data_loader.LoadDataFromDB;
 import DB_data_loader.data_classes.ElectricalValue;
+import Reports.ReportPanel;
 import exceptions.BadDateInputException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -95,9 +96,16 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
     GraphPanel graph = null;
-
+    ReportPanel rp=null;
     private void queryfornewdata() {
         data = LoadDataFromDB.get_breaker_data(cp.selected_breaker, dp.startdate, dp.enddate);
+        if (rp != null) {
+            remove(rp);
+        }
+        rp = new ReportPanel(data);
+        rp.setLocation(0, 500);
+        add(rp);
+        
         if (graph != null) {
             remove(graph);
         }
