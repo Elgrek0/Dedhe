@@ -22,4 +22,11 @@ public class ElectricalValue {
         this.datetime = datetime;
     }  
     
+    @Override
+    public String toString(){
+        
+        return value+" at "+datetime.getHourOfDay()+":"+datetime.getMinuteOfHour()+" "+
+                datetime.getDayOfMonth()+"/"+datetime.getMonthOfYear()+"/"+datetime.getYearOfEra();
+    }
+    
 }
