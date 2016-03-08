@@ -27,4 +27,11 @@ public class ErrorPopup {
         JOptionPane.showMessageDialog(null, ex.toString(), "Error",
                 JOptionPane.ERROR_MESSAGE);
     }
+        public static void popup(String msg) {
+        if (MainMenu.ErrorArea != null) {
+            MainMenu.ErrorArea.append(msg + "\n");
+        }
+        JOptionPane.showMessageDialog(null, msg, "Error",
+                JOptionPane.ERROR_MESSAGE);
+    }
 }

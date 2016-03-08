@@ -143,7 +143,7 @@ public class LoginFrame extends javax.swing.JFrame {
             MainMenu mw = new MainMenu(dbconn);
             this.setVisible(false);
         } catch (CouldntConnectException ex) {
-            System.err.println("Login failed");
+            ErrorPopup.popup("Login failed ");
         }
 
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -192,4 +192,6 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     // End of variables declaration//GEN-END:variables
+
+  
 }
