@@ -24,6 +24,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.general.SeriesException;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
@@ -106,9 +107,13 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
     private TimeSeriesCollection createDataset(Vector<ElectricalValue> values) {
         TimeSeries s1 = new TimeSeries("Current of powerstation_name");
 
-        for (int i = 0; i < values.size(); i++) {
-            s1.addOrUpdate(new Minute(values.get(i).datetime.toDate()), values.get(i).value);
-
+        for (ElectricalValue eval : values) {
+            try{
+            s1.add(new Minute(eval.datetime.toDate()), eval.value);
+            }
+            catch (SeriesException ex){
+                
+            }
         }
 
         TimeSeriesCollection dataset = new TimeSeriesCollection(s1);
@@ -130,7 +135,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
         double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea,
                 RectangleEdge.BOTTOM);
         double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
-        
+
         xCrosshair.setValue(x);
         yCrosshair.setValue(y);
     }

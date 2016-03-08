@@ -107,7 +107,7 @@ public class DatePanel extends javax.swing.JPanel {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        jLabel2.setText("To");
+        jLabel2.setText("From");
 
         jButton1.setText("+");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -173,7 +173,7 @@ public class DatePanel extends javax.swing.JPanel {
                     .addComponent(jButton2)))
         );
 
-        jLabel1.setText("From");
+        jLabel1.setText("To");
 
         jButton3.setText("+");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
