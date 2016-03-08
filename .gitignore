@@ -3,3 +3,5 @@
 *.xml
 database/DB.trace.db
 *.db
+*.xml
+database/DB.mv.db

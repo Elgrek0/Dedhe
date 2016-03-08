@@ -22,7 +22,11 @@ public abstract class SpreadSheetOpener {
 
         for (int x = start_x; x <= end_x; x++) {
             for (int y = start_y; y <= end_y; y++) {
-                data[y - start_y][x - start_x] = getdata_at(x, y);
+                try {
+                    data[y - start_y][x - start_x] = getdata_at(x, y);
+                } catch (Exception e) {
+                          data[y - start_y][x - start_x]="";
+                }
             }
         }
         return data;

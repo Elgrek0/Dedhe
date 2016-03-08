@@ -185,6 +185,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
 void load_temp_data() {
 
         String columnnames[] = sheetopener.getrow(0, 2, 0);
+
         String[][] data = sheetopener.getdata(0, 2, 1, 11);
 
         DefaultTableModel dtb = new DefaultTableModel(data, columnnames);

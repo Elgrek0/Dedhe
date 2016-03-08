@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Vector;
+import javax.swing.JTextField;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import panels.condence_panel.CondencePanel;
@@ -175,17 +176,20 @@ public class AnalyticsGui extends javax.swing.JFrame {
             remove(rp);
         }
         rp = new ReportPanel(data);
-        rp.setLocation(0, 500);
+        rp.setLocation(0, 400);
         add(rp);
     }
 
     private void remakegraph(Vector<ElectricalValue> data) {
         if (graph_panel != null) {
             remove(graph_panel);
+            remove(graph_panel.datetime_textfield);
         }
         graph_panel = new GraphPanel(data, smoothing_panel.jSlider1.getValue());
 
         add(graph_panel);
+        add(graph_panel.datetime_textfield);
+        graph_panel.datetime_textfield.setLocation(640, 500);
         graph_panel.setSize(graph_panel.getPreferredSize());
         graph_panel.setLocation(400, 80);
         revalidate();

@@ -4,9 +4,12 @@ import DB_data_loader.data_classes.ElectricalValue;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.chrono.Chronology;
 import java.util.Vector;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
@@ -14,6 +17,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.labels.StandardCrosshairLabelGenerator;
 import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.chart.plot.XYPlot;
@@ -26,6 +30,10 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
+import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * An example of a time series chart. For the most part, default settings are
@@ -35,9 +43,11 @@ import org.jfree.ui.RectangleInsets;
 public class GraphPanel extends JPanel implements ChartMouseListener {
 
     public ChartPanel chartpanel;
-    private Crosshair xCrosshair;
     private Crosshair yCrosshair;
+    private Crosshair xCrosshair;
     int splines;
+    TimeSeriesCollection dataset;
+    public JTextField datetime_textfield = new JTextField();
 
     public GraphPanel(Vector<ElectricalValue> values) {
 
@@ -50,9 +60,12 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
 
     public GraphPanel(Vector<ElectricalValue> values, int splines) {
 
-        TimeSeriesCollection dataset = createDataset(values);
+        dataset = createDataset(values);
         this.splines = splines;
         add(createContent(dataset));
+        datetime_textfield.setSize(210, 60);
+        datetime_textfield.setEditable(false);
+        add(datetime_textfield);
         setVisible(true);
 
     }
@@ -60,7 +73,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
     @Override
     public void setSize(int width, int height) {
         super.setSize(width, height);
-        chartpanel.setSize(width-10, height-10);
+        chartpanel.setSize(width - 10, height - 110);
     }
 
     private JFreeChart createChart(XYDataset dataset) {
@@ -91,8 +104,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
         renderer.setBaseShapesVisible(false);
 
         DateAxis axis = (DateAxis) plot.getDomainAxis();
-        axis.setDateFormatOverride(new SimpleDateFormat("HH-mm MM-dd"));
-
+        axis.setDateFormatOverride(new SimpleDateFormat("MM-dd HH-mm"));
         return chart;
 
     }
@@ -103,8 +115,10 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
         chartpanel.addChartMouseListener(this);
         CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
         xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-        xCrosshair.setLabelVisible(false);
         yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
+        //xCrosshair.setLabelGenerator());
+
+        xCrosshair.setLabelVisible(false);
         yCrosshair.setLabelVisible(true);
         crosshairOverlay.addDomainCrosshair(xCrosshair);
         crosshairOverlay.addRangeCrosshair(yCrosshair);
@@ -143,6 +157,14 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
                 RectangleEdge.BOTTOM);
         double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
 
+        String date = new StandardCrosshairLabelGenerator("{0}", new SimpleDateFormat("MM-dd HH-mm").getNumberFormat()).generateLabel(xCrosshair);
+
+        try {
+            DateTime datetime = new DateTime(Long.parseLong(date));
+            datetime_textfield.setText(datetime.toString());
+        } catch (Exception e) {
+
+        }
         xCrosshair.setValue(x);
         yCrosshair.setValue(y);
     }
