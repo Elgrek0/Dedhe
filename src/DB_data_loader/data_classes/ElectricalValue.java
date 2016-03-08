@@ -12,14 +12,20 @@ import org.joda.time.DateTime;
  * @author Paris
  */
 public class ElectricalValue {
-    
-    
+
     public float value;
     public DateTime datetime;
 
-    public ElectricalValue(DateTime datetime,float value) {
+    public ElectricalValue(DateTime datetime, float value) {
         this.value = value;
         this.datetime = datetime;
-    }  
-    
+    }
+
+    @Override
+    public String toString() {
+
+        return value + " at " + datetime.getHourOfDay() + ":" + datetime.getMinuteOfHour() + " "
+                + datetime.getDayOfMonth() + "/" + datetime.getMonthOfYear() + "/" + datetime.getYearOfEra();
+    }
+
 }
