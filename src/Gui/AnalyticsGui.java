@@ -14,11 +14,14 @@ import Reports.ReportPanel;
 import exceptions.BadDateInputException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.Vector;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import panels.condence_panel.CondencePanel;
 import panels.date_panel.DatePanel;
+import panels.smoothing_panel.SmoothingPanel;
 
 /**
  *
@@ -33,19 +36,21 @@ public class AnalyticsGui extends javax.swing.JFrame {
     ChoosingPanel choosing_panel = new ChoosingPanel();
     DatePanel date_panel = new DatePanel();
     CondencePanel condence_panel = new CondencePanel();
+    SmoothingPanel smoothing_panel = new SmoothingPanel();
     Vector<ElectricalValue> data;
 
     public AnalyticsGui(DBConnection dbconn) {
-        dbconn = dbconn;
+        this.dbconn = dbconn;
         add(choosing_panel);
         add(date_panel);
         add(condence_panel);
-
+        add(smoothing_panel);
+        smoothing_panel.setLocation(0, 200);
         condence_panel.setLocation(0, 300);
         choosing_panel.setLocation(600, 0);
 
         initComponents();
-        setSize(1200, 700);
+        setSize(getPreferredSize());
         choosing_panel.addChangeListener(new ActionListener() {
 
             @Override
@@ -68,6 +73,14 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 remakegraph(modify_data(data));
             }
         });
+        smoothing_panel.addChangeListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                remakegraph(modify_data(data));
+            }
+        });
+
 
         queryfornewdata();
     }
@@ -95,11 +108,11 @@ public class AnalyticsGui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 534, Short.MAX_VALUE)
+            .addGap(0, 1200, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 423, Short.MAX_VALUE)
+            .addGap(0, 701, Short.MAX_VALUE)
         );
 
         pack();
@@ -110,7 +123,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
-    GraphPanel graph = null;
+    GraphPanel graph_panel = null;
     ReportPanel rp = null;
 
     private Vector<ElectricalValue> modify_data(Vector<ElectricalValue> olddata) {
@@ -128,7 +141,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
                         avg += olddata.get(i + j).value;
                         j++;
                     }
-                    modifieddata.add(new ElectricalValue(olddata.get((int) i + (j - 1) / 2).datetime, (float) (avg )));
+                    modifieddata.add(new ElectricalValue(olddata.get((int) i + (j - 1) / 2).datetime, (float) (avg)));
                 }
 
             } else if (condence_panel.average_radio_button.isSelected()) {
@@ -164,12 +177,14 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
     private void remakegraph(Vector<ElectricalValue> data) {
-        if (graph != null) {
-            remove(graph);
+        if (graph_panel != null) {
+            remove(graph_panel);
         }
-        graph = new GraphPanel(data);
-        graph.setLocation(400, 80);
-        add(graph);
+        graph_panel = new GraphPanel(data, smoothing_panel.jSlider1.getValue());
+        
+        add(graph_panel);
+        graph_panel.setSize(graph_panel.getPreferredSize());
+        graph_panel.setLocation(400, 80);
         revalidate();
     }
 }

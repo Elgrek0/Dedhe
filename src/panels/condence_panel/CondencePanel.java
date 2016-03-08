@@ -20,7 +20,7 @@ public class CondencePanel extends javax.swing.JPanel {
      */
     public CondencePanel() {
         initComponents();
-        setSize(423, 86);
+        setSize(getPreferredSize());
 
         setVisible(true);
     }
@@ -136,7 +136,7 @@ public class CondencePanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(month_button)
                     .addComponent(day_button, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

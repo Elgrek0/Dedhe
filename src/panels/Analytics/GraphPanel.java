@@ -5,7 +5,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Vector;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
@@ -15,21 +14,15 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.labels.StandardCrosshairLabelGenerator;
 import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.general.SeriesException;
-import org.jfree.data.time.Day;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.time.Year;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
@@ -44,18 +37,33 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
     public ChartPanel chartpanel;
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;
+    int splines;
 
     public GraphPanel(Vector<ElectricalValue> values) {
 
         TimeSeriesCollection dataset = createDataset(values);
-
+        splines = 1;
         add(createContent(dataset));
-        setSize(800, 500);
         setVisible(true);
 
     }
 
-    private static JFreeChart createChart(XYDataset dataset) {
+    public GraphPanel(Vector<ElectricalValue> values, int splines) {
+
+        TimeSeriesCollection dataset = createDataset(values);
+        this.splines = splines;
+        add(createContent(dataset));
+        setVisible(true);
+
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        super.setSize(width, height);
+        chartpanel.setSize(width-10, height-10);
+    }
+
+    private JFreeChart createChart(XYDataset dataset) {
 
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
                 "", // title
@@ -77,7 +85,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
         plot.setDomainCrosshairVisible(true);
         plot.setRangeCrosshairVisible(true);
 
-        XYSplineRenderer renderer = new XYSplineRenderer(1);
+        XYSplineRenderer renderer = new XYSplineRenderer(splines);
         plot.setRenderer(renderer);
 
         renderer.setBaseShapesVisible(false);
@@ -108,11 +116,10 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
         TimeSeries s1 = new TimeSeries("Current of powerstation_name");
 
         for (ElectricalValue eval : values) {
-            try{
-            s1.add(new Minute(eval.datetime.toDate()), eval.value);
-            }
-            catch (SeriesException ex){
-                
+            try {
+                s1.add(new Minute(eval.datetime.toDate()), eval.value);
+            } catch (SeriesException ex) {
+
             }
         }
 
