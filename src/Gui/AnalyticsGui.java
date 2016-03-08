@@ -15,7 +15,9 @@ import exceptions.BadDateInputException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import panels.condence_panel.CondencePanel;
 import panels.date_panel.DatePanel;
 
 /**
@@ -28,32 +30,45 @@ public class AnalyticsGui extends javax.swing.JFrame {
      * Creates new form AnalyticsGui
      */
     DBConnection dbconn;
-    ChoosingPanel cp = new ChoosingPanel();
-    DatePanel dp = new DatePanel();
+    ChoosingPanel choosing_panel = new ChoosingPanel();
+    DatePanel date_panel = new DatePanel();
+    CondencePanel condence_panel = new CondencePanel();
     Vector<ElectricalValue> data;
 
     public AnalyticsGui(DBConnection dbconn) {
         dbconn = dbconn;
-        add(cp);
-        add(dp);
-        cp.setVisible(true);
-        cp.setLocation(600, 0);
+        add(choosing_panel);
+        add(date_panel);
+        add(condence_panel);
+
+        condence_panel.setLocation(0, 300);
+        choosing_panel.setLocation(600, 0);
+
         initComponents();
         setSize(1200, 700);
-        cp.addChangeListener(new ActionListener() {
+        choosing_panel.addChangeListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 queryfornewdata();
             }
         });
-        dp.addChangeListener(new ActionListener() {
+        date_panel.addChangeListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 queryfornewdata();
             }
         });
+
+        condence_panel.addChangeListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                remakegraph(modify_data(data));
+            }
+        });
+
         queryfornewdata();
     }
 
@@ -96,16 +111,59 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
     GraphPanel graph = null;
-    ReportPanel rp=null;
+    ReportPanel rp = null;
+
+    private Vector<ElectricalValue> modify_data(Vector<ElectricalValue> olddata) {
+        int condence = condence_panel.condence_value;
+        if (condence != 1) {
+            Vector<ElectricalValue> modifieddata = new Vector<ElectricalValue>();
+            if (condence_panel.sum_radio_button.isSelected()) {
+                int j = 0;
+                for (int i = 0; i < olddata.size(); i += j) {
+                    DateTime start = olddata.get(i).datetime;
+                    double avg = 0;
+                    j = 0;
+                    while ((i + j) < olddata.size() && condence_panel.is_inside_period(start, olddata.get(i + j).datetime)) {
+
+                        avg += olddata.get(i + j).value;
+                        j++;
+                    }
+                    modifieddata.add(new ElectricalValue(olddata.get((int) i + (j - 1) / 2).datetime, (float) (avg )));
+                }
+
+            } else if (condence_panel.average_radio_button.isSelected()) {
+                int j = 0;
+                for (int i = 0; i < olddata.size(); i += j) {
+                    DateTime start = olddata.get(i).datetime;
+                    double avg = 0;
+                    j = 0;
+                    while ((i + j) < olddata.size() && condence_panel.is_inside_period(start, olddata.get(i + j).datetime)) {
+
+                        avg += olddata.get(i + j).value;
+                        j++;
+                    }
+                    modifieddata.add(new ElectricalValue(olddata.get((int) i + (j - 1) / 2).datetime, (float) (avg / j)));
+                }
+            }
+            return modifieddata;
+        }
+        return olddata;
+    }
+
     private void queryfornewdata() {
-        data = LoadDataFromDB.get_breaker_data(cp.selected_breaker, dp.startdate, dp.enddate);
+        data = LoadDataFromDB.get_breaker_data(choosing_panel.selected_breaker, date_panel.startdate, date_panel.enddate);
+
+        remakegraph(modify_data(data));
         if (rp != null) {
             remove(rp);
         }
         rp = new ReportPanel(data);
         rp.setLocation(0, 500);
         add(rp);
-        
+
+    }
+
+    private void remakegraph(Vector<ElectricalValue> data) {
         if (graph != null) {
             remove(graph);
         }
@@ -114,5 +172,4 @@ public class AnalyticsGui extends javax.swing.JFrame {
         add(graph);
         revalidate();
     }
-
 }

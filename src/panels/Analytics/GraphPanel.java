@@ -77,7 +77,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
         plot.setDomainCrosshairVisible(true);
         plot.setRangeCrosshairVisible(true);
 
-        XYSplineRenderer renderer = new XYSplineRenderer(5);
+        XYSplineRenderer renderer = new XYSplineRenderer(1);
         plot.setRenderer(renderer);
 
         renderer.setBaseShapesVisible(false);
