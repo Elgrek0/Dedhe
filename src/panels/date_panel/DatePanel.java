@@ -38,13 +38,16 @@ public class DatePanel extends javax.swing.JPanel {
     /**
      * Creates new form DatePanel
      */
+    boolean changepermisionflag = true;
+
     public DatePanel() {
 
         initComponents();
-
+        changepermisionflag = false;
         startdate = new LocalDate(2015, 1, 14);
         enddate = new LocalDate(2015, 1, 15);
         update_spinners();
+        changepermisionflag = true;
         setSize(400, 200);
         setVisible(true);
 
@@ -52,12 +55,14 @@ public class DatePanel extends javax.swing.JPanel {
 
     private void update_spinners() {
 
+        changepermisionflag = false;
         start_day_spinner.setValue(startdate.getDayOfMonth());
         start_month_spinner.setValue(startdate.getMonthOfYear());
         start_year_spinner.setValue(startdate.getYear());
         end_day_spinner.setValue(enddate.getDayOfMonth());
         end_month_spinner.setValue(enddate.getMonthOfYear());
         end_year_spinner.setValue(enddate.getYear());
+        changepermisionflag = true;
     }
 
     /**
@@ -339,7 +344,9 @@ public class DatePanel extends javax.swing.JPanel {
         int oldstartday = (int) startdate.getDayOfMonth();
         int datechange = newstartday - oldstartday;
         startdate = startdate.plusDays(datechange);
-        statechangedevent();
+        if (changepermisionflag == true) {
+            statechangedevent();
+        }
     }//GEN-LAST:event_start_day_spinnerStateChanged
 
     private void start_month_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_start_month_spinnerStateChanged
@@ -347,7 +354,9 @@ public class DatePanel extends javax.swing.JPanel {
         int oldstartmonth = (int) startdate.getMonthOfYear();
         int monthchange = newstartmonth - oldstartmonth;
         startdate = startdate.plusMonths(monthchange);
-        statechangedevent();
+        if (changepermisionflag == true) {
+            statechangedevent();
+        }
     }//GEN-LAST:event_start_month_spinnerStateChanged
 
     private void start_year_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_start_year_spinnerStateChanged
@@ -355,7 +364,9 @@ public class DatePanel extends javax.swing.JPanel {
         int oldstartyear = (int) startdate.getYear();
         int yearchange = newstartyear - oldstartyear;
         startdate = startdate.plusYears(yearchange);
-        statechangedevent();
+        if (changepermisionflag == true) {
+            statechangedevent();
+        }
     }//GEN-LAST:event_start_year_spinnerStateChanged
 
     private void end_day_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_end_day_spinnerStateChanged
@@ -363,7 +374,9 @@ public class DatePanel extends javax.swing.JPanel {
         int oldendday = (int) enddate.getDayOfMonth();
         int datechange = newendday - oldendday;
         enddate = enddate.plusDays(datechange);
-        statechangedevent();
+        if (changepermisionflag == true) {
+            statechangedevent();
+        }
     }//GEN-LAST:event_end_day_spinnerStateChanged
 
     private void end_month_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_end_month_spinnerStateChanged
@@ -371,7 +384,9 @@ public class DatePanel extends javax.swing.JPanel {
         int oldendmonth = (int) enddate.getMonthOfYear();
         int monthchange = newendmonth - oldendmonth;
         enddate = enddate.plusMonths(monthchange);
-        statechangedevent();
+        if (changepermisionflag == true) {
+            statechangedevent();
+        }
     }//GEN-LAST:event_end_month_spinnerStateChanged
 
     private void end_year_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_end_year_spinnerStateChanged
@@ -379,43 +394,54 @@ public class DatePanel extends javax.swing.JPanel {
         int oldendyear = (int) enddate.getYear();
         int yearchange = newendyear - oldendyear;
         enddate = enddate.plusYears(yearchange);
-        statechangedevent();
+        if (changepermisionflag == true) {
+            statechangedevent();
+        }
     }//GEN-LAST:event_end_year_spinnerStateChanged
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+  
         startdate = startdate.plusDays(1);
         enddate = enddate.plusDays(1);
         statechangedevent();
+       
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+     
         startdate = startdate.plusDays(-1);
         enddate = enddate.plusDays(-1);
         statechangedevent();
+       
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    
         startdate = startdate.plusMonths(1);
-        enddate = enddate.plusMonths(1);
+        enddate = enddate.plusMonths(1);      
         statechangedevent();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+       
         startdate = startdate.plusMonths(-1);
         enddate = enddate.plusMonths(-1);
         statechangedevent();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+
+        
         startdate = startdate.plusYears(1);
         enddate = enddate.plusYears(1);
-        statechangedevent();
+        statechangedevent();        
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+
         startdate = startdate.plusYears(-1);
         enddate = enddate.plusYears(-1);
-        statechangedevent();
+        statechangedevent();        
     }//GEN-LAST:event_jButton6ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
