@@ -138,16 +138,68 @@ public class ExcelAutoLoader {
 
     private void loadBreakerdata() {
 
-        for (int i = 0; i < p.transformers.size(); i++) {
-            Transformer t = p.transformers.elementAt(i);
-            for (int j = 0; j < t.breakers.size(); j++) {
+        try {
+            for (int i = 0; i < p.transformers.size(); i++) {
+                Transformer t = p.transformers.elementAt(i);
+                for (int j = 0; j < t.breakers.size(); j++) {
 
-                Breaker b = t.breakers.elementAt(j);
+                    Breaker b = t.breakers.elementAt(j);
+                    int errors = 0;
+
+                    for (int k = 0; k < sheetnames.size(); k++) {
+                        if (sheetnames.get(k).split("-").length > 1) {
+                            if (b.name.split("-")[1].equals(sheetnames.get(k).split("-")[1])) {
+
+                                Cells cells = worksheets.get(k).getCells();
+                                String data;
+                                for (int l = 1; l < cells.getMaxRow(); l++) {
+                                    try {
+                                        String date = cells.get(l, 1).getStringValue();
+                                        String value = cells.get(l, 2).getStringValue();
+                                        if (!date.equals("") && !value.equals("")) {
+                                            data = "'" + FixValues.reversedate(date, '/', ':')
+                                                    + "'" + "," + value.replace(',', '.')
+                                                    + "," + b.id;
+
+                                            StoreDatatoDB.store("Breaker_data", data);
+                                        } else {
+                                            errors++;
+                                        }
+                                    } catch (BadDateInputException ex) {
+                                        errors++;
+                                    } catch (BadTimeInputException ex) {
+                                        errors++;
+                                    } catch (CouldntStoreDataException ex) {
+                                        errors++;
+                                    }
+
+                                }
+                                System.out.println("query of breaker " + b.name + " completed sucesfully");
+                                System.out.println("errors #" + errors);
+                                System.out.println("sucesses #" + (cells.getMaxRow() - errors));
+
+                                break;
+                            }
+                        }
+                    }
+
+                }
+            }
+        } catch (Exception ex) {
+            ErrorPopup.popup("Failed to pass data automaticaly to breakers");
+        }
+    }
+
+    private void loadTransformerdata() {
+        try {
+            for (int i = 0; i < p.transformers.size(); i++) {
+                Transformer t = p.transformers.elementAt(i);
+
                 int errors = 0;
 
                 for (int k = 0; k < sheetnames.size(); k++) {
-                    if (sheetnames.get(k).split("-").length > 1) {
-                        if (b.name.split("-")[1].equals(sheetnames.get(k).split("-")[1])) {
+                    if (sheetnames.get(k).split("ΜΣ").length > 0) {
+                        if (t.name.split(" ")[t.name.split(" ").length - 1].equals(sheetnames.get(k).split("ΜΣ")[sheetnames.get(k).split("ΜΣ").length - 1])) {
 
                             Cells cells = worksheets.get(k).getCells();
                             String data;
@@ -158,9 +210,9 @@ public class ExcelAutoLoader {
                                     if (!date.equals("") && !value.equals("")) {
                                         data = "'" + FixValues.reversedate(date, '/', ':')
                                                 + "'" + "," + value.replace(',', '.')
-                                                + "," + b.id;
+                                                + "," + t.id;
 
-                                        StoreDatatoDB.store("Breaker_data", data);
+                                        StoreDatatoDB.store("Transformer_data", data);
                                     } else {
                                         errors++;
                                     }
@@ -173,70 +225,20 @@ public class ExcelAutoLoader {
                                 }
 
                             }
-                            System.out.println("query of breaker " + b.name + " completed sucesfully");
+                            System.out.println("query of transformer " + t.name + " completed sucesfully");
                             System.out.println("errors #" + errors);
                             System.out.println("sucesses #" + (cells.getMaxRow() - errors));
 
                             break;
                         }
                     }
-                }
 
+                }
             }
+        } catch (Exception ex) {
+            ErrorPopup.popup("Failed to pass data automaticaly to transformers");
         }
     }
-
-    private void loadTransformerdata() {
-
-        for (int i = 0; i < p.transformers.size(); i++) {
-            Transformer t = p.transformers.elementAt(i);
-
-            int errors = 0;
-
-            for (int k = 0; k < sheetnames.size(); k++) {
-                if (sheetnames.get(k).split("ΜΣ").length > 0) {
-                    if (t.name.split(" ")[t.name.split(" ").length-1].equals(sheetnames.get(k).split("ΜΣ")[sheetnames.get(k).split("ΜΣ").length-1])) {
-
-                        Cells cells = worksheets.get(k).getCells();
-                        String data;
-                        for (int l = 1; l < cells.getMaxRow(); l++) {
-                            try {
-                                String date = cells.get(l, 1).getStringValue();
-                                String value = cells.get(l, 2).getStringValue();
-                                if (!date.equals("") && !value.equals("")) {
-                                    data = "'" + FixValues.reversedate(date, '/', ':')
-                                            + "'" + "," + value.replace(',', '.')
-                                            + "," + t.id;
-
-                                    StoreDatatoDB.store("Transformer_data", data);
-                                } else {
-                                    errors++;
-                                }
-                            } catch (BadDateInputException ex) {
-                                errors++;
-                            } catch (BadTimeInputException ex) {
-                                errors++;
-                            } catch (CouldntStoreDataException ex) {
-                                errors++;
-                            }
-
-                        }
-                        System.out.println("query of transformer " + t.name + " completed sucesfully");
-                        System.out.println("errors #" + errors);
-                        System.out.println("sucesses #" + (cells.getMaxRow() - errors));
-
-                        break;
-                    }
-                }
-
-            }
-        }
-
-    }
-
-    
-
-    
 
     private void generate_electrical_items() {
 
