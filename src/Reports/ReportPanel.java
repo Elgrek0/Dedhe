@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
  *
  * @author vatian
  */
-public final class ReportPanel extends javax.swing.JPanel {
+public class ReportPanel extends javax.swing.JPanel {
 
     private Vector<ElectricalValue> data1;
     public float avg, sum;
@@ -25,17 +25,24 @@ public final class ReportPanel extends javax.swing.JPanel {
     public ReportPanel(Vector<ElectricalValue> data_input) {
         data1 = data_input;
         initComponents();
-       
+
         min_finder();
-        max_textfield.setEditable(false);
+        min_textfield.setEditable(false);
         sum_finder();
+        sum_textfield.setEditable(false);
         max_finder();
+        max_textfield.setEditable(false);
         avg_finder();
+        avg_textfield.setEditable(false);
+
         setSize(400, 400);
         setVisible(true);
     }
 
-   
+    /*  public ReportPanel() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+    }*/
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
