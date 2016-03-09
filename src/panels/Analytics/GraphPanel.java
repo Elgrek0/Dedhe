@@ -163,7 +163,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
 
         try {
             DateTime datetime = new DateTime(Long.parseLong(date));
-            datetime_textfield.setText(datetime.toString("YYYY/MM/dd HH:mm:ss"));
+            datetime_textfield.setText(datetime.toString("YYYY/MM/dd E HH:mm:ss"));
 
         } catch (Exception e) {
             datetime_textfield.setText("Hover Mouse over Chart");

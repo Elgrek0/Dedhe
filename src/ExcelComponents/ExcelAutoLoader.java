@@ -12,7 +12,6 @@ import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
 import Gui.AddNewElectricalItems;
 import com.aspose.cells.Cells;
-import exceptions.NoSuchSheetException;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import exceptions.CouldntStoreDataException;
@@ -22,7 +21,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import panels.ErrorPopup;
-import panels.Popup;
 
 /**
  *

@@ -49,7 +49,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         smoothing_panel.setLocation(0, 200);
         condence_panel.setLocation(0, 300);
         choosing_panel.setLocation(600, 0);
-
+        setResizable(false);
         initComponents();
         setSize(getPreferredSize());
         choosing_panel.addChangeListener(new ActionListener() {

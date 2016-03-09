@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FilenameUtils;
+import panels.Popup;
 
 /**
  *
@@ -44,7 +45,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
     ChoosingPanel cp;
     File sheetfile;
     SpreadSheetOpener sheetopener;
-    
+
     public LoadExcelDataGui(DBConnection dbconn) {
         this.dbconn = dbconn;
         initComponents();
@@ -52,7 +53,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         cp.setVisible(true);
         add(cp);
         setLocation(400, 0);
-        
+
     }
 
     /**
@@ -205,19 +206,19 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 void load_temp_data() {
-        
+
         String columnnames[] = sheetopener.getrow(0, 2, 0);
-        
+
         String[][] data = sheetopener.getdata(0, 2, 1, 11);
-        
+
         DefaultTableModel dtb = new DefaultTableModel(data, columnnames);
         sample_data_table.setModel(dtb);
         revalidate();
-        
+
     }
 
     private void open_sheet_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_open_sheet_buttonActionPerformed
-        
+
         setEnabled(false);
         sheetfile = FileOpener.openfile();
         if (sheetfile != null) {
@@ -225,12 +226,12 @@ void load_temp_data() {
                 try {
                     sheetopener = new ExcelSheetOpener(0, sheetfile);
                     sheet_name_textfield.setText(((ExcelSheetOpener) sheetopener).getsheetname());
-                    
+
                 } catch (NoSuchSheetException ex) {
                     Logger.getLogger(LoadExcelDataGui.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
             } else if (FilenameUtils.getExtension(sheetfile.getPath()).equals("csv")) {
                 try {
                     sheetopener = new CSVSheetOpener(sheetfile);
@@ -249,7 +250,7 @@ void load_temp_data() {
             progress_bar.setValue(50);
             load_temp_data();
             progress_bar.setValue(0);
-            
+
         }
         setEnabled(true);
     }//GEN-LAST:event_open_sheet_buttonActionPerformed
@@ -263,7 +264,7 @@ void load_temp_data() {
     }//GEN-LAST:event_pass_data_to_transformer_buttonActionPerformed
 
     private void sheet_number_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sheet_number_spinnerStateChanged
-        
+
         if (sheetfile != null) {
             if (FilenameUtils.getExtension(sheetfile.getPath()).equals("xls")) {
                 if ((int) sheet_number_spinner.getValue() < 0) {
@@ -272,7 +273,7 @@ void load_temp_data() {
                     try {
                         sheetopener = new ExcelSheetOpener((int) sheet_number_spinner.getValue(), sheetfile);
                         sheet_name_textfield.setText(((ExcelSheetOpener) sheetopener).getsheetname());
-                        
+
                     } catch (NoSuchSheetException ex) {
                         sheet_number_spinner.setValue((int) sheet_number_spinner.getValue() - 1);
                         return;
@@ -294,13 +295,13 @@ void load_temp_data() {
     }//GEN-LAST:event_pass_data_to_breaker_buttonActionPerformed
 
     private void add_new_electrical_itemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_new_electrical_itemsActionPerformed
-        
+
         JFrame parent = this;
         Thread addingwindow = new Thread() {
-            
+
             @Override
             public void run() {
-                
+
                 AddNewElectricalItems a = new AddNewElectricalItems();
                 a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
                 a.setVisible(true);
@@ -313,19 +314,19 @@ void load_temp_data() {
                     }
                 });
             }
-            
+
         };
         setEnabled(false);
         addingwindow.start();
         try {
             LoadDataFromDB.loadall();
-            
+
         } catch (InterruptedException ex) {
             Logger.getLogger(LoadExcelDataGui.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
         cp.refresh();
-        
+
 
     }//GEN-LAST:event_add_new_electrical_itemsActionPerformed
 
@@ -357,9 +358,9 @@ void load_temp_data() {
         if (sheetopener != null) {
             int errors = 0;
             boolean fatalerror = false;
-            
+
             String data;
-            
+
             if (sheetopener.getClass() == ExcelSheetOpener.class) {
                 for (int i = 1; i < sheetopener.max_row; i++) {
                     try {
@@ -371,7 +372,7 @@ void load_temp_data() {
                             progress_bar.setValue((int) i / (sheetopener.max_row / 100));
                             progress_bar.update(progress_bar.getGraphics());
                         }
-                        
+
                         StoreDatatoDB.store("Breaker_data", data);
                     } catch (BadDateInputException ex) {
                         errors++;
@@ -380,7 +381,7 @@ void load_temp_data() {
                     } catch (CouldntStoreDataException ex) {
                         errors++;
                     }
-                    
+
                 }
             }
             if (sheetopener.getClass() == CSVSheetOpener.class) {
@@ -394,24 +395,26 @@ void load_temp_data() {
                             progress_bar.setValue((int) i / (sheetopener.max_row / 100));
                             progress_bar.update(progress_bar.getGraphics());
                         }
-                        
+
                         StoreDatatoDB.store("Breaker_data", data);
                     } catch (CouldntStoreDataException ex) {
                         errors++;
                     }
-                    
+
                 }
             }
             if (fatalerror
                     == false) {
-                System.out.println("querycompleted sucesfully");
-                System.out.println("errrors #" + errors);
+                System.out.println("query completed sucesfully");
+                System.out.println("errors #" + errors);
+                System.out.println("sucesses #" + (sheetopener.max_row - errors));
+                Popup.popup("Passed Succesfully " + (sheetopener.max_row - errors) + " from " + sheetopener.max_row);
             }
         } else {
             ErrorPopup.popup(new NoFileSelectedException());
         }
     }
-    
+
     private void pass_data_to_Transformer() {
         if (sheetopener != null) {
             int errors = 0;
@@ -436,12 +439,12 @@ void load_temp_data() {
                     } catch (CouldntStoreDataException ex) {
                         errors++;
                     }
-                    
+
                 }
             }
             if (sheetopener.getClass() == CSVSheetOpener.class) {
                 for (int i = 1; i < sheetopener.max_row; i++) {
-                    
+
                     try {
                         String[] breakerdata = sheetopener.getrow(0, 2, i);
                         data = "'" + breakerdata[0]
@@ -455,7 +458,7 @@ void load_temp_data() {
                     } catch (CouldntStoreDataException ex) {
                         errors++;
                     }
-                    
+
                 }
             }
             if (fatalerror == false) {
@@ -466,5 +469,5 @@ void load_temp_data() {
             ErrorPopup.popup(new NoFileSelectedException());
         }
     }
-    
+
 }
