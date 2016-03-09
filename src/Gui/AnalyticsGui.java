@@ -96,6 +96,8 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        breaker_radio_button = new javax.swing.JRadioButton();
+        transformer_radio_button = new javax.swing.JRadioButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -104,24 +106,63 @@ public class AnalyticsGui extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 400));
 
+        breaker_radio_button.setSelected(true);
+        breaker_radio_button.setText("load Breaker Data");
+        breaker_radio_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                breaker_radio_buttonActionPerformed(evt);
+            }
+        });
+
+        transformer_radio_button.setText("load Transformer Data");
+        transformer_radio_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transformer_radio_buttonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(1061, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(transformer_radio_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(breaker_radio_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 701, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(breaker_radio_button)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(transformer_radio_button)
+                .addContainerGap(552, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void breaker_radio_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_breaker_radio_buttonActionPerformed
+        transformer_radio_button.setSelected(false);
+        breaker_radio_button.setSelected(true);
+        queryfornewdata();
+    }//GEN-LAST:event_breaker_radio_buttonActionPerformed
+
+    private void transformer_radio_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transformer_radio_buttonActionPerformed
+        transformer_radio_button.setSelected(true);
+        breaker_radio_button.setSelected(false);
+        queryfornewdata();
+    }//GEN-LAST:event_transformer_radio_buttonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton breaker_radio_button;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JRadioButton transformer_radio_button;
     // End of variables declaration//GEN-END:variables
     GraphPanel graph_panel = null;
     ReportPanel rp = null;
@@ -141,7 +182,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
                         avg += olddata.get(i + j).value;
                         j++;
                     }
-                    modifieddata.add(new ElectricalValue(olddata.get((int) i + (j - 1) / 2).datetime, (float) (avg)));
+                    modifieddata.add(new ElectricalValue(olddata.get((int) i + (j) / 2).datetime, (float) (avg)));
                 }
 
             } else if (condence_panel.average_radio_button.isSelected()) {
@@ -164,7 +205,11 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
     private void queryfornewdata() {
-        data = LoadDataFromDB.get_breaker_data(choosing_panel.selected_breaker, date_panel.startdate, date_panel.enddate);
+        if (breaker_radio_button.isSelected()) {
+            data = LoadDataFromDB.get_breaker_data(choosing_panel.selected_breaker, date_panel.startdate, date_panel.enddate);
+        } else {
+            data = LoadDataFromDB.get_transformer_data(choosing_panel.selected_transformer, date_panel.startdate, date_panel.enddate);
+        }
 
         recalculatemetrics();
         remakegraph(modify_data(data));
