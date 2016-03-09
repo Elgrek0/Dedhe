@@ -267,7 +267,7 @@ void load_temp_data() {
                 }
             }
         }
-        {
+        else{
             sheet_number_spinner.setValue(0);
         }
     }//GEN-LAST:event_sheet_number_spinnerStateChanged

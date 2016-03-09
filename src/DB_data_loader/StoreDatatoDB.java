@@ -29,7 +29,7 @@ public class StoreDatatoDB {
             dbconn.disablekeys(arrayname);
             PreparedStatement pstmt = null;
 
-            String query = " INSERT INTO " + arrayname + " VALUES (" + values + ");\n";
+            String query = " INSERT INTO " + arrayname + " VALUES (" + values + ") ON DUPLICATE KEY UPDATE;\n";
 
             pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
             pstmt.execute();
