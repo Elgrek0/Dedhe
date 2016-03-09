@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 public class CSVSheetOpener extends SpreadSheetOpener {
 
     List<String[]> tempdata;
-
     public CSVSheetOpener(File f) throws FileNotFoundException {
 
         CSVReader reader = new CSVReader(new FileReader(f),';');
@@ -53,5 +52,6 @@ public class CSVSheetOpener extends SpreadSheetOpener {
         }
 
     }
+       
 
 }

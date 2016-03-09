@@ -5,6 +5,8 @@
  */
 package ExcelComponents;
 
+import javax.swing.JTextField;
+
 /**
  *
  * @author Paris
@@ -51,4 +53,6 @@ public abstract class SpreadSheetOpener {
         }
         return data;
     }
+
+
 }
