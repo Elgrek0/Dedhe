@@ -83,7 +83,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
                 "", // title
                 "Date", // x-axis label
-                "Current", // y-axis label
+                "Value", // y-axis label
                 dataset, // data
                 true, // create legend?
                 true, // generate tooltips?
@@ -129,7 +129,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
     }
 
     private TimeSeriesCollection createDataset(Vector<ElectricalValue> values) {
-        TimeSeries s1 = new TimeSeries("Current of powerstation_name");
+        TimeSeries s1 = new TimeSeries("");
 
         for (ElectricalValue eval : values) {
             try {
