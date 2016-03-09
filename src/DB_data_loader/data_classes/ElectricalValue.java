@@ -23,10 +23,10 @@ public class ElectricalValue {
     }  
     
     @Override
-    public String toString(){
-        
-        return value+" at "+datetime.getHourOfDay()+":"+datetime.getMinuteOfHour()+" "+
-                datetime.getDayOfMonth()+"/"+datetime.getMonthOfYear()+"/"+datetime.getYearOfEra();
+    public String toString() {
+
+        return value+" at "+datetime.toString("YYYY/MM/dd HH:mm");
+
     }
     
 }
