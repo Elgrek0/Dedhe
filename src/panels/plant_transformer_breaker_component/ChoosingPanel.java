@@ -9,6 +9,7 @@ import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.StaticCachedData;
 import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.Vector;
@@ -23,6 +24,11 @@ public final class ChoosingPanel extends javax.swing.JPanel {
     public PowerPlant selected_plant = null;
     public Transformer selected_transformer = null;
     public Breaker selected_breaker = null;
+
+    int plantselection = 0;
+    int transformerselection = 0;
+    int breakerselection = 0;
+
     Vector<ActionListener> changelisteners = new Vector<ActionListener>();
 
     public void addChangeListener(ActionListener changelistener) {
@@ -42,10 +48,19 @@ public final class ChoosingPanel extends javax.swing.JPanel {
         setBounds(0, 0, 400, 70);
         refresh();
         setVisible(true);
+        StaticCachedData.addChangeListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refresh();
+                statechangedevent();
+            }
+        });
 
     }
 
     public void refresh() {
+
         update_plants();
         update_transformers();
         update_breakers();
@@ -65,7 +80,17 @@ public final class ChoosingPanel extends javax.swing.JPanel {
         if (StaticCachedData.db_powerplants.size() > 0) {
             plantcombobox = new DefaultComboBoxModel(StaticCachedData.db_powerplants);
             plant_combobox.setModel(plantcombobox);
-            plant_combobox.setSelectedIndex(0);
+            try {
+                if (plantselection > 0) {
+                    plant_combobox.setSelectedIndex(plantselection);
+                } else {
+                    plant_combobox.setSelectedIndex(0);
+                    plantselection = 0;
+                }
+            } catch (Exception ex) {
+                plant_combobox.setSelectedIndex(-1);
+                plantselection = -1;
+            }
             selected_plant = (PowerPlant) plant_combobox.getSelectedItem();
         }
         StaticCachedData.unlock();
@@ -84,8 +109,20 @@ public final class ChoosingPanel extends javax.swing.JPanel {
 
                 transformercombobox = new DefaultComboBoxModel(selected_plant.transformers);
                 transformer_combobox.setModel(transformercombobox);
-                transformer_combobox.setSelectedIndex(0);
+                try {
+                    if (transformerselection > 0) {
+                        transformer_combobox.setSelectedIndex(transformerselection);
+                    } else {
+                        transformer_combobox.setSelectedIndex(0);
+                        transformerselection = 0;
+                    }
+                } catch (Exception ex) {
+
+                    transformer_combobox.setSelectedIndex(-1);
+                    transformerselection = -1;
+                }
                 selected_transformer = (Transformer) transformer_combobox.getSelectedItem();
+
             }
             StaticCachedData.unlock();
         }
@@ -104,7 +141,17 @@ public final class ChoosingPanel extends javax.swing.JPanel {
 
                 breakercombobox = new DefaultComboBoxModel(selected_transformer.breakers);
                 breaker_combobox.setModel(breakercombobox);
-                breaker_combobox.setSelectedIndex(0);
+                try {
+                    if (breakerselection > 0) {
+                        breaker_combobox.setSelectedIndex(breakerselection);
+                    } else {
+                        breaker_combobox.setSelectedIndex(0);
+                        breakerselection = 0;
+                    }
+                } catch (Exception ex) {
+                    breaker_combobox.setSelectedIndex(-1);
+                    breakerselection = -1;
+                }
                 selected_breaker = (Breaker) breaker_combobox.getSelectedItem();
             }
             StaticCachedData.unlock();
@@ -200,6 +247,11 @@ public final class ChoosingPanel extends javax.swing.JPanel {
     private void plant_comboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_plant_comboboxItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             selected_plant = (PowerPlant) plant_combobox.getSelectedItem();
+
+            plantselection = plant_combobox.getSelectedIndex();
+            transformerselection = transformer_combobox.getSelectedIndex();
+            breakerselection = breaker_combobox.getSelectedIndex();
+
             update_transformers();
             update_breakers();
             statechangedevent();
@@ -208,7 +260,14 @@ public final class ChoosingPanel extends javax.swing.JPanel {
 
     private void transformer_comboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_transformer_comboboxItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
+
             selected_transformer = (Transformer) transformer_combobox.getSelectedItem();
+
+            plantselection = plant_combobox.getSelectedIndex();
+            transformerselection = transformer_combobox.getSelectedIndex();
+            breakerselection = breaker_combobox.getSelectedIndex();
+            breakerselection = breaker_combobox.getSelectedIndex();
+
             update_breakers();
             statechangedevent();
         }
@@ -217,6 +276,11 @@ public final class ChoosingPanel extends javax.swing.JPanel {
     private void breaker_comboboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_breaker_comboboxItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             selected_breaker = (Breaker) breaker_combobox.getSelectedItem();
+
+            plantselection = plant_combobox.getSelectedIndex();
+            transformerselection = transformer_combobox.getSelectedIndex();
+            breakerselection = breaker_combobox.getSelectedIndex();
+
             statechangedevent();
         }
     }//GEN-LAST:event_breaker_comboboxItemStateChanged

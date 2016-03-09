@@ -46,20 +46,13 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
     }
 
     void fullrefresh() {
-        int plantselection = choosingpanel.plant_combobox.getSelectedIndex();
-        int transformerselection = choosingpanel.transformer_combobox.getSelectedIndex();
-        int breakerselection = choosingpanel.breaker_combobox.getSelectedIndex();
 
         try {
             LoadDataFromDB.loadall();
         } catch (InterruptedException ex) {
             Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
         }
-        choosingpanel.refresh();
 
-        choosingpanel.plant_combobox.setSelectedIndex(plantselection);
-        choosingpanel.transformer_combobox.setSelectedIndex(transformerselection);
-        choosingpanel.breaker_combobox.setSelectedIndex(breakerselection);
     }
 
     /**
@@ -204,13 +197,6 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
         } catch (CouldntStoreDataException ex) {
             Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            LoadDataFromDB.refresh_powerplants();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoActiveDbConnectionException ex) {
-            Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
-        }
         fullrefresh();
         choosingpanel.plant_combobox.setSelectedIndex(choosingpanel.plant_combobox.getItemCount() - 1);
     }//GEN-LAST:event_add_plant_buttonActionPerformed
@@ -239,14 +225,6 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
         try {
             t.store();
         } catch (CouldntStoreDataException ex) {
-            Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-
-            LoadDataFromDB.refresh_transformers();
-
-        } catch (InterruptedException | NoActiveDbConnectionException | PowerPlantParentNotFoundException ex) {
             Logger.getLogger(AddNewElectricalItems.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -280,20 +258,6 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
         } catch (CouldntStoreDataException ex) {
             Logger.getLogger(AddNewElectricalItems.class
                     .getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            LoadDataFromDB.refresh_breakers();
-
-        } catch (InterruptedException ex) {
-            Logger.getLogger(AddNewElectricalItems.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        } catch (NoActiveDbConnectionException ex) {
-            Logger.getLogger(AddNewElectricalItems.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        } catch (TransformerParentNotFoundException ex) {
-            Logger.getLogger(AddNewElectricalItems.class
-                    .getName()).log(Level.SEVERE, null, ex);
-
         }
         fullrefresh();
         choosingpanel.breaker_combobox.setSelectedIndex(choosingpanel.breaker_combobox.getItemCount() - 1);

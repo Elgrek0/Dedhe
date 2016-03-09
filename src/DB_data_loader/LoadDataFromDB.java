@@ -42,9 +42,10 @@ public class LoadDataFromDB {
             throw new NoActiveDbConnectionException("connection was null");
         }
     }
+    static boolean eventpermision = true;
 
     public static void loadall() throws InterruptedException {
-
+        eventpermision = false;
         try {
             refresh_powerplants();
             if (debug) {
@@ -65,6 +66,9 @@ public class LoadDataFromDB {
         } catch (TransformerParentNotFoundException ex) {
             System.err.println("a transformer is missing");
         }
+        StaticCachedData.unlock();
+        StaticCachedData.cacheupdateevent();
+        eventpermision = true;
 
     }
 
@@ -103,6 +107,9 @@ public class LoadDataFromDB {
                 return;
             }
             StaticCachedData.unlock();
+        }
+        if (eventpermision) {
+            StaticCachedData.cacheupdateevent();
         }
 
     }
@@ -169,6 +176,9 @@ public class LoadDataFromDB {
             }
             StaticCachedData.unlock();
         }
+        if (eventpermision) {
+            StaticCachedData.cacheupdateevent();
+        }
 
     }
 
@@ -230,6 +240,9 @@ public class LoadDataFromDB {
             }
             StaticCachedData.unlock();
         }
+        if (eventpermision) {
+            StaticCachedData.cacheupdateevent();
+        }
 
     }
 
@@ -252,12 +265,11 @@ public class LoadDataFromDB {
 
                     Statement stmt = conn.conn.createStatement();
                     stmt.execute(query);
-                    
+
                     ResultSet rs = stmt.getResultSet();
-                    
-                    
+
                     while (rs.next()) {
-                         data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)),rs.getFloat(2)));
+                        data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)), rs.getFloat(2)));
                     }
 
                 } catch (SQLException ex) {
@@ -296,7 +308,7 @@ public class LoadDataFromDB {
 
                     ResultSet rs = pstmt.getResultSet();
                     while (rs.next()) {
-                        data.add(new ElectricalValue( new DateTime(rs.getTimestamp(1)),rs.getFloat(2)));
+                        data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)), rs.getFloat(2)));
                     }
 
                 } catch (SQLException ex) {

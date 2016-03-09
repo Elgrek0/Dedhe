@@ -10,6 +10,7 @@ import panels.plant_transformer_breaker_component.ChoosingPanel;
 import DB_connection.FixValues;
 import DB_connection.DBConnection;
 import DB_data_loader.LoadDataFromDB;
+import DB_data_loader.StaticCachedData;
 import DB_data_loader.StoreDatatoDB;
 import ExcelComponents.CSVSheetOpener;
 import ExcelComponents.ExcelSheetOpener;
@@ -244,6 +245,7 @@ void load_temp_data() {
     private void pass_data_to_transformer_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pass_data_to_transformer_buttonActionPerformed
         setEnabled(false);
         pass_data_to_Transformer();
+        StaticCachedData.cacheupdateevent();
         progress_bar.setValue(0);
         setEnabled(true);
     }//GEN-LAST:event_pass_data_to_transformer_buttonActionPerformed
@@ -266,8 +268,7 @@ void load_temp_data() {
                     load_temp_data();
                 }
             }
-        }
-        else{
+        } else {
             sheet_number_spinner.setValue(0);
         }
     }//GEN-LAST:event_sheet_number_spinnerStateChanged
@@ -275,6 +276,7 @@ void load_temp_data() {
     private void pass_data_to_breaker_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pass_data_to_breaker_buttonActionPerformed
         setEnabled(false);
         pass_data_to_breaker();
+        StaticCachedData.cacheupdateevent();
         progress_bar.setValue(0);
         setEnabled(true);
     }//GEN-LAST:event_pass_data_to_breaker_buttonActionPerformed
@@ -294,7 +296,6 @@ void load_temp_data() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                         parent.setEnabled(true);
-                        cp.refresh();
                         parent.toFront();
                         parent.repaint();
                     }
