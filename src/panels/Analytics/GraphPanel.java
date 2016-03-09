@@ -65,6 +65,8 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
         add(createContent(dataset));
         datetime_textfield.setSize(210, 60);
         datetime_textfield.setEditable(false);
+        datetime_textfield.setHorizontalAlignment(JTextField.CENTER);
+        datetime_textfield.setText("Hover Mouse over Chart");
         add(datetime_textfield);
         setVisible(true);
 
@@ -161,9 +163,10 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
 
         try {
             DateTime datetime = new DateTime(Long.parseLong(date));
-            datetime_textfield.setText(datetime.toString());
-        } catch (Exception e) {
+            datetime_textfield.setText(datetime.toString("YYYY/MM/dd HH:mm:ss"));
 
+        } catch (Exception e) {
+            datetime_textfield.setText("Hover Mouse over Chart");
         }
         xCrosshair.setValue(x);
         yCrosshair.setValue(y);
