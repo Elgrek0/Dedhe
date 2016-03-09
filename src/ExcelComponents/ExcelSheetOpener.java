@@ -51,7 +51,7 @@ public class ExcelSheetOpener extends SpreadSheetOpener {
     public String getdata_at(int x, int y) {
         if (cells != null) {
             if (cells.checkCell(y, x) != null) {
-                return cells.checkCell(y, x).getStringValue();
+                return cells.get(y,x).getStringValue();
             }
         }
         return "";
