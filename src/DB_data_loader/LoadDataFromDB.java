@@ -302,11 +302,9 @@ public class LoadDataFromDB {
                     String query = "SELECT datetime,current FROM transformer_data "
                             + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Transformer_ID = " + t.id + ";";
 
-                    PreparedStatement pstmt = (PreparedStatement) conn.conn.prepareStatement(query);
-                    pstmt.addBatch();
-                    pstmt.execute();
-
-                    ResultSet rs = pstmt.getResultSet();
+                    Statement stmt = conn.conn.createStatement();
+                    stmt.execute(query);
+                    ResultSet rs = stmt.getResultSet();
                     while (rs.next()) {
                         data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)), rs.getFloat(2)));
                     }

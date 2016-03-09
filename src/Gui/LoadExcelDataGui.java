@@ -365,21 +365,25 @@ void load_temp_data() {
                 for (int i = 1; i < sheetopener.max_row; i++) {
                     try {
                         String[] breakerdata = sheetopener.getrow(0, 2, i);
-                        data = "'" + FixValues.reversedate(breakerdata[1], '/', ':')
-                                + "'" + "," + breakerdata[2].replace(',', '.')
-                                + "," + cp.selected_breaker.id;
-                        if (i % 100 == 0) {
-                            progress_bar.setValue((int) i / (sheetopener.max_row / 100));
-                            progress_bar.update(progress_bar.getGraphics());
-                        }
+                        if (!breakerdata[1].equals("") && !breakerdata[2].equals("")) {
+                            data = "'" + FixValues.reversedate(breakerdata[1], '/', ':')
+                                    + "'" + "," + breakerdata[2].replace(',', '.')
+                                    + "," + cp.selected_breaker.id;
 
-                        StoreDatatoDB.store("Breaker_data", data);
+                            StoreDatatoDB.store("Breaker_data", data);
+                        } else {
+                            errors++;
+                        }
                     } catch (BadDateInputException ex) {
                         errors++;
                     } catch (BadTimeInputException ex) {
                         errors++;
                     } catch (CouldntStoreDataException ex) {
                         errors++;
+                    }
+                    if (i % 100 == 0) {
+                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                        progress_bar.update(progress_bar.getGraphics());
                     }
 
                 }
@@ -388,23 +392,27 @@ void load_temp_data() {
                 for (int i = 1; i < sheetopener.max_row; i++) {
                     try {
                         String[] breakerdata = sheetopener.getrow(0, 2, i);
-                        data = "'" + breakerdata[0]
-                                + ":00'" + "," + breakerdata[1].replace(',', '.')
-                                + "," + cp.selected_breaker.id;
-                        if (i % 100 == 0) {
-                            progress_bar.setValue((int) i / (sheetopener.max_row / 100));
-                            progress_bar.update(progress_bar.getGraphics());
+                        if (!breakerdata[0].equals("") && !breakerdata[1].equals("")) {
+                            data = "'" + breakerdata[0]
+                                    + ":00'" + "," + breakerdata[1].replace(',', '.')
+                                    + "," + cp.selected_breaker.id;
+                            StoreDatatoDB.store("Breaker_data", data);
+
+                        } else {
+                            errors++;
                         }
 
-                        StoreDatatoDB.store("Breaker_data", data);
                     } catch (CouldntStoreDataException ex) {
                         errors++;
+                    }
+                    if (i % 100 == 0) {
+                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                        progress_bar.update(progress_bar.getGraphics());
                     }
 
                 }
             }
-            if (fatalerror
-                    == false) {
+            if (fatalerror == false) {
                 System.out.println("query completed sucesfully");
                 System.out.println("errors #" + errors);
                 System.out.println("sucesses #" + (sheetopener.max_row - errors));
@@ -423,15 +431,18 @@ void load_temp_data() {
             if (sheetopener.getClass() == ExcelSheetOpener.class) {
                 for (int i = 1; i < sheetopener.max_row; i++) {
                     try {
-                        String[] breakerdata = sheetopener.getrow(0, 2, i);
-                        data = "'" + FixValues.reversedate(breakerdata[1], '/', ':')
-                                + "'" + "," + breakerdata[2].replace(',', '.')
-                                + "," + cp.selected_transformer.id;
-                        if (i % 100 == 0) {
-                            progress_bar.setValue((int) i / (sheetopener.max_row / 100));
-                            progress_bar.update(progress_bar.getGraphics());
+                        String[] transformerdata = sheetopener.getrow(0, 2, i);
+
+                        if (!transformerdata[1].equals("") && !transformerdata[2].equals("")) {
+                            data = "'" + FixValues.reversedate(transformerdata[1], '/', ':')
+                                    + "'" + "," + transformerdata[2].replace(',', '.')
+                                    + "," + cp.selected_transformer.id;
+
+                            StoreDatatoDB.store("Transformer_data", data);
+                        } else {
+                            errors++;
                         }
-                        StoreDatatoDB.store("Transformer_data", data);
+
                     } catch (BadDateInputException ex) {
                         errors++;
                     } catch (BadTimeInputException ex) {
@@ -439,24 +450,34 @@ void load_temp_data() {
                     } catch (CouldntStoreDataException ex) {
                         errors++;
                     }
-
+                    if (i % 100 == 0) {
+                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                        progress_bar.update(progress_bar.getGraphics());
+                    }
                 }
             }
             if (sheetopener.getClass() == CSVSheetOpener.class) {
                 for (int i = 1; i < sheetopener.max_row; i++) {
 
                     try {
-                        String[] breakerdata = sheetopener.getrow(0, 2, i);
-                        data = "'" + breakerdata[0]
-                                + ":00'" + "," + breakerdata[1].replace(',', '.')
-                                + "," + cp.selected_transformer.id;
-                        if (i % 128 == 0) {
-                            progress_bar.setValue((int) i / (sheetopener.max_row / 100));
-                            progress_bar.update(progress_bar.getGraphics());
+                        String[] transformerdata = sheetopener.getrow(0, 2, i);
+                        if (!transformerdata[0].equals("") && !transformerdata[1].equals("")) {
+                            data = "'" + transformerdata[0]
+                                    + ":00'" + "," + transformerdata[1].replace(',', '.')
+                                    + "," + cp.selected_transformer.id;
+
+                            StoreDatatoDB.store("Transformer_data", data);
+
+                        } else {
+                            errors++;
                         }
-                        StoreDatatoDB.store("Transformer_data", data);
                     } catch (CouldntStoreDataException ex) {
                         errors++;
+                    }
+
+                    if (i % 128 == 0) {
+                        progress_bar.setValue((int) i / (sheetopener.max_row / 100));
+                        progress_bar.update(progress_bar.getGraphics());
                     }
 
                 }
@@ -464,6 +485,8 @@ void load_temp_data() {
             if (fatalerror == false) {
                 System.out.println("querycompleted sucesfully");
                 System.out.println("errrors #" + errors);
+                System.out.println("sucesses #" + (sheetopener.max_row - errors));
+                Popup.popup("Passed Succesfully " + (sheetopener.max_row - errors) + " from " + sheetopener.max_row);
             }
         } else {
             ErrorPopup.popup(new NoFileSelectedException());

@@ -24,7 +24,7 @@ public class H2Server {
 
         JdbcDataSource ds = new JdbcDataSource();
         try {
-            ds.setURL("jdbc:h2:database./DB;"
+            ds.setURL("jdbc:h2:database./DB;CACHE_SIZE=65536;"
                     + "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;");
             ds.setUser(s);
             ds.getConnection();

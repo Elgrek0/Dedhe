@@ -8,6 +8,7 @@ package DB_data_loader;
 import exceptions.CouldntStoreDataException;
 import DB_connection.DBConnection;
 import static DB_data_loader.StaticCachedData.conn;
+import DB_data_loader.data_classes.ElectricalValue;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -19,17 +20,21 @@ import panels.ErrorPopup;
  * @author Paris
  */
 public class StoreDatatoDB {
-    
+
+    static DBConnection dbconn;
+    static PreparedStatement pstmt;
+    static boolean firstrun = true;
+
     public static void store(String arrayname, String values) throws CouldntStoreDataException {
-        
-        DBConnection dbconn = conn;
-        try {
+
+        if (firstrun) {
             dbconn = StaticCachedData.conn;
+            firstrun = false;
+        }
+
+        try {
             dbconn.disablekeys(arrayname);
-            PreparedStatement pstmt = null;
-            
             String query = " MERGE INTO " + arrayname + " VALUES(" + values + ");\n";
-            
             pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
             pstmt.execute();
         } catch (SQLException ex) {
@@ -45,6 +50,11 @@ public class StoreDatatoDB {
         } catch (SQLException ex) {
             ErrorPopup.popup("Couldnt enable table keys writing is now unsafe");
         }
-        
+
     }
+
+    public static void store(String arrayname, ElectricalValue values) throws CouldntStoreDataException {
+            //todo
+    }
+
 }
