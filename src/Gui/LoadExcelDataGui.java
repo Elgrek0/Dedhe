@@ -5,6 +5,7 @@
  */
 package Gui;
 
+import exceptions.BadFileTypeSelectedException;
 import panels.plant_transformer_breaker_component.ChoosingPanel;
 import DB_connection.FixValues;
 import DB_connection.DBConnection;
@@ -72,6 +73,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         pass_data_to_breaker_button = new javax.swing.JButton();
         add_new_electrical_items = new javax.swing.JButton();
         progress_bar = new javax.swing.JProgressBar();
+        sheet_name_textfield = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -130,6 +132,8 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
             }
         });
 
+        sheet_name_textfield.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -137,43 +141,48 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(add_new_electrical_items, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pass_data_to_transformer_button)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pass_data_to_breaker_button)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(progress_bar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(open_sheet_button, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(open_sheet_button))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(sheet_number_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(add_new_electrical_items, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pass_data_to_transformer_button)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pass_data_to_breaker_button)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(progress_bar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addComponent(sheet_number_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(sheet_name_textfield))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(open_sheet_button)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sheet_number_spinner, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sheet_number_spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sheet_name_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(pass_data_to_transformer_button)
                         .addComponent(pass_data_to_breaker_button)
                         .addComponent(add_new_electrical_items))
                     .addComponent(progress_bar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -185,6 +194,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
 void load_temp_data() {
 
         String columnnames[] = sheetopener.getrow(0, 2, 0);
+
         String[][] data = sheetopener.getdata(0, 2, 1, 11);
 
         DefaultTableModel dtb = new DefaultTableModel(data, columnnames);
@@ -201,21 +211,26 @@ void load_temp_data() {
             if (FilenameUtils.getExtension(sheetfile.getPath()).equals("xls")) {
                 try {
                     sheetopener = new ExcelSheetOpener(0, sheetfile);
+                    sheet_name_textfield.setText(((ExcelSheetOpener) sheetopener).getsheetname());
 
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(LoadExcelDataGui.class
-                            .getName()).log(Level.SEVERE, null, ex);
                 } catch (NoSuchSheetException ex) {
                     Logger.getLogger(LoadExcelDataGui.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
 
-            }
-            if (FilenameUtils.getExtension(sheetfile.getPath()).equals("csv")) {
+            } else if (FilenameUtils.getExtension(sheetfile.getPath()).equals("csv")) {
                 try {
                     sheetopener = new CSVSheetOpener(sheetfile);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                try {
+                    throw new BadFileTypeSelectedException();
+                } catch (BadFileTypeSelectedException ex) {
+                    ErrorPopup.popup("File selected was not of excel format");
+                    setEnabled(true);
+                    return;
                 }
             }
             progress_bar.setValue(50);
@@ -235,22 +250,25 @@ void load_temp_data() {
 
     private void sheet_number_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sheet_number_spinnerStateChanged
 
-        if (FilenameUtils.getExtension(sheetfile.getPath()).equals("xls")) {
-            if ((int) sheet_number_spinner.getValue() < 0 || sheetfile == null) {
-                sheet_number_spinner.setValue(0);
-            } else {
-                try {
-                    sheetopener = new ExcelSheetOpener((int) sheet_number_spinner.getValue(), sheetfile);
+        if (sheetfile != null) {
+            if (FilenameUtils.getExtension(sheetfile.getPath()).equals("xls")) {
+                if ((int) sheet_number_spinner.getValue() < 0) {
+                    sheet_number_spinner.setValue(0);
+                } else {
+                    try {
+                        sheetopener = new ExcelSheetOpener((int) sheet_number_spinner.getValue(), sheetfile);
+                        sheet_name_textfield.setText(((ExcelSheetOpener) sheetopener).getsheetname());
 
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(LoadExcelDataGui.class
-                            .getName()).log(Level.SEVERE, null, ex);
-                } catch (NoSuchSheetException ex) {
-                    Logger.getLogger(LoadExcelDataGui.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    } catch (NoSuchSheetException ex) {
+                        sheet_number_spinner.setValue((int) sheet_number_spinner.getValue() - 1);
+                        return;
+                    }
+                    load_temp_data();
                 }
-                load_temp_data();
             }
+        }
+        else{
+            sheet_number_spinner.setValue(0);
         }
     }//GEN-LAST:event_sheet_number_spinnerStateChanged
 
@@ -310,6 +328,7 @@ void load_temp_data() {
     private javax.swing.JButton pass_data_to_transformer_button;
     private javax.swing.JProgressBar progress_bar;
     private javax.swing.JTable sample_data_table;
+    private javax.swing.JTextField sheet_name_textfield;
     private javax.swing.JSpinner sheet_number_spinner;
     // End of variables declaration//GEN-END:variables
 

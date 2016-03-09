@@ -10,12 +10,19 @@ import panels.Analytics.GraphPanel;
 import DB_connection.DBConnection;
 import DB_data_loader.LoadDataFromDB;
 import DB_data_loader.data_classes.ElectricalValue;
+import Reports.ReportPanel;
 import exceptions.BadDateInputException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.Vector;
+import javax.swing.JTextField;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import panels.condence_panel.CondencePanel;
 import panels.date_panel.DatePanel;
+import panels.smoothing_panel.SmoothingPanel;
 
 /**
  *
@@ -27,32 +34,54 @@ public class AnalyticsGui extends javax.swing.JFrame {
      * Creates new form AnalyticsGui
      */
     DBConnection dbconn;
-    ChoosingPanel cp = new ChoosingPanel();
-    DatePanel dp = new DatePanel();
+    ChoosingPanel choosing_panel = new ChoosingPanel();
+    DatePanel date_panel = new DatePanel();
+    CondencePanel condence_panel = new CondencePanel();
+    SmoothingPanel smoothing_panel = new SmoothingPanel();
     Vector<ElectricalValue> data;
 
     public AnalyticsGui(DBConnection dbconn) {
-        dbconn = dbconn;
-        add(cp);
-        add(dp);
-        cp.setVisible(true);
-        cp.setLocation(600, 0);
+        this.dbconn = dbconn;
+        add(choosing_panel);
+        add(date_panel);
+        add(condence_panel);
+        add(smoothing_panel);
+        smoothing_panel.setLocation(0, 200);
+        condence_panel.setLocation(0, 300);
+        choosing_panel.setLocation(600, 0);
+
         initComponents();
-        setSize(1200, 700);
-        cp.addChangeListener(new ActionListener() {
+        setSize(getPreferredSize());
+        choosing_panel.addChangeListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 queryfornewdata();
             }
         });
-        dp.addChangeListener(new ActionListener() {
+        date_panel.addChangeListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 queryfornewdata();
             }
         });
+
+        condence_panel.addChangeListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                remakegraph(modify_data(data));
+            }
+        });
+        smoothing_panel.addChangeListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                remakegraph(modify_data(data));
+            }
+        });
+
         queryfornewdata();
     }
 
@@ -79,11 +108,11 @@ public class AnalyticsGui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 534, Short.MAX_VALUE)
+            .addGap(0, 1200, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 423, Short.MAX_VALUE)
+            .addGap(0, 701, Short.MAX_VALUE)
         );
 
         pack();
@@ -94,17 +123,75 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
-    GraphPanel graph = null;
+    GraphPanel graph_panel = null;
+    ReportPanel rp = null;
 
-    private void queryfornewdata() {
-        data = LoadDataFromDB.get_breaker_data(cp.selected_breaker, dp.startdate, dp.enddate);
-        if (graph != null) {
-            remove(graph);
+    private Vector<ElectricalValue> modify_data(Vector<ElectricalValue> olddata) {
+        int condence = condence_panel.condence_value;
+        if (condence != 1) {
+            Vector<ElectricalValue> modifieddata = new Vector<ElectricalValue>();
+            if (condence_panel.sum_radio_button.isSelected()) {
+                int j = 0;
+                for (int i = 0; i < olddata.size(); i += j) {
+                    DateTime start = olddata.get(i).datetime;
+                    double avg = 0;
+                    j = 0;
+                    while ((i + j) < olddata.size() && condence_panel.is_inside_period(start, olddata.get(i + j).datetime)) {
+
+                        avg += olddata.get(i + j).value;
+                        j++;
+                    }
+                    modifieddata.add(new ElectricalValue(olddata.get((int) i + (j - 1) / 2).datetime, (float) (avg)));
+                }
+
+            } else if (condence_panel.average_radio_button.isSelected()) {
+                int j = 0;
+                for (int i = 0; i < olddata.size(); i += j) {
+                    DateTime start = olddata.get(i).datetime;
+                    double avg = 0;
+                    j = 0;
+                    while ((i + j) < olddata.size() && condence_panel.is_inside_period(start, olddata.get(i + j).datetime)) {
+
+                        avg += olddata.get(i + j).value;
+                        j++;
+                    }
+                    modifieddata.add(new ElectricalValue(olddata.get((int) i + (j - 1) / 2).datetime, (float) (avg / j)));
+                }
+            }
+            return modifieddata;
         }
-        graph = new GraphPanel(data);
-        graph.setLocation(400, 80);
-        add(graph);
-        revalidate();
+        return olddata;
     }
 
+    private void queryfornewdata() {
+        data = LoadDataFromDB.get_breaker_data(choosing_panel.selected_breaker, date_panel.startdate, date_panel.enddate);
+
+        recalculatemetrics();
+        remakegraph(modify_data(data));
+
+    }
+
+    private void recalculatemetrics() {
+        if (rp != null) {
+            remove(rp);
+        }
+        rp = new ReportPanel(data);
+        rp.setLocation(0, 400);
+        add(rp);
+    }
+
+    private void remakegraph(Vector<ElectricalValue> data) {
+        if (graph_panel != null) {
+            remove(graph_panel);
+            remove(graph_panel.datetime_textfield);
+        }
+        graph_panel = new GraphPanel(data, smoothing_panel.jSlider1.getValue());
+
+        add(graph_panel);
+        add(graph_panel.datetime_textfield);
+        graph_panel.datetime_textfield.setLocation(640, 500);
+        graph_panel.setSize(graph_panel.getPreferredSize());
+        graph_panel.setLocation(400, 80);
+        revalidate();
+    }
 }

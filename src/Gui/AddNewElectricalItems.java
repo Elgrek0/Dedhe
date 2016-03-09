@@ -94,10 +94,28 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
             }
         });
 
+        breakername_textfield.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                breakername_textfieldActionPerformed(evt);
+            }
+        });
+
         add_breaker_button.setText("add new breaker");
         add_breaker_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 add_breaker_buttonActionPerformed(evt);
+            }
+        });
+
+        plantname_textfield.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                plantname_textfieldActionPerformed(evt);
+            }
+        });
+
+        transformername_textfield.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transformername_textfieldActionPerformed(evt);
             }
         });
 
@@ -115,20 +133,18 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(transformername_textfield, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                            .addComponent(plantname_textfield))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(17, 17, 17)
-                                .addComponent(add_plant_button, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(add_transformer_button))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(breakername_textfield)
+                    .addComponent(breakername_textfield)
+                    .addComponent(transformername_textfield, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                    .addComponent(plantname_textfield, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(add_plant_button, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
+                        .addComponent(add_transformer_button))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(add_breaker_button, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -282,6 +298,18 @@ public class AddNewElectricalItems extends javax.swing.JFrame {
         fullrefresh();
         choosingpanel.breaker_combobox.setSelectedIndex(choosingpanel.breaker_combobox.getItemCount() - 1);
     }//GEN-LAST:event_add_breaker_buttonActionPerformed
+
+    private void plantname_textfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plantname_textfieldActionPerformed
+        add_plant_buttonActionPerformed(evt);
+    }//GEN-LAST:event_plantname_textfieldActionPerformed
+
+    private void transformername_textfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transformername_textfieldActionPerformed
+        add_transformer_buttonActionPerformed(evt);
+    }//GEN-LAST:event_transformername_textfieldActionPerformed
+
+    private void breakername_textfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_breakername_textfieldActionPerformed
+        add_breaker_buttonActionPerformed(evt);
+    }//GEN-LAST:event_breakername_textfieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

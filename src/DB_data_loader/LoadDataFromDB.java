@@ -20,6 +20,7 @@ import exceptions.TransformerParentNotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -249,13 +250,14 @@ public class LoadDataFromDB {
                     String query = "SELECT datetime,current FROM breaker_data "
                             + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + b.id + ";";
 
-                    PreparedStatement pstmt = (PreparedStatement) conn.conn.prepareStatement(query);
-                    pstmt.addBatch();
-                    pstmt.execute();
-
-                    ResultSet rs = pstmt.getResultSet();
+                    Statement stmt = conn.conn.createStatement();
+                    stmt.execute(query);
+                    
+                    ResultSet rs = stmt.getResultSet();
+                    
+                    
                     while (rs.next()) {
-                        data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)),rs.getFloat(2)));
+                         data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)),rs.getFloat(2)));
                     }
 
                 } catch (SQLException ex) {

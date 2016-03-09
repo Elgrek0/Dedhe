@@ -11,7 +11,7 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import panels.ErrorPopup;
 
 /**
  *
@@ -19,31 +19,31 @@ import java.io.FileNotFoundException;
  */
 public class ExcelSheetOpener extends SpreadSheetOpener {
 
-    public Worksheet ws;
+    public Worksheet ws = null;
+    public String sheetname = "";
+    Cells cells = null;
 
-    public String sheetname;
-    Cells cells;
+    public ExcelSheetOpener(int sheet_number, File excelfile) throws NoSuchSheetException {
+        Workbook workbook ;
+        try {
+            FileInputStream fstream = new FileInputStream(excelfile);
 
-    public ExcelSheetOpener(int sheet_number, File excelfile) throws FileNotFoundException, NoSuchSheetException {
-        FileInputStream fstream = new FileInputStream(excelfile);
+            workbook = new Workbook(fstream);
+        } catch (Exception ex) {
+            ErrorPopup.popup("Couldn't open Spreadsheet");
+            return;
+        }
 
         try {
-            Workbook workbook = new Workbook(fstream);
-
-            if (workbook.getWorksheets().get(sheet_number) == null) {
-                throw new NoSuchSheetException("sheet did not exist");
-            }
-            sheetname = "";
             ws = workbook.getWorksheets().get(sheet_number);
-            sheetname = ws.getName();
-            cells = ws.getCells();
-
-            max_column = cells.getMaxColumn();
-            max_row = cells.getMaxRow();
-
-        } catch (Exception ex) {
-
+        } catch (IndexOutOfBoundsException ex) {
+            throw new NoSuchSheetException("sheet did not exist");
         }
+        sheetname = ws.getName();
+        cells = ws.getCells();
+
+        max_column = cells.getMaxColumn();
+        max_row = cells.getMaxRow();
 
     }
 
@@ -56,6 +56,10 @@ public class ExcelSheetOpener extends SpreadSheetOpener {
         }
         return "";
 
+    }
+
+    public String getsheetname() {
+        return sheetname;
     }
 
 }
