@@ -20,15 +20,15 @@ public class H2Server {
 
     Connection conn;
 
-    public H2Server() {
+    public H2Server(String s) {
 
         JdbcDataSource ds = new JdbcDataSource();
         try {
-            ds.setURL("jdbc:h2:database./DB;" + 
-                    "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;");
-            ds.setUser("root");
+            ds.setURL("jdbc:h2:database./DB;"
+                    + "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;");
+            ds.setUser(s);
             ds.getConnection();
-            
+
         } catch (Exception e) {
             ErrorPopup.popup(e);
         }

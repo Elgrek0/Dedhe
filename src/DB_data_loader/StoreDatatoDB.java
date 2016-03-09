@@ -14,23 +14,24 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import panels.ErrorPopup;
 
 /**
  *
  * @author Paris
  */
 public class StoreDatatoDB {
-
+    
     public static void store(String arrayname, String values) throws CouldntStoreDataException {
-
+        
         DBConnection dbconn = conn;
         try {
             dbconn = StaticCachedData.conn;
             dbconn.disablekeys(arrayname);
             PreparedStatement pstmt = null;
-
-            String query = " INSERT INTO " + arrayname + " VALUES (" + values + ") ;\n";
-
+            
+            String query = " MERGE INTO " + arrayname + " VALUES(" + values + ");\n";
+            
             pstmt = (PreparedStatement) dbconn.conn.prepareStatement(query);
             pstmt.execute();
         } catch (SQLException ex) {
@@ -41,15 +42,11 @@ public class StoreDatatoDB {
             }
             throw new CouldntStoreDataException();
         }
-        if (dbconn != null) {
-            try {
-                dbconn.enablekeys(arrayname);
-            } catch (SQLException ex) {
-                Logger.getLogger(PowerPlant.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        } else {
-            throw new CouldntStoreDataException();
+        try {
+            dbconn.enablekeys(arrayname);
+        } catch (SQLException ex) {
+            ErrorPopup.popup("Couldnt enable table keys writing is now unsafe");
         }
+        
     }
 }

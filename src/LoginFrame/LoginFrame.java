@@ -26,18 +26,12 @@ public class LoginFrame extends javax.swing.JFrame {
      */
     public static boolean debug = false;
     H2Server server;
-    boolean h2 = true;
     DBConnection dbconn;
 
     public LoginFrame() {
         initComponents();
         setResizable(false);
-        server = new H2Server();
-        if (h2) {
-            dbconn = new H2MyConnection();
-        } else {
-            dbconn = new MySQLConnection();
-        }
+
     }
 
     /**
@@ -125,6 +119,9 @@ public class LoginFrame extends javax.swing.JFrame {
 
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        server = new H2Server(UsernameBox.getText());
+        dbconn = new H2MyConnection();
+
         LoginInfo login = new LoginInfo(UsernameBox.getText(), String.valueOf(PasswordBox.getPassword()));
         DBinfo dbinfo = new DBinfo("mydb", "localhost");
         try {
@@ -193,5 +190,4 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     // End of variables declaration//GEN-END:variables
 
-  
 }
