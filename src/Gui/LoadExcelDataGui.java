@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FilenameUtils;
 import panels.Popup;
@@ -43,7 +44,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
      */
     DBConnection dbconn;
     ChoosingPanel cp;
-    File sheetfile;
+    File[] sheetfiles = new File[0];
     SpreadSheetOpener sheetopener;
 
     public LoadExcelDataGui(DBConnection dbconn) {
@@ -78,6 +79,7 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
         progress_bar = new javax.swing.JProgressBar();
         sheet_name_textfield = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        progress_textfield = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -145,6 +147,9 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
             }
         });
 
+        progress_textfield.setEditable(false);
+        progress_textfield.setText("Waiting");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -175,6 +180,8 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                         .addGap(20, 20, 20)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(progress_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(progress_bar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -195,11 +202,16 @@ public class LoadExcelDataGui extends javax.swing.JFrame {
                     .addComponent(add_new_electrical_items)
                     .addComponent(jButton1))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(progress_bar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(progress_bar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(progress_textfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -220,11 +232,11 @@ void load_temp_data() {
     private void open_sheet_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_open_sheet_buttonActionPerformed
 
         setEnabled(false);
-        sheetfile = FileOpener.openfile();
-        if (sheetfile != null) {
-            if (FilenameUtils.getExtension(sheetfile.getPath()).equals("xls")) {
+        sheetfiles = FileOpener.openfiles();
+        if (sheetfiles[0] != null) {
+            if (FilenameUtils.getExtension(sheetfiles[0].getPath()).equals("xls")) {
                 try {
-                    sheetopener = new ExcelSheetOpener(0, sheetfile);
+                    sheetopener = new ExcelSheetOpener(0, sheetfiles[0]);
                     sheet_name_textfield.setText(((ExcelSheetOpener) sheetopener).getsheetname());
 
                 } catch (NoSuchSheetException ex) {
@@ -232,9 +244,9 @@ void load_temp_data() {
                             .getName()).log(Level.SEVERE, null, ex);
                 }
 
-            } else if (FilenameUtils.getExtension(sheetfile.getPath()).equals("csv")) {
+            } else if (FilenameUtils.getExtension(sheetfiles[0].getPath()).equals("csv")) {
                 try {
-                    sheetopener = new CSVSheetOpener(sheetfile);
+                    sheetopener = new CSVSheetOpener(sheetfiles[0]);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(LoadExcelDataGui.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -265,13 +277,13 @@ void load_temp_data() {
 
     private void sheet_number_spinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sheet_number_spinnerStateChanged
 
-        if (sheetfile != null) {
-            if (FilenameUtils.getExtension(sheetfile.getPath()).equals("xls")) {
+        if (sheetfiles[0] != null) {
+            if (FilenameUtils.getExtension(sheetfiles[0].getPath()).equals("xls")) {
                 if ((int) sheet_number_spinner.getValue() < 0) {
                     sheet_number_spinner.setValue(0);
                 } else {
                     try {
-                        sheetopener = new ExcelSheetOpener((int) sheet_number_spinner.getValue(), sheetfile);
+                        sheetopener = new ExcelSheetOpener((int) sheet_number_spinner.getValue(), sheetfiles[0]);
                         sheet_name_textfield.setText(((ExcelSheetOpener) sheetopener).getsheetname());
 
                     } catch (NoSuchSheetException ex) {
@@ -332,8 +344,16 @@ void load_temp_data() {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setEnabled(false);
-        ExcelAutoLoader al = new ExcelAutoLoader(sheetfile,progress_bar);
+        progress_textfield.setText("0/" + sheetfiles.length);
+        repaint();
+        for (int i = 0; i < sheetfiles.length; i++) {
+            ExcelAutoLoader al = new ExcelAutoLoader(sheetfiles[i], progress_bar);
+            progress_textfield.setText(i + "/" + sheetfiles.length);
+            repaint();
+        }
         progress_bar.setValue(0);
+        progress_textfield.setText("Waiting");
+        repaint();
         setEnabled(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -349,6 +369,7 @@ void load_temp_data() {
     private javax.swing.JButton pass_data_to_breaker_button;
     private javax.swing.JButton pass_data_to_transformer_button;
     private javax.swing.JProgressBar progress_bar;
+    private javax.swing.JTextField progress_textfield;
     private javax.swing.JTable sample_data_table;
     private javax.swing.JTextField sheet_name_textfield;
     private javax.swing.JSpinner sheet_number_spinner;

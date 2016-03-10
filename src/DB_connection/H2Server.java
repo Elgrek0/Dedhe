@@ -27,7 +27,7 @@ public class H2Server {
         this.readonly=readonly;
         if (readonly) {
             try {
-                ds.setURL("jdbc:h2:mem:database./DB;CACHE_SIZE=65536;"
+                ds.setURL("jdbc:h2:mem:database./DB;"
                         + "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;");
                 ds.setUser(s);
                 ds.getConnection();
@@ -38,7 +38,7 @@ public class H2Server {
         }
         else{
            try {
-                ds.setURL("jdbc:h2:database./DB;CACHE_SIZE=65536;"
+                ds.setURL("jdbc:h2:database./DB;"
                         + "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;");
                 ds.setUser(s);
                 ds.getConnection();

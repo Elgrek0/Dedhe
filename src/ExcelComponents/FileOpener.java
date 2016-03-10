@@ -22,7 +22,7 @@ public class FileOpener {
         @Override
         public boolean accept(File f) {
             String extension = FilenameUtils.getExtension(f.getAbsolutePath());
-            return extension.equals("xls")|| extension.equals("");
+            return extension.equals("xls") || extension.equals("");
         }
 
         @Override
@@ -40,6 +40,20 @@ public class FileOpener {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             return (selectedFile);
+        }
+        return null;
+
+    }
+
+    public static File[] openfiles() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(excelfilter);
+        fileChooser.setMultiSelectionEnabled(true);
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File[] selectedFiles = fileChooser.getSelectedFiles().clone();
+            return (selectedFiles);
         }
         return null;
 

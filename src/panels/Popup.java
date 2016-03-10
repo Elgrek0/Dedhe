@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
  */
 public class Popup {
 
+    
     public Popup(String s) {
         JOptionPane.showMessageDialog(null, s, "Message ",
                 JOptionPane.INFORMATION_MESSAGE);
@@ -23,5 +24,7 @@ public class Popup {
         JOptionPane.showMessageDialog(null, msg, "Message ",
                 JOptionPane.INFORMATION_MESSAGE);
     }
+
+ 
 
 }
