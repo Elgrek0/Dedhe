@@ -332,7 +332,7 @@ void load_temp_data() {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setEnabled(false);
-        ExcelAutoLoader al = new ExcelAutoLoader(sheetfile);
+        ExcelAutoLoader al = new ExcelAutoLoader(sheetfile,progress_bar);
         progress_bar.setValue(0);
         setEnabled(true);
     }//GEN-LAST:event_jButton1ActionPerformed

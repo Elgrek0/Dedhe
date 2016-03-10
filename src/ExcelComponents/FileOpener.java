@@ -7,6 +7,9 @@ package ExcelComponents;
 
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import org.apache.commons.io.FilenameUtils;
+import org.h2.util.Utils;
 
 /**
  *
@@ -14,8 +17,25 @@ import javax.swing.JFileChooser;
  */
 public class FileOpener {
 
+    static FileFilter excelfilter = new FileFilter() {
+
+        @Override
+        public boolean accept(File f) {
+            String extension = FilenameUtils.getExtension(f.getAbsolutePath());
+            return extension.equals("xls")|| extension.equals("");
+        }
+
+        @Override
+        public String getDescription() {
+            return "Excel Files";
+        }
+    };
+
     public static File openfile() {
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(excelfilter);
+
         int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();

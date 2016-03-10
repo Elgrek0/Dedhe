@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JProgressBar;
 import panels.ErrorPopup;
 import panels.Popup;
 
@@ -45,6 +46,11 @@ public class ExcelAutoLoader {
     Vector<Vector<String>> breakernames;
 
     PowerPlant p;
+
+    int breakercount;
+    int transformercount;
+    int total;
+    JProgressBar bar = null;
 
     private Vector<String> getallbreakernames(int x, Cells cells) {
         Vector<String> localbreakernames = new Vector<>();
@@ -90,6 +96,63 @@ public class ExcelAutoLoader {
             }
             count++;
         }
+    }
+
+    public ExcelAutoLoader(File excelfile, JProgressBar bar) {
+        this.bar = bar;
+        Workbook workbook;
+        try {
+            FileInputStream fstream = new FileInputStream(excelfile);
+
+            workbook = new Workbook(fstream);
+        } catch (Exception ex) {
+            ErrorPopup.popup("Couldn't open File");
+            return;
+        }
+        int loc = 0;
+        while (true) {
+            try {
+                worksheets.add(workbook.getWorksheets().get(loc++));
+            } catch (IndexOutOfBoundsException ex) {
+                break;
+            }
+        }
+        if (worksheets.size() < 2) {
+            ErrorPopup.popup("Invalid Auto Excel File : too few sheets");
+            return;
+        }
+
+        String plant_name_unprocesed = worksheets.get(1).getCells().get(2, 0).getStringValue();
+        plant_name = plant_name_unprocesed.split(" ")[1];
+
+        sheetnames = new Vector< String>();
+        for (int i = 0; i < worksheets.size(); i++) {
+            sheetnames.add(worksheets.get(i).getName());
+        }
+        if (!sheetnames.get(0).matches(".*ΜΣ.*")) {
+            ErrorPopup.popup("Invalid Auto Excel File : first sheet name is invalid");
+            return;
+        }
+
+        getallTransformernames(worksheets.get(0).getCells());
+
+        bar.setValue(10);
+        bar.update(bar.getGraphics());
+        generate_electrical_items();
+
+        bar.setValue(20);
+        bar.update(bar.getGraphics());
+        transformercount = breakernames.size();
+
+        breakercount = 0;
+        for (int i = 0; i < breakernames.size(); i++) {
+            breakercount += breakernames.get(i).size();
+        }
+        total = breakercount + transformercount;
+
+        loadBreakerdata();
+
+        loadTransformerdata();
     }
 
     public ExcelAutoLoader(File excelfile) {
@@ -138,6 +201,7 @@ public class ExcelAutoLoader {
 
     private void loadBreakerdata() {
 
+        int breakercounter=0;
         try {
             for (int i = 0; i < p.transformers.size(); i++) {
                 Transformer t = p.transformers.elementAt(i);
@@ -183,6 +247,11 @@ public class ExcelAutoLoader {
                         }
                     }
 
+                    if (bar != null) {
+                        breakercounter++;
+                        bar.setValue((int) (20 + breakercounter / (float) total * 80));
+                        bar.update(bar.getGraphics());
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -233,6 +302,10 @@ public class ExcelAutoLoader {
                         }
                     }
 
+                }
+                if (bar != null) {
+                    bar.setValue((int) (20 + (breakercount + i) / (float) total * 80));
+                    bar.update(bar.getGraphics());
                 }
             }
         } catch (Exception ex) {

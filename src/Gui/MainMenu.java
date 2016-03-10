@@ -6,6 +6,8 @@
 package Gui;
 
 import DB_connection.DBConnection;
+import DB_data_loader.StoreDatatoDB;
+import panels.ErrorPopup;
 
 /**
  *
@@ -87,6 +89,8 @@ public class MainMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+        if(StoreDatatoDB.readonly==false){
         new Thread() {
 
             @Override
@@ -98,7 +102,9 @@ public class MainMenu extends javax.swing.JFrame {
 
             }
 
-        }.start();
+        }.start();}
+        else
+            ErrorPopup.popup("Database is opened in read only mode for speed.\n For writing open the read and write mode");
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed

@@ -34,8 +34,9 @@ import org.joda.time.LocalDate;
 public class LoadDataFromDB {
 
     static boolean debug = false;
-
+    
     public static void initialize(DBConnection dbconn) throws NoActiveDbConnectionException {
+      
         if (dbconn != null) {
             StaticCachedData.conn = dbconn;
         } else {

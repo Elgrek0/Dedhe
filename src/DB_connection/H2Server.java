@@ -19,18 +19,33 @@ import org.h2.jdbcx.JdbcDataSource;
 public class H2Server {
 
     Connection conn;
+    public boolean readonly;
 
-    public H2Server(String s) {
+    public H2Server(String s, boolean readonly) {
 
         JdbcDataSource ds = new JdbcDataSource();
-        try {
-            ds.setURL("jdbc:h2:database./DB;CACHE_SIZE=65536;"
-                    + "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;");
-            ds.setUser(s);
-            ds.getConnection();
+        this.readonly=readonly;
+        if (readonly) {
+            try {
+                ds.setURL("jdbc:h2:mem:database./DB;CACHE_SIZE=65536;"
+                        + "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;");
+                ds.setUser(s);
+                ds.getConnection();
 
-        } catch (Exception e) {
-            ErrorPopup.popup(e);
+            } catch (Exception e) {
+                ErrorPopup.popup(e);
+            }
+        }
+        else{
+           try {
+                ds.setURL("jdbc:h2:database./DB;CACHE_SIZE=65536;"
+                        + "INIT=RUNSCRIPT FROM './dbcreate.sql'\\;");
+                ds.setUser(s);
+                ds.getConnection();
+
+            } catch (Exception e) {
+                ErrorPopup.popup(e);
+            } 
         }
 
     }
