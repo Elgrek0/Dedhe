@@ -44,7 +44,8 @@ public class FixValues {
         dateparts = datetime_parts[0].split("" + date_splitter);
 
         try {
-            ld = new LocalDate(Integer.parseInt(dateparts[2]), Integer.parseInt(dateparts[0]), Integer.parseInt(dateparts[1]));
+            ld = new LocalDate(Integer.parseInt(dateparts[2]), Integer.parseInt(dateparts[1]), Integer.parseInt(dateparts[0]));
+            
         } catch (Exception e) {
             throw new BadDateInputException("date format error");
         }

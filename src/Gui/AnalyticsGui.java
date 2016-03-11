@@ -11,10 +11,16 @@ import DB_connection.DBConnection;
 import DB_data_loader.LoadDataFromDB;
 import DB_data_loader.data_classes.ElectricalValue;
 import Reports.ReportPanel;
+import exceptions.NoActiveDbConnectionException;
+import exceptions.NoBreakerSelectedException;
+import exceptions.NoTransformerSelectedException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.joda.time.DateTime;
+import panels.ErrorPopup;
 import panels.condence_panel.CondencePanel;
 import panels.date_panel.DatePanel;
 import panels.smoothing_panel.SmoothingPanel;
@@ -201,14 +207,34 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
     private void queryfornewdata() {
         if (breaker_radio_button.isSelected()) {
-            data = LoadDataFromDB.get_breaker_data(choosing_panel.selected_breaker, date_panel.startdate, date_panel.enddate);
+            try {
+                data = LoadDataFromDB.get_breaker_data(choosing_panel.selected_breaker, date_panel.startdate, date_panel.enddate);
+            } catch (NoActiveDbConnectionException | NoBreakerSelectedException ex) {
+                ErrorPopup.popup(ex);
+                data = new Vector<>();
+            }
         } else {
-            data = LoadDataFromDB.get_transformer_data(choosing_panel.selected_transformer, date_panel.startdate, date_panel.enddate);
+            try {
+                data = LoadDataFromDB.get_transformer_data(choosing_panel.selected_transformer, date_panel.startdate, date_panel.enddate);
+            } catch (NoActiveDbConnectionException | NoTransformerSelectedException ex) {
+                ErrorPopup.popup(ex);
+                data = new Vector<>();
+            }
+
         }
+        if (data != null && data.size() > 0) {
+            if (graph_panel != null) {
+                graph_panel.setVisible(true);
+            }
 
-        recalculatemetrics();
-        remakegraph(modify_data(data));
-
+            recalculatemetrics();
+            remakegraph(modify_data(data));
+        } else {
+            if (graph_panel != null) {
+                graph_panel.setVisible(false);
+                graph_panel.datetime_textfield.setText("No Data");
+            }
+        }
     }
 
     private void recalculatemetrics() {

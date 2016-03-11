@@ -106,7 +106,7 @@ public class ExcelAutoLoader {
 
             workbook = new Workbook(fstream);
         } catch (Exception ex) {
-            ErrorPopup.popup("Couldn't open File");
+            ErrorPopup.popup("Couldn't open File "+excelfile.getName());
             return;
         }
         int loc = 0;
@@ -162,7 +162,7 @@ public class ExcelAutoLoader {
 
             workbook = new Workbook(fstream);
         } catch (Exception ex) {
-            ErrorPopup.popup("Couldn't open File");
+            ErrorPopup.popup("Couldn't open File "+excelfile.getName());
             return;
         }
         int loc = 0;

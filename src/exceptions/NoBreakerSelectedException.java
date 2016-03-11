@@ -9,9 +9,10 @@ package exceptions;
  *
  * @author Paris
  */
-public class BadFileTypeSelectedException extends Exception {
+public class NoBreakerSelectedException extends Exception {
 
-    public BadFileTypeSelectedException() {
+    public NoBreakerSelectedException() {
+        super("No breaker was selected");
     }
-    
+
 }

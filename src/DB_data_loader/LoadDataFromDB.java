@@ -5,6 +5,8 @@
  */
 package DB_data_loader;
 
+import exceptions.NoTransformerSelectedException;
+import exceptions.NoBreakerSelectedException;
 import DB_connection.DBConnection;
 import static DB_data_loader.StaticCachedData.conn;
 import static DB_data_loader.StaticCachedData.db_breakers;
@@ -34,13 +36,13 @@ import org.joda.time.LocalDate;
 public class LoadDataFromDB {
 
     static boolean debug = false;
-    
+
     public static void initialize(DBConnection dbconn) throws NoActiveDbConnectionException {
-      
+
         if (dbconn != null) {
             StaticCachedData.conn = dbconn;
         } else {
-            throw new NoActiveDbConnectionException("connection was null");
+            throw new NoActiveDbConnectionException();
         }
     }
     static boolean eventpermision = true;
@@ -247,7 +249,7 @@ public class LoadDataFromDB {
 
     }
 
-    public static Vector<ElectricalValue> get_breaker_data(Breaker b, LocalDate start_date, LocalDate end_date) {
+    public static Vector<ElectricalValue> get_breaker_data(Breaker b, LocalDate start_date, LocalDate end_date) throws NoActiveDbConnectionException, NoBreakerSelectedException {
 
         Vector<ElectricalValue> data = new Vector<ElectricalValue>();
 
@@ -272,7 +274,7 @@ public class LoadDataFromDB {
                     while (rs.next()) {
                         data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)), rs.getFloat(2)));
                     }
-
+                    return data;
                 } catch (SQLException ex) {
 
                     System.out.println("bad query");
@@ -280,13 +282,13 @@ public class LoadDataFromDB {
 
                 }
             }
+            throw new NoActiveDbConnectionException();
         }
-
-        return data;
+        throw new NoBreakerSelectedException();
 
     }
 
-    public static Vector<ElectricalValue> get_transformer_data(Transformer t, LocalDate start_date, LocalDate end_date) {
+    public static Vector<ElectricalValue> get_transformer_data(Transformer t, LocalDate start_date, LocalDate end_date) throws NoActiveDbConnectionException, NoTransformerSelectedException {
 
         Vector<ElectricalValue> data = new Vector<ElectricalValue>();
 
@@ -309,7 +311,7 @@ public class LoadDataFromDB {
                     while (rs.next()) {
                         data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)), rs.getFloat(2)));
                     }
-
+                    return data;
                 } catch (SQLException ex) {
 
                     System.out.println("bad query");
@@ -317,9 +319,11 @@ public class LoadDataFromDB {
 
                 }
             }
+
+            throw new NoActiveDbConnectionException();
         }
 
-        return data;
+        throw new NoTransformerSelectedException();
 
     }
 }

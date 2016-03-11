@@ -4,9 +4,7 @@ import DB_data_loader.data_classes.ElectricalValue;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.time.chrono.Chronology;
 import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -31,9 +29,6 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.joda.time.DateTime;
-import org.joda.time.MutableDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 /**
  * An example of a time series chart. For the most part, default settings are

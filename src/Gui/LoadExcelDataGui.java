@@ -5,7 +5,7 @@
  */
 package Gui;
 
-import exceptions.BadFileTypeSelectedException;
+import exceptions.BadFileTypeException;
 import panels.plant_transformer_breaker_component.ChoosingPanel;
 import DB_connection.FixValues;
 import DB_connection.DBConnection;
@@ -252,8 +252,8 @@ void load_temp_data() {
                 }
             } else {
                 try {
-                    throw new BadFileTypeSelectedException();
-                } catch (BadFileTypeSelectedException ex) {
+                    throw new BadFileTypeException();
+                } catch (BadFileTypeException ex) {
                     ErrorPopup.popup("File selected was not of excel format");
                     setEnabled(true);
                     return;
@@ -344,17 +344,7 @@ void load_temp_data() {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setEnabled(false);
-        progress_textfield.setText("0/" + sheetfiles.length);
-        repaint();
-        for (int i = 0; i < sheetfiles.length; i++) {
-            ExcelAutoLoader al = new ExcelAutoLoader(sheetfiles[i], progress_bar);
-            progress_textfield.setText(i + "/" + sheetfiles.length);
-            repaint();
-        }
-        progress_bar.setValue(0);
-        progress_textfield.setText("Waiting");
-        repaint();
-        setEnabled(true);
+        autoload();
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
@@ -512,6 +502,26 @@ void load_temp_data() {
         } else {
             ErrorPopup.popup(new NoFileSelectedException());
         }
+    }
+
+    private void autoload() {
+        Thread autoloader = new Thread() {
+            public void run() {
+                progress_textfield.setText("0/" + sheetfiles.length);
+                progress_textfield.repaint();
+                for (int i = 0; i < sheetfiles.length; i++) {
+                    ExcelAutoLoader al = new ExcelAutoLoader(sheetfiles[i], progress_bar);
+                    progress_textfield.setText(i + 1 + "/" + sheetfiles.length);
+                    progress_textfield.repaint();
+                }
+                progress_bar.setValue(0);
+                progress_textfield.setText("Waiting");
+                progress_textfield.repaint();
+                setEnabled(true);
+            }
+        };
+        autoloader.start();
+
     }
 
 }

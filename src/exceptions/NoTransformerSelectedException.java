@@ -9,10 +9,10 @@ package exceptions;
  *
  * @author Paris
  */
-public class badfileexception extends Exception {
+public class NoTransformerSelectedException extends Exception {
 
-    public badfileexception(String s) {
-        super(s);
+    public NoTransformerSelectedException() {
+        super("No transformer was selected");
     }
 
 }

@@ -31,10 +31,11 @@ public class DatePanel extends javax.swing.JPanel {
     }
 
     private void statechangedevent() {
+        update_spinners();
         for (int i = 0; i < changelisteners.size(); i++) {
             changelisteners.get(i).actionPerformed(null);
         }
-        update_spinners();
+
     }
 
     /**

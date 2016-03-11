@@ -9,11 +9,9 @@ package exceptions;
  *
  * @author Paris
  */
-public class NoActiveDbConnectionException extends Exception {
+public class BadFileTypeException extends Exception {
 
-    public NoActiveDbConnectionException() {
-
-        super("There was no connection with the database");
+    public BadFileTypeException() {
     }
-
+    
 }

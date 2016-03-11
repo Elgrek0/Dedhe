@@ -24,13 +24,13 @@ public class ExcelSheetOpener extends SpreadSheetOpener {
     Cells cells = null;
 
     public ExcelSheetOpener(int sheet_number, File excelfile) throws NoSuchSheetException {
-        Workbook workbook ;
+        Workbook workbook;
         try {
             FileInputStream fstream = new FileInputStream(excelfile);
 
             workbook = new Workbook(fstream);
         } catch (Exception ex) {
-            ErrorPopup.popup("Couldn't open Spreadsheet");
+            ErrorPopup.popup("Couldn't open File " + excelfile.getName());
             return;
         }
 
@@ -51,7 +51,7 @@ public class ExcelSheetOpener extends SpreadSheetOpener {
     public String getdata_at(int x, int y) {
         if (cells != null) {
             if (cells.checkCell(y, x) != null) {
-                return cells.get(y,x).getStringValue();
+                return cells.get(y, x).getStringValue();
             }
         }
         return "";
