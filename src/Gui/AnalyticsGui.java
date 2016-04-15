@@ -221,7 +221,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
         int loc = to_load_list.getSelectedIndex();
         if (loc != -1) {
             toloadlistmodel.remove(loc);
-        }       
+        }
         queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
 
     }//GEN-LAST:event_remove_from_list_buttonActionPerformed
@@ -282,31 +282,41 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         if (breaker_radio_button.isSelected()) {
             try {
-                data = LoadDataFromDB.get_breaker_data(e.breaker, startdate, enddate);
+                data = modify_data(LoadDataFromDB.get_breaker_data(e.breaker, startdate, enddate));
 
                 querylist.add(data);
-                for (int i = 0; i < toloadlistmodel.getSize(); i++) {
-                    if (toloadlistmodel.get(i).breaker != null) {
-                        querylist.add(modify_data(LoadDataFromDB.get_breaker_data(toloadlistmodel.get(i).breaker, startdate, enddate)));
-                    }
-                }
+
             } catch (NoActiveDbConnectionException | NoBreakerSelectedException ex) {
                 ErrorPopup.popup(ex);
                 data = new Vector<>();
 
             }
-        } else {
-            try {
-                data = LoadDataFromDB.get_transformer_data(e.transformer, startdate, enddate);
-                querylist.add(data);
-                for (int i = 0; i < toloadlistmodel.getSize(); i++) {
-                    if (toloadlistmodel.get(i).breaker == null) {
-                        querylist.add(modify_data(LoadDataFromDB.get_transformer_data(toloadlistmodel.get(i).transformer, startdate, enddate)));
+            for (int i = 0; i < toloadlistmodel.getSize(); i++) {
+                if (toloadlistmodel.get(i).breaker != null) {
+                    try {
+                        querylist.add(modify_data(LoadDataFromDB.get_breaker_data(toloadlistmodel.get(i).breaker, startdate, enddate)));
+                    } catch (NoActiveDbConnectionException | NoBreakerSelectedException ex) {
+                        ErrorPopup.popup(ex);
                     }
                 }
+            }
+        } else {
+            try {
+                data = modify_data(LoadDataFromDB.get_transformer_data(e.transformer, startdate, enddate));
+
             } catch (NoActiveDbConnectionException | NoTransformerSelectedException ex) {
                 ErrorPopup.popup(ex);
                 data = new Vector<>();
+            }
+            querylist.add(data);
+            for (int i = 0; i < toloadlistmodel.getSize(); i++) {
+                if (toloadlistmodel.get(i).breaker == null) {
+                    try {
+                        querylist.add(modify_data(LoadDataFromDB.get_transformer_data(toloadlistmodel.get(i).transformer, startdate, enddate)));
+                    } catch (NoActiveDbConnectionException | NoTransformerSelectedException ex) {
+                        ErrorPopup.popup(ex);
+                    }
+                }
             }
 
         }
@@ -348,7 +358,8 @@ public class AnalyticsGui extends javax.swing.JFrame {
         graph_panel.setLocation(400, 80);
         revalidate();
     }
-     private void remakegraph(List<Vector<ElectricalValue>> datalist) {
+
+    private void remakegraph(List<Vector<ElectricalValue>> datalist) {
         if (graph_panel != null) {
             remove(graph_panel);
             remove(graph_panel.datetime_textfield);

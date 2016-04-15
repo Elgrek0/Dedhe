@@ -60,6 +60,8 @@ public final class ChoosingPanel extends javax.swing.JPanel {
             }
         });
 
+        collection = new ElectricalValueCollection(selected_plant, selected_transformer, selected_breaker);
+
     }
 
     public void refresh() {
@@ -67,7 +69,6 @@ public final class ChoosingPanel extends javax.swing.JPanel {
         update_plants();
         update_transformers();
         update_breakers();
-        collection = new ElectricalValueCollection(selected_plant, selected_transformer, selected_breaker);
 
     }
 
