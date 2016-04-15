@@ -22,7 +22,7 @@ public class FileOpener {
         @Override
         public boolean accept(File f) {
             String extension = FilenameUtils.getExtension(f.getAbsolutePath());
-            return extension.equals("xls") || extension.equals("");
+            return extension.equals("xls") || extension.equals("");// ||extension.equals("csv")
         }
 
         @Override

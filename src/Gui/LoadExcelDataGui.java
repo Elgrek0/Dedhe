@@ -233,7 +233,7 @@ void load_temp_data() {
 
         setEnabled(false);
         sheetfiles = FileOpener.openfiles();
-        if (sheetfiles[0] != null) {
+        if (sheetfiles != null&&sheetfiles[0]!=null) {
             if (FilenameUtils.getExtension(sheetfiles[0].getPath()).equals("xls")) {
                 try {
                     sheetopener = new ExcelSheetOpener(0, sheetfiles[0]);
@@ -300,7 +300,7 @@ void load_temp_data() {
 
     private void pass_data_to_breaker_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pass_data_to_breaker_buttonActionPerformed
         setEnabled(false);
-        pass_data_to_breaker();
+        pass_data_to_Breaker();
         StaticCachedData.cacheupdateevent();
         progress_bar.setValue(0);
         setEnabled(true);
@@ -365,7 +365,7 @@ void load_temp_data() {
     private javax.swing.JSpinner sheet_number_spinner;
     // End of variables declaration//GEN-END:variables
 
-    private void pass_data_to_breaker() {
+    private void pass_data_to_Breaker() {
         if (sheetopener != null) {
             int errors = 0;
             boolean fatalerror = false;
@@ -418,7 +418,7 @@ void load_temp_data() {
                     }
                     if (i % 100 == 0) {
                         progress_bar.setValue((int) i / (sheetopener.max_row / 100));
-                        progress_bar.update(progress_bar.getGraphics());
+                        
                     }
 
                 }
@@ -509,10 +509,23 @@ void load_temp_data() {
             public void run() {
                 progress_textfield.setText("0/" + sheetfiles.length);
                 progress_textfield.repaint();
-                for (int i = 0; i < sheetfiles.length; i++) {
-                    ExcelAutoLoader al = new ExcelAutoLoader(sheetfiles[i], progress_bar);
-                    progress_textfield.setText(i + 1 + "/" + sheetfiles.length);
-                    progress_textfield.repaint();
+                if (FilenameUtils.getExtension(sheetfiles[0].getPath()).equals("xls")) {
+                    for (int i = 0; i < sheetfiles.length; i++) {
+                        ExcelAutoLoader al = new ExcelAutoLoader(sheetfiles[i], progress_bar);
+                        progress_textfield.setText(i + 1 + "/" + sheetfiles.length);
+                        progress_textfield.repaint();
+                    }
+                } else if (FilenameUtils.getExtension(sheetfiles[0].getPath()).equals("csv")) {
+                    for (int i = 0; i < sheetfiles.length; i++) {
+                        try {
+                            sheetopener=new CSVSheetOpener(sheetfiles[i]);
+                            pass_data_to_Breaker();
+                        } catch (FileNotFoundException ex) {
+                            ErrorPopup.popup(ex);
+                        }
+                        progress_textfield.setText(i + 1 + "/" + sheetfiles.length);
+                        progress_textfield.repaint();
+                    }
                 }
                 progress_bar.setValue(0);
                 progress_textfield.setText("Waiting");

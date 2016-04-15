@@ -22,7 +22,7 @@ public class MainMenu extends javax.swing.JFrame {
     public static boolean debug = false;
 
     public MainMenu(DBConnection dbconn) {
-        this.dbconn=dbconn;
+        this.dbconn = dbconn;
         initComponents();
         setVisible(true);
         setSize(320, 350);
@@ -88,23 +88,35 @@ public class MainMenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    boolean loadingguilock = false;
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
-        if(StoreDatatoDB.readonly==false){
-        new Thread() {
+        if (StoreDatatoDB.readonly == false) {
+            if (loadingguilock == false) {
+                loadingguilock = true;
+                new Thread() {
 
-            @Override
-            public void run() {
+                    @Override
+                    public void run() {
 
-                LoadExcelDataGui a = new LoadExcelDataGui(dbconn);
-                a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-                a.setVisible(true);
+                        AutoLoadExcelDataGui a = new AutoLoadExcelDataGui(dbconn);
+                        a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                        a.setVisible(true);
+                        a.addWindowListener(new java.awt.event.WindowAdapter() {
+                            @Override
+                            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                loadingguilock = false;
+                            }
+                        });
+                    }
 
+                }.start();
+            } else {
+                ErrorPopup.popup("One Loading gui is already running");
             }
-
-        }.start();}
-        else
+        } else {
             ErrorPopup.popup("Database is opened in read only mode for speed.\n For writing open the read and write mode");
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -135,7 +147,6 @@ public class MainMenu extends javax.swing.JFrame {
         }.start();
     }//GEN-LAST:event_QueryButtonActionPerformed
 
-  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static java.awt.TextArea ErrorArea;

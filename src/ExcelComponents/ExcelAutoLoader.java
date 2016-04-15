@@ -100,6 +100,8 @@ public class ExcelAutoLoader {
 
     public ExcelAutoLoader(File excelfile, JProgressBar bar) {
         this.bar = bar;
+        
+        System.out.println("Reading File "+excelfile.getName());
         Workbook workbook;
         try {
             FileInputStream fstream = new FileInputStream(excelfile);

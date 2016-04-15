@@ -5,6 +5,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -41,12 +42,12 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
     private Crosshair yCrosshair;
     private Crosshair xCrosshair;
     int splines;
-    TimeSeriesCollection dataset;
+    TimeSeriesCollection dataset=new TimeSeriesCollection();
     public JTextField datetime_textfield = new JTextField();
 
     public GraphPanel(Vector<ElectricalValue> values) {
 
-        TimeSeriesCollection dataset = createDataset(values);
+        createDataset(values);
         splines = 1;
         add(createContent(dataset));
         setVisible(true);
@@ -55,7 +56,23 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
 
     public GraphPanel(Vector<ElectricalValue> values, int splines) {
 
-        dataset = createDataset(values);
+        createDataset(values);
+        this.splines = splines;
+        add(createContent(dataset));
+        datetime_textfield.setSize(210, 60);
+        datetime_textfield.setEditable(false);
+        datetime_textfield.setHorizontalAlignment(JTextField.CENTER);
+        datetime_textfield.setText("Hover Mouse over Chart");
+        add(datetime_textfield);
+        setVisible(true);
+
+    }
+
+    public GraphPanel(List<Vector<ElectricalValue>> valuelist, int splines) {
+
+        for (int i = 0; i < valuelist.size(); i++) {
+            createDataset(valuelist.get(i));
+        }
         this.splines = splines;
         add(createContent(dataset));
         datetime_textfield.setSize(210, 60);
@@ -123,7 +140,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
         return chartpanel;
     }
 
-    private TimeSeriesCollection createDataset(Vector<ElectricalValue> values) {
+    private void createDataset(Vector<ElectricalValue> values) {
         TimeSeries s1 = new TimeSeries("");
 
         for (ElectricalValue eval : values) {
@@ -134,9 +151,7 @@ public class GraphPanel extends JPanel implements ChartMouseListener {
             }
         }
 
-        TimeSeriesCollection dataset = new TimeSeriesCollection(s1);
-
-        return dataset;
+        dataset.addSeries(s1);
     }
 
     @Override

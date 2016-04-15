@@ -10,16 +10,21 @@ import panels.Analytics.GraphPanel;
 import DB_connection.DBConnection;
 import DB_data_loader.LoadDataFromDB;
 import DB_data_loader.data_classes.ElectricalValue;
+import DB_data_loader.data_classes.ElectricalValueCollection;
 import Reports.ReportPanel;
 import exceptions.NoActiveDbConnectionException;
 import exceptions.NoBreakerSelectedException;
 import exceptions.NoTransformerSelectedException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import panels.ErrorPopup;
 import panels.condence_panel.CondencePanel;
 import panels.date_panel.DatePanel;
@@ -40,6 +45,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
     CondencePanel condence_panel = new CondencePanel();
     SmoothingPanel smoothing_panel = new SmoothingPanel();
     Vector<ElectricalValue> data;
+    DefaultListModel<ElectricalValueCollection> toloadlistmodel = new DefaultListModel();
 
     public AnalyticsGui(DBConnection dbconn) {
         this.dbconn = dbconn;
@@ -50,21 +56,23 @@ public class AnalyticsGui extends javax.swing.JFrame {
         smoothing_panel.setLocation(0, 200);
         condence_panel.setLocation(0, 300);
         choosing_panel.setLocation(600, 0);
+
         setResizable(false);
         initComponents();
+        to_load_list.setModel(toloadlistmodel);
         setSize(getPreferredSize());
         choosing_panel.addChangeListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                queryfornewdata();
+                queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
             }
         });
         date_panel.addChangeListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                queryfornewdata();
+                queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
             }
         });
 
@@ -83,7 +91,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
             }
         });
 
-        queryfornewdata();
+        queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
     }
 
     /**
@@ -99,6 +107,10 @@ public class AnalyticsGui extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         breaker_radio_button = new javax.swing.JRadioButton();
         transformer_radio_button = new javax.swing.JRadioButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        to_load_list = new javax.swing.JList();
+        add_to_list_button = new javax.swing.JButton();
+        remove_from_list_button = new javax.swing.JButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -106,6 +118,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 400));
+        setPreferredSize(new java.awt.Dimension(1300, 608));
 
         breaker_radio_button.setSelected(true);
         breaker_radio_button.setText("load Breaker Data");
@@ -122,15 +135,40 @@ public class AnalyticsGui extends javax.swing.JFrame {
             }
         });
 
+        to_load_list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        jScrollPane1.setViewportView(to_load_list);
+
+        add_to_list_button.setText("Add");
+        add_to_list_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                add_to_list_buttonActionPerformed(evt);
+            }
+        });
+
+        remove_from_list_button.setText("Remove");
+        remove_from_list_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                remove_from_list_buttonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(1061, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(transformer_radio_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(breaker_radio_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(add_to_list_button, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(remove_from_list_button))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(1082, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(transformer_radio_button)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(breaker_radio_button, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -140,7 +178,13 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 .addComponent(breaker_radio_button)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(transformer_radio_button)
-                .addContainerGap(552, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(add_to_list_button)
+                    .addComponent(remove_from_list_button))
+                .addContainerGap(277, Short.MAX_VALUE))
         );
 
         pack();
@@ -149,20 +193,48 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private void breaker_radio_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_breaker_radio_buttonActionPerformed
         transformer_radio_button.setSelected(false);
         breaker_radio_button.setSelected(true);
-        queryfornewdata();
+
+        queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
     }//GEN-LAST:event_breaker_radio_buttonActionPerformed
 
     private void transformer_radio_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transformer_radio_buttonActionPerformed
         transformer_radio_button.setSelected(true);
         breaker_radio_button.setSelected(false);
-        queryfornewdata();
+        queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
     }//GEN-LAST:event_transformer_radio_buttonActionPerformed
+
+    private void add_to_list_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_to_list_buttonActionPerformed
+        ElectricalValueCollection currcollection;
+        if (transformer_radio_button.isSelected()) {
+            currcollection = new ElectricalValueCollection(choosing_panel.selected_plant, choosing_panel.selected_transformer);
+        } else {
+            currcollection = new ElectricalValueCollection(choosing_panel.selected_plant, choosing_panel.selected_transformer, choosing_panel.selected_breaker);
+        }
+        if (!toloadlistmodel.contains(currcollection)) {
+            toloadlistmodel.addElement(currcollection);
+        }
+
+
+    }//GEN-LAST:event_add_to_list_buttonActionPerformed
+
+    private void remove_from_list_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remove_from_list_buttonActionPerformed
+        int loc = to_load_list.getSelectedIndex();
+        if (loc != -1) {
+            toloadlistmodel.remove(loc);
+        }       
+        queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
+
+    }//GEN-LAST:event_remove_from_list_buttonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton add_to_list_button;
     private javax.swing.JRadioButton breaker_radio_button;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JButton remove_from_list_button;
+    private javax.swing.JList to_load_list;
     private javax.swing.JRadioButton transformer_radio_button;
     // End of variables declaration//GEN-END:variables
     GraphPanel graph_panel = null;
@@ -205,17 +277,33 @@ public class AnalyticsGui extends javax.swing.JFrame {
         return olddata;
     }
 
-    private void queryfornewdata() {
+    private void queryfornewdata(ElectricalValueCollection e, LocalDate startdate, LocalDate enddate) {
+        List<Vector<ElectricalValue>> querylist = new ArrayList<>();
+
         if (breaker_radio_button.isSelected()) {
             try {
-                data = LoadDataFromDB.get_breaker_data(choosing_panel.selected_breaker, date_panel.startdate, date_panel.enddate);
+                data = LoadDataFromDB.get_breaker_data(e.breaker, startdate, enddate);
+
+                querylist.add(data);
+                for (int i = 0; i < toloadlistmodel.getSize(); i++) {
+                    if (toloadlistmodel.get(i).breaker != null) {
+                        querylist.add(modify_data(LoadDataFromDB.get_breaker_data(toloadlistmodel.get(i).breaker, startdate, enddate)));
+                    }
+                }
             } catch (NoActiveDbConnectionException | NoBreakerSelectedException ex) {
                 ErrorPopup.popup(ex);
                 data = new Vector<>();
+
             }
         } else {
             try {
-                data = LoadDataFromDB.get_transformer_data(choosing_panel.selected_transformer, date_panel.startdate, date_panel.enddate);
+                data = LoadDataFromDB.get_transformer_data(e.transformer, startdate, enddate);
+                querylist.add(data);
+                for (int i = 0; i < toloadlistmodel.getSize(); i++) {
+                    if (toloadlistmodel.get(i).breaker == null) {
+                        querylist.add(modify_data(LoadDataFromDB.get_transformer_data(toloadlistmodel.get(i).transformer, startdate, enddate)));
+                    }
+                }
             } catch (NoActiveDbConnectionException | NoTransformerSelectedException ex) {
                 ErrorPopup.popup(ex);
                 data = new Vector<>();
@@ -228,7 +316,7 @@ public class AnalyticsGui extends javax.swing.JFrame {
             }
 
             recalculatemetrics();
-            remakegraph(modify_data(data));
+            remakegraph(querylist);
         } else {
             if (graph_panel != null) {
                 graph_panel.setVisible(false);
@@ -260,4 +348,19 @@ public class AnalyticsGui extends javax.swing.JFrame {
         graph_panel.setLocation(400, 80);
         revalidate();
     }
+     private void remakegraph(List<Vector<ElectricalValue>> datalist) {
+        if (graph_panel != null) {
+            remove(graph_panel);
+            remove(graph_panel.datetime_textfield);
+        }
+        graph_panel = new GraphPanel(datalist, smoothing_panel.jSlider1.getValue());
+
+        add(graph_panel);
+        add(graph_panel.datetime_textfield);
+        graph_panel.datetime_textfield.setLocation(640, 500);
+        graph_panel.setSize(graph_panel.getPreferredSize());
+        graph_panel.setLocation(400, 80);
+        revalidate();
+    }
+
 }
