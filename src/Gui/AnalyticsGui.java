@@ -111,6 +111,8 @@ public class AnalyticsGui extends javax.swing.JFrame {
         to_load_list = new javax.swing.JList();
         add_to_list_button = new javax.swing.JButton();
         remove_from_list_button = new javax.swing.JButton();
+        sum_radio_button = new javax.swing.JRadioButton();
+        overlap_radio_button = new javax.swing.JRadioButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -152,6 +154,21 @@ public class AnalyticsGui extends javax.swing.JFrame {
             }
         });
 
+        sum_radio_button.setText("Sum");
+        sum_radio_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sum_radio_buttonActionPerformed(evt);
+            }
+        });
+
+        overlap_radio_button.setSelected(true);
+        overlap_radio_button.setText("Overlap");
+        overlap_radio_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                overlap_radio_buttonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -159,16 +176,20 @@ public class AnalyticsGui extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(add_to_list_button, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(remove_from_list_button))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(1082, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(transformer_radio_button)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(breaker_radio_button, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(breaker_radio_button, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(overlap_radio_button)
+                            .addComponent(sum_radio_button, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(add_to_list_button, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(remove_from_list_button)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -184,7 +205,11 @@ public class AnalyticsGui extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(add_to_list_button)
                     .addComponent(remove_from_list_button))
-                .addContainerGap(277, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(sum_radio_button)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(overlap_radio_button)
+                .addContainerGap(221, Short.MAX_VALUE))
         );
 
         pack();
@@ -226,6 +251,20 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
     }//GEN-LAST:event_remove_from_list_buttonActionPerformed
 
+    private void sum_radio_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sum_radio_buttonActionPerformed
+        overlap_radio_button.setSelected(false);
+        sum_radio_button.setSelected(true);
+
+        queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
+    }//GEN-LAST:event_sum_radio_buttonActionPerformed
+
+    private void overlap_radio_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_overlap_radio_buttonActionPerformed
+        overlap_radio_button.setSelected(true);
+        sum_radio_button.setSelected(false);
+
+        queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
+    }//GEN-LAST:event_overlap_radio_buttonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add_to_list_button;
@@ -233,7 +272,9 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JRadioButton overlap_radio_button;
     private javax.swing.JButton remove_from_list_button;
+    private javax.swing.JRadioButton sum_radio_button;
     private javax.swing.JList to_load_list;
     private javax.swing.JRadioButton transformer_radio_button;
     // End of variables declaration//GEN-END:variables
@@ -326,7 +367,20 @@ public class AnalyticsGui extends javax.swing.JFrame {
             }
 
             recalculatemetrics();
-            remakegraph(querylist);
+            if (overlap_radio_button.isSelected()) {
+                remakegraph(querylist);
+            } else {
+                Vector<ElectricalValue> sumdata = new Vector<>();
+                for (int k = 0; k < querylist.get(0).size(); k++) {
+                    float sum = 0;
+                    for (int i = 0; i < querylist.size(); i++) {
+
+                        sum += querylist.get(i).get(k).value;
+                    }
+                    sumdata.add(new ElectricalValue(querylist.get(0).get(k).datetime, sum));
+                }
+                remakegraph(sumdata);
+            }
         } else {
             if (graph_panel != null) {
                 graph_panel.setVisible(false);
