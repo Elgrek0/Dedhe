@@ -12,27 +12,25 @@ import exceptions.CouldntStoreDataException;
  *
  * @author Paris
  */
-public class Breaker implements DBItem {
+public class Breaker extends DataItem implements DBItem {
 
     public Transformer parent_transformer;
 
-    public int id;
-    public String name;
-
     public Breaker(int id, String name, Transformer parent_transformer) {
-        this.id = id;
-        this.name = name;
+        super(id,name);
         this.parent_transformer = parent_transformer;
         parent_transformer.breakers.add(this);
     }
+
     @Override
     public void store() throws CouldntStoreDataException {
-        
-        StoreDatatoDB.store("Breaker", id + ",'" + name + "',"+parent_transformer.id);
-        
+
+        StoreDatatoDB.store("Breaker", id + ",'" + name + "'," + parent_transformer.id);
+
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
 }

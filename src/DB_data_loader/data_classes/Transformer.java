@@ -13,17 +13,14 @@ import java.util.Vector;
  *
  * @author Paris
  */
-public class Transformer implements DBItem {
+public class Transformer extends DataItem implements DBItem {
 
     public PowerPlant parent_powerplant;
 
-    public int id;
-    public String name;
     public Vector<Breaker> breakers = new Vector<>();
 
     public Transformer(int id, String name, PowerPlant parent_powerplant) {
-        this.id = id;
-        this.name = name;
+        super(id, name);
         this.parent_powerplant = parent_powerplant;
         parent_powerplant.transformers.add(this);
 

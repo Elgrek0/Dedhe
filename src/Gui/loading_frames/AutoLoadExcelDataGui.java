@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Gui;
+package Gui.loading_frames;
 
 import exceptions.BadFileTypeException;
 import DB_connection.FixValues;
@@ -17,7 +17,7 @@ import ExcelComponents.SpreadSheetOpener;
 import exceptions.BadDateInputException;
 import exceptions.BadTimeInputException;
 import exceptions.CouldntStoreDataException;
-import panels.ErrorPopup;
+import Gui.panels.error_panels.ErrorPopup;
 import exceptions.NoFileSelectedException;
 import exceptions.NoSuchSheetException;
 import java.io.File;
@@ -25,7 +25,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
-import panels.Popup;
+import Gui.panels.error_panels.Popup;
 
 /**
  *

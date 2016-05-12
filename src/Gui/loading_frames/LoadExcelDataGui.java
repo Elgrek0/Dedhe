@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Gui;
+package Gui.loading_frames;
 
+import Gui.panels.plant_transformer_breaker_component.AddNewElectricalItems;
 import exceptions.BadFileTypeException;
-import panels.plant_transformer_breaker_component.ChoosingPanel;
+import Gui.panels.plant_transformer_breaker_component.ChoosingPanel;
 import DB_connection.FixValues;
 import DB_connection.DBConnection;
 import DB_data_loader.LoadDataFromDB;
@@ -20,7 +21,7 @@ import ExcelComponents.SpreadSheetOpener;
 import exceptions.BadDateInputException;
 import exceptions.BadTimeInputException;
 import exceptions.CouldntStoreDataException;
-import panels.ErrorPopup;
+import Gui.panels.error_panels.ErrorPopup;
 import exceptions.NoFileSelectedException;
 import exceptions.NoSuchSheetException;
 import java.io.File;
@@ -31,7 +32,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FilenameUtils;
-import panels.Popup;
+import Gui.panels.error_panels.Popup;
 
 /**
  *

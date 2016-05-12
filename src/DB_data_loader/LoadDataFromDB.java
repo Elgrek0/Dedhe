@@ -5,6 +5,7 @@
  */
 package DB_data_loader;
 
+import exceptions.NoItemSelectedException;
 import exceptions.NoTransformerSelectedException;
 import exceptions.NoBreakerSelectedException;
 import DB_connection.DBConnection;
@@ -13,6 +14,7 @@ import static DB_data_loader.StaticCachedData.db_breakers;
 import static DB_data_loader.StaticCachedData.db_powerplants;
 import static DB_data_loader.StaticCachedData.db_transformers;
 import DB_data_loader.data_classes.Breaker;
+import DB_data_loader.data_classes.DataItem;
 import DB_data_loader.data_classes.ElectricalValue;
 import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
@@ -249,81 +251,72 @@ public class LoadDataFromDB {
 
     }
 
-    public static Vector<ElectricalValue> get_breaker_data(Breaker b, LocalDate start_date, LocalDate end_date) throws NoActiveDbConnectionException, NoBreakerSelectedException {
+    public static Vector<ElectricalValue> get_data(DataItem item, LocalDate start_date, LocalDate end_date) throws NoActiveDbConnectionException,NoItemSelectedException {
 
         Vector<ElectricalValue> data = new Vector<ElectricalValue>();
 
-        if (b != null) {
+        if (item != null) {
             String startdate = "'" + start_date.getYear() + "-"
                     + start_date.getMonthOfYear() + "-" + start_date.getDayOfMonth() + "'";
             String enddate;
             enddate = "'" + end_date.getYear() + "-"
                     + end_date.getMonthOfYear() + "-" + end_date.getDayOfMonth() + "'";
 
-            if (conn != null) {
-                try {
+            if (item.getClass() == Breaker.class) {
+                Breaker b = (Breaker) item;
+                if (conn != null) {
+                    try {
 
-                    String query = "SELECT datetime,current FROM breaker_data "
-                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + b.id + ";";
+                        String query = "SELECT datetime,current FROM breaker_data "
+                                + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Breaker_ID = " + b.id + ";";
 
-                    Statement stmt = conn.conn.createStatement();
-                    stmt.execute(query);
+                        Statement stmt = conn.conn.createStatement();
+                        stmt.execute(query);
 
-                    ResultSet rs = stmt.getResultSet();
+                        ResultSet rs = stmt.getResultSet();
 
-                    while (rs.next()) {
-                        data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)), rs.getFloat(2)));
+                        while (rs.next()) {
+                            data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)), rs.getFloat(2)));
+                        }
+                        return data;
+                    } catch (SQLException ex) {
+
+                        System.out.println("bad query");
+                        System.out.println(ex.getMessage());
+
                     }
-                    return data;
-                } catch (SQLException ex) {
-
-                    System.out.println("bad query");
-                    System.out.println(ex.getMessage());
-
                 }
-            }
-            throw new NoActiveDbConnectionException();
-        }
-        throw new NoBreakerSelectedException();
+                throw new NoItemSelectedException();
+            } else {
+                if (item.getClass() == Transformer.class) {
+                    Transformer t = (Transformer) item;
+                    if (conn != null) {
+                        try {
 
-    }
+                            String query = "SELECT datetime,current FROM transformer_data "
+                                    + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Transformer_ID = " + t.id + ";";
 
-    public static Vector<ElectricalValue> get_transformer_data(Transformer t, LocalDate start_date, LocalDate end_date) throws NoActiveDbConnectionException, NoTransformerSelectedException {
+                            Statement stmt = conn.conn.createStatement();
+                            stmt.execute(query);
+                            ResultSet rs = stmt.getResultSet();
+                            while (rs.next()) {
+                                data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)), rs.getFloat(2)));
+                            }
+                            return data;
+                        } catch (SQLException ex) {
 
-        Vector<ElectricalValue> data = new Vector<ElectricalValue>();
+                            System.out.println("bad query");
+                            System.out.println(ex.getMessage());
 
-        if (t != null) {
-            String startdate = "'" + start_date.getYear() + "-"
-                    + start_date.getMonthOfYear() + "-" + start_date.getDayOfMonth() + "'";
-            String enddate;
-            enddate = "'" + end_date.getYear() + "-"
-                    + end_date.getMonthOfYear() + "-" + end_date.getDayOfMonth() + "'";
-
-            if (conn != null) {
-                try {
-
-                    String query = "SELECT datetime,current FROM transformer_data "
-                            + " where datetime  BETWEEN  " + startdate + " and " + enddate + " and Transformer_ID = " + t.id + ";";
-
-                    Statement stmt = conn.conn.createStatement();
-                    stmt.execute(query);
-                    ResultSet rs = stmt.getResultSet();
-                    while (rs.next()) {
-                        data.add(new ElectricalValue(new DateTime(rs.getTimestamp(1)), rs.getFloat(2)));
+                        }
                     }
-                    return data;
-                } catch (SQLException ex) {
-
-                    System.out.println("bad query");
-                    System.out.println(ex.getMessage());
-
+                    throw new NoActiveDbConnectionException();
                 }
-            }
 
-            throw new NoActiveDbConnectionException();
+            }
         }
 
-        throw new NoTransformerSelectedException();
-
+        throw new NoItemSelectedException();
     }
+
 }

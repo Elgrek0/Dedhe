@@ -1,4 +1,4 @@
-package panels.Analytics;
+package Gui.panels.Analytics;
 
 import DB_data_loader.data_classes.ElectricalValue;
 import java.awt.BasicStroke;

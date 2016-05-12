@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package panels.plant_transformer_breaker_component;
+package Gui.panels.plant_transformer_breaker_component;
 
 import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.StaticCachedData;
-import DB_data_loader.data_classes.ElectricalValueCollection;
+import DB_data_loader.data_classes.ElectricalItemPath;
 import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
 import java.awt.event.ActionEvent;
@@ -25,7 +25,7 @@ public final class ChoosingPanel extends javax.swing.JPanel {
     public PowerPlant selected_plant = null;
     public Transformer selected_transformer = null;
     public Breaker selected_breaker = null;
-    public ElectricalValueCollection collection;
+    public ElectricalItemPath collection;
 
     int plantselection = 0;
     int transformerselection = 0;
@@ -39,7 +39,7 @@ public final class ChoosingPanel extends javax.swing.JPanel {
     }
 
     private void statechangedevent() {
-        collection = new ElectricalValueCollection(selected_plant, selected_transformer, selected_breaker);
+        collection = new ElectricalItemPath(selected_plant, selected_transformer, selected_breaker);
         for (int i = 0; i < changelisteners.size(); i++) {
             changelisteners.get(i).actionPerformed(null);
         }
@@ -60,7 +60,7 @@ public final class ChoosingPanel extends javax.swing.JPanel {
             }
         });
 
-        collection = new ElectricalValueCollection(selected_plant, selected_transformer, selected_breaker);
+        collection = new ElectricalItemPath(selected_plant, selected_transformer, selected_breaker);
 
     }
 

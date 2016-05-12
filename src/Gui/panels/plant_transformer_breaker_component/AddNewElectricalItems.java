@@ -3,19 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Gui;
+package Gui.panels.plant_transformer_breaker_component;
 
 import exceptions.EmptyNameException;
 import DB_data_loader.LoadDataFromDB;
-import panels.plant_transformer_breaker_component.ChoosingPanel;
+import Gui.panels.plant_transformer_breaker_component.ChoosingPanel;
 import exceptions.NoParentTransformerException;
 import exceptions.NoParentPlantException;
 import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.StaticCachedData;
 import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
+import Gui.loading_frames.LoadExcelDataGui;
 import exceptions.CouldntStoreDataException;
-import panels.ErrorPopup;
+import Gui.panels.error_panels.ErrorPopup;
 import exceptions.NoActiveDbConnectionException;
 import exceptions.PowerPlantParentNotFoundException;
 import exceptions.TransformerParentNotFoundException;

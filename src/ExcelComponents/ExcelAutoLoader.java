@@ -12,7 +12,7 @@ import DB_data_loader.StoreDatatoDB;
 import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
-import Gui.AddNewElectricalItems;
+import Gui.panels.plant_transformer_breaker_component.AddNewElectricalItems;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
@@ -25,8 +25,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JProgressBar;
-import panels.ErrorPopup;
-import panels.Popup;
+import Gui.panels.error_panels.ErrorPopup;
+import Gui.panels.error_panels.Popup;
 
 /**
  *

@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package panels.date_panel;
+package Gui.panels.date_panel;
 
 import exceptions.BadDateInputException;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 import org.joda.time.LocalDate;
-import panels.ErrorPopup;
+import Gui.panels.error_panels.ErrorPopup;
 
 /**
  *

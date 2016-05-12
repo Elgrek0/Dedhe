@@ -11,7 +11,7 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import java.io.File;
 import java.io.FileInputStream;
-import panels.ErrorPopup;
+import Gui.panels.error_panels.ErrorPopup;
 
 /**
  *

@@ -12,18 +12,18 @@ import org.joda.time.LocalDate;
  *
  * @author Paris
  */
-public class ElectricalValueCollection {
+public class ElectricalItemPath {
 
     public PowerPlant plant;
     public Transformer transformer;
     public Breaker breaker;
 
-    public ElectricalValueCollection(PowerPlant p, Transformer t) {
+    public ElectricalItemPath(PowerPlant p, Transformer t) {
         this.plant = p;
         this.transformer = t;
     }
 
-    public ElectricalValueCollection(PowerPlant plant, Transformer transformer, Breaker breaker) {
+    public ElectricalItemPath(PowerPlant plant, Transformer transformer, Breaker breaker) {
         this.plant = plant;
         this.transformer = transformer;
         this.breaker = breaker;
@@ -47,10 +47,10 @@ public class ElectricalValueCollection {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof ElectricalValueCollection)) {
+        if (!(other instanceof ElectricalItemPath)) {
             return false;
         }
-        ElectricalValueCollection otherMyClass = (ElectricalValueCollection) other;
+        ElectricalItemPath otherMyClass = (ElectricalItemPath) other;
         if (plant == otherMyClass.plant && transformer == otherMyClass.transformer && breaker == otherMyClass.breaker) {
             return true;
         } else {

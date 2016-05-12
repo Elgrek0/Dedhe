@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Reports;
+package Gui.panels.Reports;
 
 import DB_data_loader.data_classes.ElectricalValue;
 import java.util.Vector;
@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
  *
  * @author vatian
  */
-public class ReportPanel extends javax.swing.JPanel {
+public final class ReportPanel extends javax.swing.JPanel {
 
     private Vector<ElectricalValue> data1;
     public float avg, sum;
@@ -95,7 +95,7 @@ public class ReportPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     public void max_finder() {
         if (data1.isEmpty()) {
-            max_textfield.setText("No data man");
+            max_textfield.setText("No data");
         } else {
             max = data1.get(0);
             for (int i = 1; i < data1.size(); i++) {

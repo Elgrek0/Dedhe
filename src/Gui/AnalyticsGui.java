@@ -5,15 +5,18 @@
  */
 package Gui;
 
-import panels.plant_transformer_breaker_component.ChoosingPanel;
-import panels.Analytics.GraphPanel;
+import Gui.panels.plant_transformer_breaker_component.ChoosingPanel;
+import Gui.panels.Analytics.GraphPanel;
 import DB_connection.DBConnection;
 import DB_data_loader.LoadDataFromDB;
 import DB_data_loader.data_classes.ElectricalValue;
-import DB_data_loader.data_classes.ElectricalValueCollection;
-import Reports.ReportPanel;
+import DB_data_loader.data_classes.ElectricalItemPath;
+import Gui.panels.Reports.ReportPanel;
+import cache.BaseCache;
+import cache.CachePanel;
 import exceptions.NoActiveDbConnectionException;
 import exceptions.NoBreakerSelectedException;
+import exceptions.NoItemSelectedException;
 import exceptions.NoTransformerSelectedException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,10 +28,10 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import panels.ErrorPopup;
-import panels.condence_panel.CondencePanel;
-import panels.date_panel.DatePanel;
-import panels.smoothing_panel.SmoothingPanel;
+import Gui.panels.error_panels.ErrorPopup;
+import Gui.panels.condence_panel.CondencePanel;
+import Gui.panels.date_panel.DatePanel;
+import Gui.panels.smoothing_panel.SmoothingPanel;
 
 /**
  *
@@ -40,23 +43,30 @@ public class AnalyticsGui extends javax.swing.JFrame {
      * Creates new form AnalyticsGui
      */
     DBConnection dbconn;
+
+    BaseCache cache;
     ChoosingPanel choosing_panel = new ChoosingPanel();
     DatePanel date_panel = new DatePanel();
     CondencePanel condence_panel = new CondencePanel();
     SmoothingPanel smoothing_panel = new SmoothingPanel();
-    Vector<ElectricalValue> data;
-    DefaultListModel<ElectricalValueCollection> toloadlistmodel = new DefaultListModel();
+    CachePanel cache_panel;
 
-    public AnalyticsGui(DBConnection dbconn) {
+    Vector<ElectricalValue> data;
+    DefaultListModel<ElectricalItemPath> toloadlistmodel = new DefaultListModel();
+
+    public AnalyticsGui(DBConnection dbconn, BaseCache cache) {
+        this.cache = cache;
+        cache_panel = new CachePanel(cache);
         this.dbconn = dbconn;
         add(choosing_panel);
         add(date_panel);
         add(condence_panel);
         add(smoothing_panel);
+        add(cache_panel);
         smoothing_panel.setLocation(0, 200);
         condence_panel.setLocation(0, 300);
         choosing_panel.setLocation(600, 0);
-
+        cache_panel.setLocation(1100, 400);
         setResizable(false);
         initComponents();
         to_load_list.setModel(toloadlistmodel);
@@ -80,14 +90,14 @@ public class AnalyticsGui extends javax.swing.JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                remakegraph(modify_data(data));
+                queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
             }
         });
         smoothing_panel.addChangeListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                remakegraph(modify_data(data));
+                queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
             }
         });
 
@@ -229,11 +239,11 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }//GEN-LAST:event_transformer_radio_buttonActionPerformed
 
     private void add_to_list_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_to_list_buttonActionPerformed
-        ElectricalValueCollection currcollection;
+        ElectricalItemPath currcollection;
         if (transformer_radio_button.isSelected()) {
-            currcollection = new ElectricalValueCollection(choosing_panel.selected_plant, choosing_panel.selected_transformer);
+            currcollection = new ElectricalItemPath(choosing_panel.selected_plant, choosing_panel.selected_transformer);
         } else {
-            currcollection = new ElectricalValueCollection(choosing_panel.selected_plant, choosing_panel.selected_transformer, choosing_panel.selected_breaker);
+            currcollection = new ElectricalItemPath(choosing_panel.selected_plant, choosing_panel.selected_transformer, choosing_panel.selected_breaker);
         }
         if (!toloadlistmodel.contains(currcollection)) {
             toloadlistmodel.addElement(currcollection);
@@ -318,50 +328,56 @@ public class AnalyticsGui extends javax.swing.JFrame {
         return olddata;
     }
 
-    private void queryfornewdata(ElectricalValueCollection e, LocalDate startdate, LocalDate enddate) {
+    private void queryfornewdata(ElectricalItemPath e, LocalDate startdate, LocalDate enddate) {
         List<Vector<ElectricalValue>> querylist = new ArrayList<>();
 
         if (breaker_radio_button.isSelected()) {
-            try {
-                data = modify_data(LoadDataFromDB.get_breaker_data(e.breaker, startdate, enddate));
 
-                querylist.add(data);
-
-            } catch (NoActiveDbConnectionException | NoBreakerSelectedException ex) {
-                ErrorPopup.popup(ex);
-                data = new Vector<>();
-
-            }
             for (int i = 0; i < toloadlistmodel.getSize(); i++) {
                 if (toloadlistmodel.get(i).breaker != null) {
                     try {
-                        querylist.add(modify_data(LoadDataFromDB.get_breaker_data(toloadlistmodel.get(i).breaker, startdate, enddate)));
-                    } catch (NoActiveDbConnectionException | NoBreakerSelectedException ex) {
+                        querylist.add(modify_data(cache.get_data(toloadlistmodel.get(i).breaker, startdate, enddate)));
+                    } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
                         ErrorPopup.popup(ex);
                     }
+                }
+            }
+            if (!toloadlistmodel.contains(e)) {
+                try {
+                    data = modify_data(cache.get_data(e.breaker, startdate, enddate));
+
+                    querylist.add(data);
+
+                } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
+                    ErrorPopup.popup(ex);
+                    data = new Vector<>();
+
                 }
             }
         } else {
-            try {
-                data = modify_data(LoadDataFromDB.get_transformer_data(e.transformer, startdate, enddate));
 
-            } catch (NoActiveDbConnectionException | NoTransformerSelectedException ex) {
-                ErrorPopup.popup(ex);
-                data = new Vector<>();
-            }
-            querylist.add(data);
             for (int i = 0; i < toloadlistmodel.getSize(); i++) {
                 if (toloadlistmodel.get(i).breaker == null) {
                     try {
-                        querylist.add(modify_data(LoadDataFromDB.get_transformer_data(toloadlistmodel.get(i).transformer, startdate, enddate)));
-                    } catch (NoActiveDbConnectionException | NoTransformerSelectedException ex) {
+                        querylist.add(modify_data(cache.get_data(toloadlistmodel.get(i).transformer, startdate, enddate)));
+                    } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
                         ErrorPopup.popup(ex);
                     }
                 }
             }
+            if (!toloadlistmodel.contains(e)) {
+                try {
+                    data = modify_data(cache.get_data(e.transformer, startdate, enddate));
+
+                } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
+                    ErrorPopup.popup(ex);
+                    data = new Vector<>();
+                }
+                querylist.add(data);
+            }
 
         }
-        if (data != null && data.size() > 0) {
+        if (querylist.size() > 0) {
             if (graph_panel != null) {
                 graph_panel.setVisible(true);
             }

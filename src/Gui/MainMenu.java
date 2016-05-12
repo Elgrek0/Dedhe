@@ -5,9 +5,15 @@
  */
 package Gui;
 
+import Gui.loading_frames.AutoLoadExcelDataGui;
 import DB_connection.DBConnection;
 import DB_data_loader.StoreDatatoDB;
-import panels.ErrorPopup;
+import Gui.panels.error_panels.ErrorPopup;
+import cache.BaseCache;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,13 +26,32 @@ public class MainMenu extends javax.swing.JFrame {
      */
     DBConnection dbconn;
     public static boolean debug = false;
+    BaseCache cache;
 
     public MainMenu(DBConnection dbconn) {
         this.dbconn = dbconn;
         initComponents();
         setVisible(true);
-        setSize(320, 350);
+        setSize(310, 380);
         setResizable(false);
+        cache = new BaseCache(Integer.parseInt(cache_max_size.getText()));
+
+        new Thread() {
+            @Override
+            public void run() {
+                DecimalFormat df = new DecimalFormat("#.####");
+                df.setRoundingMode(RoundingMode.CEILING);
+                while (true) {
+                    cache_curr_size.setText(df.format(cache.getSizeMB()));
+                    repaint();
+                    try {
+                        sleep(2000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }.start();
     }
 
     /**
@@ -46,6 +71,12 @@ public class MainMenu extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        cache_max_size = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        cache_curr_size = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
 
         jPasswordField1.setText("jPasswordField1");
 
@@ -64,10 +95,10 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
         getContentPane().add(QueryButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 130, -1));
-        getContentPane().add(ErrorArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 114, 243, 182));
+        getContentPane().add(ErrorArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 243, 182));
 
         jLabel6.setText("Error Window");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 86, -1, -1));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, -1, -1));
 
         jButton3.setText("Load data from Excel");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -84,6 +115,30 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 50, 130, -1));
+
+        cache_max_size.setText("16");
+        cache_max_size.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cache_max_sizeActionPerformed(evt);
+            }
+        });
+        getContentPane().add(cache_max_size, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 90, 30, 30));
+
+        jLabel1.setText("Cache Size");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 90, -1, 20));
+
+        jLabel2.setText("MB");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 90, 20, 20));
+
+        jLabel3.setText("In use");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 130, -1, -1));
+
+        cache_curr_size.setEditable(false);
+        cache_curr_size.setText(" ");
+        getContentPane().add(cache_curr_size, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, 30, 30));
+
+        jLabel4.setText("MB");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 130, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -125,7 +180,7 @@ public class MainMenu extends javax.swing.JFrame {
             @Override
             public void run() {
 
-                AnalyticsGui a = new AnalyticsGui(dbconn);
+                AnalyticsGui a = new AnalyticsGui(dbconn, cache);
                 a.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
                 a.setVisible(true);
 
@@ -147,12 +202,32 @@ public class MainMenu extends javax.swing.JFrame {
         }.start();
     }//GEN-LAST:event_QueryButtonActionPerformed
 
+    private void cache_max_sizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cache_max_sizeActionPerformed
+
+        try {
+            int cachesize = Integer.parseInt(cache_max_size.getText());
+            if (cachesize < 1 || cachesize > 256) {
+                ErrorPopup.popup("invalid size (allowed size [1-256]MB)");
+            } else {
+                cache.size_MB = (cachesize);
+            }
+        } catch (Exception e) {
+            ErrorPopup.popup("Not an integer");
+        }
+    }//GEN-LAST:event_cache_max_sizeActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static java.awt.TextArea ErrorArea;
     private javax.swing.JButton QueryButton;
+    private javax.swing.JTextField cache_curr_size;
+    private javax.swing.JTextField cache_max_size;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JScrollPane jScrollPane1;

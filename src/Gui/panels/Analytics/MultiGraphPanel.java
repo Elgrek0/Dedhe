@@ -1,27 +1,17 @@
-package panels.Analytics;
+package Gui.panels.Analytics;
 
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.ChartFactory;
-import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
-import org.jfree.chart.axis.LogarithmicAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.title.TextTitle;
-import java.awt.geom.Rectangle2D;
-
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import org.jfree.ui.ApplicationFrame;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.image.BufferedImage;
 
 import java.awt.Frame;
