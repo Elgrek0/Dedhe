@@ -3,19 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package LoginFrame;
+package exceptions;
 
 /**
  *
  * @author Paris
  */
-public class LoginInfo {
+class NoDataException extends Exception {
 
-    public LoginInfo(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public NoDataException() {
     }
     
-    public String username;
-    public String password;
 }

@@ -12,7 +12,7 @@ import DB_data_loader.StoreDatatoDB;
 import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.data_classes.PowerPlant;
 import DB_data_loader.data_classes.Transformer;
-import Gui.panels.plant_transformer_breaker_component.AddNewElectricalItems;
+import Gui.panels.db_panels.AddNewElectricalItems;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;

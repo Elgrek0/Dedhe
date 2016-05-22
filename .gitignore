@@ -6,3 +6,5 @@ database/DB.trace.db
 *.xml
 database/DB.mv.db
 *.rar
+*.jar
+database/DB.mv.db

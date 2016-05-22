@@ -6,10 +6,10 @@
 package DB_connection;
 
 import Gui.MainMenu;
-import LoginFrame.DBinfo;
+import Gui.LoginFrame.DBinfo;
 import exceptions.CouldntConnectException;
 import java.sql.SQLException;
-import LoginFrame.LoginInfo;
+import Gui.LoginFrame.LoginInfo;
 import java.sql.DriverManager;
 
 /**

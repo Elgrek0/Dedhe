@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Gui.panels.plant_transformer_breaker_component;
+package Gui.panels.db_panels;
 
 import exceptions.EmptyNameException;
 import DB_data_loader.LoadDataFromDB;
-import Gui.panels.plant_transformer_breaker_component.ChoosingPanel;
+import Gui.panels.db_panels.ChoosingPanel;
 import exceptions.NoParentTransformerException;
 import exceptions.NoParentPlantException;
 import DB_data_loader.data_classes.Breaker;

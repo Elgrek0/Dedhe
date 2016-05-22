@@ -5,9 +5,9 @@
  */
 package Gui.loading_frames;
 
-import Gui.panels.plant_transformer_breaker_component.AddNewElectricalItems;
+import Gui.panels.db_panels.AddNewElectricalItems;
 import exceptions.BadFileTypeException;
-import Gui.panels.plant_transformer_breaker_component.ChoosingPanel;
+import Gui.panels.db_panels.ChoosingPanel;
 import DB_connection.FixValues;
 import DB_connection.DBConnection;
 import DB_data_loader.LoadDataFromDB;

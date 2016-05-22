@@ -5,33 +5,27 @@
  */
 package Gui;
 
-import Gui.panels.plant_transformer_breaker_component.ChoosingPanel;
-import Gui.panels.Analytics.GraphPanel;
+import Gui.panels.db_panels.ChoosingPanel;
+import Gui.panels.analyticsguipanels.GraphPanel;
 import DB_connection.DBConnection;
-import DB_data_loader.LoadDataFromDB;
 import DB_data_loader.data_classes.ElectricalValue;
 import DB_data_loader.data_classes.ElectricalItemPath;
-import Gui.panels.Reports.ReportPanel;
+import Gui.panels.analyticsguipanels.StatisticsPanel;
 import cache.BaseCache;
-import cache.CachePanel;
 import exceptions.NoActiveDbConnectionException;
-import exceptions.NoBreakerSelectedException;
 import exceptions.NoItemSelectedException;
-import exceptions.NoTransformerSelectedException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import Gui.panels.error_panels.ErrorPopup;
-import Gui.panels.condence_panel.CondencePanel;
+import Gui.panels.analyticsguipanels.CondencePanel;
 import Gui.panels.date_panel.DatePanel;
-import Gui.panels.smoothing_panel.SmoothingPanel;
+import Gui.panels.analyticsguipanels.SmoothingPanel;
 
 /**
  *
@@ -49,28 +43,30 @@ public class AnalyticsGui extends javax.swing.JFrame {
     DatePanel date_panel = new DatePanel();
     CondencePanel condence_panel = new CondencePanel();
     SmoothingPanel smoothing_panel = new SmoothingPanel();
-    CachePanel cache_panel;
+    GraphPanel graph_panel = null;
+    StatisticsPanel statistics_panel = new StatisticsPanel();
 
-    Vector<ElectricalValue> data;
+    List<Vector<ElectricalValue>> data = new ArrayList<Vector<ElectricalValue>>();
     DefaultListModel<ElectricalItemPath> toloadlistmodel = new DefaultListModel();
 
     public AnalyticsGui(DBConnection dbconn, BaseCache cache) {
         this.cache = cache;
-        cache_panel = new CachePanel(cache);
         this.dbconn = dbconn;
+
         add(choosing_panel);
         add(date_panel);
         add(condence_panel);
         add(smoothing_panel);
-        add(cache_panel);
+        add(statistics_panel);
+        statistics_panel.setLocation(0, 400);
         smoothing_panel.setLocation(0, 200);
         condence_panel.setLocation(0, 300);
         choosing_panel.setLocation(600, 0);
-        cache_panel.setLocation(1100, 400);
-        setResizable(false);
+        setResizable(true);
         initComponents();
         to_load_list.setModel(toloadlistmodel);
         setSize(getPreferredSize());
+
         choosing_panel.addChangeListener(new ActionListener() {
 
             @Override
@@ -253,9 +249,11 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }//GEN-LAST:event_add_to_list_buttonActionPerformed
 
     private void remove_from_list_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remove_from_list_buttonActionPerformed
-        int loc = to_load_list.getSelectedIndex();
-        if (loc != -1) {
-            toloadlistmodel.remove(loc);
+        int[] loc = to_load_list.getSelectedIndices();
+        for (int i = 0; i < loc.length; i++) {
+            if (loc[i] != -1) {
+                toloadlistmodel.remove(loc[i] - i);
+            }
         }
         queryfornewdata(choosing_panel.collection, date_panel.startdate, date_panel.enddate);
 
@@ -288,8 +286,6 @@ public class AnalyticsGui extends javax.swing.JFrame {
     private javax.swing.JList to_load_list;
     private javax.swing.JRadioButton transformer_radio_button;
     // End of variables declaration//GEN-END:variables
-    GraphPanel graph_panel = null;
-    ReportPanel rp = null;
 
     private Vector<ElectricalValue> modify_data(Vector<ElectricalValue> olddata) {
         int condence = condence_panel.condence_value;
@@ -329,89 +325,83 @@ public class AnalyticsGui extends javax.swing.JFrame {
     }
 
     private void queryfornewdata(ElectricalItemPath e, LocalDate startdate, LocalDate enddate) {
-        List<Vector<ElectricalValue>> querylist = new ArrayList<>();
+        data = new ArrayList<>();
 
         if (breaker_radio_button.isSelected()) {
+            try {
+                data.add(modify_data(cache.get_data(e.breaker, startdate, enddate)));
+
+            } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
+                ErrorPopup.popup(ex);
+                data = new ArrayList<>();
+            }
 
             for (int i = 0; i < toloadlistmodel.getSize(); i++) {
-                if (toloadlistmodel.get(i).breaker != null) {
-                    try {
-                        querylist.add(modify_data(cache.get_data(toloadlistmodel.get(i).breaker, startdate, enddate)));
-                    } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
-                        ErrorPopup.popup(ex);
+                if (!toloadlistmodel.get(i).equals(e)) {
+                    if (toloadlistmodel.get(i).breaker != null) {
+                        try {
+                            data.add(modify_data(cache.get_data(toloadlistmodel.get(i).breaker, startdate, enddate)));
+                        } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
+                            ErrorPopup.popup(ex);
+                        }
                     }
                 }
             }
-            if (!toloadlistmodel.contains(e)) {
-                try {
-                    data = modify_data(cache.get_data(e.breaker, startdate, enddate));
 
-                    querylist.add(data);
-
-                } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
-                    ErrorPopup.popup(ex);
-                    data = new Vector<>();
-
-                }
-            }
         } else {
+            try {
+                data.add(modify_data(cache.get_data(e.transformer, startdate, enddate)));
 
-            for (int i = 0; i < toloadlistmodel.getSize(); i++) {
-                if (toloadlistmodel.get(i).breaker == null) {
-                    try {
-                        querylist.add(modify_data(cache.get_data(toloadlistmodel.get(i).transformer, startdate, enddate)));
-                    } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
-                        ErrorPopup.popup(ex);
-                    }
-                }
+            } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
+                ErrorPopup.popup(ex);
+                data = new ArrayList<>();
             }
-            if (!toloadlistmodel.contains(e)) {
-                try {
-                    data = modify_data(cache.get_data(e.transformer, startdate, enddate));
+            for (int i = 0; i < toloadlistmodel.getSize(); i++) {
+                if (!toloadlistmodel.get(i).equals(e)) {
+                    if (toloadlistmodel.get(i).breaker == null) {
+                        try {
+                            data.add(modify_data(cache.get_data(toloadlistmodel.get(i).transformer, startdate, enddate)));
+                        } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
+                            ErrorPopup.popup(ex);
+                        }
+                    }
 
-                } catch (NoActiveDbConnectionException | NoItemSelectedException ex) {
-                    ErrorPopup.popup(ex);
-                    data = new Vector<>();
                 }
-                querylist.add(data);
             }
 
         }
-        if (querylist.size() > 0) {
+        if (data.size() > 0) {
             if (graph_panel != null) {
                 graph_panel.setVisible(true);
             }
-
-            recalculatemetrics();
-            if (overlap_radio_button.isSelected()) {
-                remakegraph(querylist);
-            } else {
+            if (!overlap_radio_button.isSelected()) {
                 Vector<ElectricalValue> sumdata = new Vector<>();
-                for (int k = 0; k < querylist.get(0).size(); k++) {
+                for (int k = 0; k < data.get(0).size(); k++) {
                     float sum = 0;
-                    for (int i = 0; i < querylist.size(); i++) {
-
-                        sum += querylist.get(i).get(k).value;
+                    for (int i = 0; i < data.size(); i++) {
+                        sum += data.get(i).get(k).value;
                     }
-                    sumdata.add(new ElectricalValue(querylist.get(0).get(k).datetime, sum));
+                    sumdata.add(new ElectricalValue(data.get(0).get(k).datetime, sum));
                 }
-                remakegraph(sumdata);
+                data = new ArrayList<>();
+                data.add(sumdata);
             }
+            remakegraph(data);
+            recalculatemetrics();
+            repaint();
         } else {
             if (graph_panel != null) {
                 graph_panel.setVisible(false);
                 graph_panel.datetime_textfield.setText("No Data");
             }
         }
+
     }
 
     private void recalculatemetrics() {
-        if (rp != null) {
-            remove(rp);
-        }
-        rp = new ReportPanel(data);
-        rp.setLocation(0, 400);
-        add(rp);
+
+        statistics_panel.update(data);
+
     }
 
     private void remakegraph(Vector<ElectricalValue> data) {

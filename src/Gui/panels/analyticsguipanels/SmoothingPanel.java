@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Gui.panels.smoothing_panel;
+package Gui.panels.analyticsguipanels;
 
 import java.awt.event.ActionListener;
 import java.util.Vector;

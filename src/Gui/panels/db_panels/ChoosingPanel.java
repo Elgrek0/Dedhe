@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Gui.panels.plant_transformer_breaker_component;
+package Gui.panels.db_panels;
 
 import DB_data_loader.data_classes.Breaker;
 import DB_data_loader.StaticCachedData;
@@ -97,9 +97,11 @@ public final class ChoosingPanel extends javax.swing.JPanel {
                 plantselection = -1;
             }
             selected_plant = (PowerPlant) plant_combobox.getSelectedItem();
+
         }
 
         StaticCachedData.unlock();
+        update_transformers();
     }
 
     void update_transformers() {
@@ -116,23 +118,32 @@ public final class ChoosingPanel extends javax.swing.JPanel {
                 transformercombobox = new DefaultComboBoxModel(selected_plant.transformers);
                 transformer_combobox.setModel(transformercombobox);
                 try {
-                    if (transformerselection > 0) {
-                        transformer_combobox.setSelectedIndex(transformerselection);
-                    } else {
-                        transformer_combobox.setSelectedIndex(0);
+                    if (transformerselection >= transformer_combobox.getItemCount()) {
+                        transformerselection = transformer_combobox.getItemCount() - 1;
+                    }
+                    if (transformerselection == -1 && transformer_combobox.getItemCount() > 0) {
                         transformerselection = 0;
                     }
-                } catch (Exception ex) {
 
-                    transformer_combobox.setSelectedIndex(-1);
-                    transformerselection = -1;
+                    transformer_combobox.setSelectedIndex(transformerselection);
+                } catch (Exception ex) {
+                    try {
+                        transformer_combobox.setSelectedIndex(0);
+                        transformerselection = 0;
+                    } catch (Exception ex2) {
+
+                        transformer_combobox.setSelectedIndex(-1);
+                        transformerselection = -1;
+                    }
+
                 }
                 selected_transformer = (Transformer) transformer_combobox.getSelectedItem();
 
             }
-            StaticCachedData.unlock();
-        }
 
+        }
+        StaticCachedData.unlock();
+        update_breakers();
     }
 
     void update_breakers() {
@@ -148,20 +159,28 @@ public final class ChoosingPanel extends javax.swing.JPanel {
                 breakercombobox = new DefaultComboBoxModel(selected_transformer.breakers);
                 breaker_combobox.setModel(breakercombobox);
                 try {
-                    if (breakerselection > 0) {
-                        breaker_combobox.setSelectedIndex(breakerselection);
-                    } else {
-                        breaker_combobox.setSelectedIndex(0);
+                    if (breakerselection >= breaker_combobox.getItemCount()) {
+                        breakerselection = breaker_combobox.getItemCount() - 1;
+                    }
+                    if (breakerselection == -1 && breaker_combobox.getItemCount() > 0) {
                         breakerselection = 0;
                     }
+                    breaker_combobox.setSelectedIndex(breakerselection);
                 } catch (Exception ex) {
-                    breaker_combobox.setSelectedIndex(-1);
-                    breakerselection = -1;
+                    try {
+                        breaker_combobox.setSelectedIndex(0);
+                        breakerselection = 0;
+                    } catch (Exception ex2) {
+                        breaker_combobox.setSelectedIndex(-1);
+                        breakerselection = -1;
+                    }
+
                 }
                 selected_breaker = (Breaker) breaker_combobox.getSelectedItem();
             }
-            StaticCachedData.unlock();
+
         }
+        StaticCachedData.unlock();
     }
 
     /**

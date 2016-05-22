@@ -6,8 +6,6 @@
 package DB_data_loader;
 
 import exceptions.NoItemSelectedException;
-import exceptions.NoTransformerSelectedException;
-import exceptions.NoBreakerSelectedException;
 import DB_connection.DBConnection;
 import static DB_data_loader.StaticCachedData.conn;
 import static DB_data_loader.StaticCachedData.db_breakers;
@@ -21,7 +19,6 @@ import DB_data_loader.data_classes.Transformer;
 import exceptions.NoActiveDbConnectionException;
 import exceptions.PowerPlantParentNotFoundException;
 import exceptions.TransformerParentNotFoundException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
